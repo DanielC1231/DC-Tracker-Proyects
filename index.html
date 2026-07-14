@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DC-Tracker-Proyects</title>
+    <title>DC Tracker Proyects</title>
     <style>
         * {
             margin: 0;
@@ -170,6 +170,15 @@
             color: white;
         }
         
+        .btn-purple:hover {
+            background: #a371f7;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+        
         .timer-display {
             font-size: 3rem;
             font-family: 'Courier New', monospace;
@@ -319,6 +328,95 @@
             min-width: 100px;
         }
         
+        /* ========== ADJUNTOS ========== */
+        .adjuntos-list {
+            margin-top: 10px;
+        }
+        
+        .adjunto-item {
+            background: #0d1117;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border: 1px solid #30363d;
+        }
+        
+        .adjunto-item:hover {
+            border-color: #58a6ff;
+        }
+        
+        .adjunto-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .adjunto-icon {
+            font-size: 1.5rem;
+        }
+        
+        .adjunto-nombre {
+            color: #c9d1d9;
+            font-size: 0.9rem;
+        }
+        
+        .adjunto-tipo {
+            color: #8b949e;
+            font-size: 0.75rem;
+        }
+        
+        .input-file {
+            padding: 10px;
+            background: #0f3460;
+            border: 2px dashed #58a6ff;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        
+        .input-file:hover {
+            background: #1a4a7a;
+        }
+        
+        .preview-img {
+            max-width: 100px;
+            max-height: 100px;
+            border-radius: 6px;
+            margin-top: 5px;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            margin-left: 5px;
+        }
+        
+        .badge-ticket {
+            background: #f0883e;
+            color: white;
+        }
+        
+        .badge-factura {
+            background: #1f6feb;
+            color: white;
+        }
+        
+        .badge-contrato {
+            background: #8957e5;
+            color: white;
+        }
+        
+        .badge-otro {
+            background: #8b949e;
+            color: #0d1117;
+        }
+        
         @media (max-width: 600px) {
             .header h1 {
                 font-size: 1.4rem;
@@ -332,6 +430,10 @@
                 width: 100%;
                 justify-content: center;
             }
+            
+            .row {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -339,13 +441,14 @@
 
     <div class="header">
         <h1>💼 DC Tracker Proyects</h1>
-        <p>Organiza proyectos, controla tiempo, cobra lo que mereces</p>
+        <p>DC - Organiza proyectos, controla tiempo, adjunta tickets y cobra lo que mereces</p>
     </div>
 
     <div class="tabs">
         <button class="tab-btn active" onclick="showTab('proyectos')">📁 Proyectos</button>
         <button class="tab-btn" onclick="showTab('timer')">⏱️ Timer</button>
         <button class="tab-btn" onclick="showTab('manual')">✏️ Manual</button>
+        <button class="tab-btn" onclick="showTab('adjuntos')">📎 Adjuntos</button>
         <button class="tab-btn" onclick="showTab('buscar')">🔍 Buscar</button>
         <button class="tab-btn" onclick="showTab('reportes')">📊 Reportes</button>
     </div>
@@ -410,6 +513,47 @@
         </div>
     </div>
 
+    <!-- TAB ADJUNTOS (NUEVO) -->
+    <div id="adjuntos" class="tab-content">
+        <div class="card">
+            <h2>📎 Adjuntar Archivos al Proyecto</h2>
+            
+            <div id="adjunto-proyecto-info" style="color: #8b949e; margin-bottom: 15px;">
+                Selecciona un proyecto en la pestaña "Proyectos" primero
+            </div>
+            
+            <div id="adjunto-form" style="display: none;">
+                <div class="input-file" onclick="document.getElementById('input-file').click()">
+                    📁 Click para seleccionar archivo (ticket, factura, contrato, etc.)
+                    <input type="file" id="input-file" style="display: none;" onchange="procesarArchivo(event)" accept="image/*,.pdf,.doc,.docx,.txt">
+                </div>
+                
+                <div class="row">
+                    <select id="tipo-adjunto" style="flex: 1;">
+                        <option value="ticket">🧾 Ticket de compra</option>
+                        <option value="factura">📄 Factura</option>
+                        <option value="contrato">📋 Contrato</option>
+                        <option value="cotizacion">💰 Cotización</option>
+                        <option value="evidencia">📸 Evidencia/Foto</option>
+                        <option value="otro">📎 Otro</option>
+                    </select>
+                    <input type="text" id="nombre-adjunto" placeholder="Nombre descriptivo (opcional)" style="flex: 2;">
+                </div>
+                
+                <button class="btn btn-green" onclick="guardarAdjunto()" style="margin-top: 10px;">📎 Adjuntar al Proyecto</button>
+                
+                <div id="preview-adjunto" style="margin-top: 10px;"></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📁 Archivos Adjuntos del Proyecto</h2>
+            <div id="lista-adjuntos" style="color: #8b949e; text-align: center;">
+                Selecciona un proyecto para ver sus adjuntos
+            </div>
+        </div>
+    </div>
+
     <!-- TAB BUSCAR -->
     <div id="buscar" class="tab-content">
         <div class="card">
@@ -467,11 +611,12 @@
 
     <script>
         // ========== DATOS ==========
-        let proyectos = JSON.parse(localStorage.getItem('dc_proyectos')) || [];
+        let proyectos = JSON.parse(localStorage.getItem('dc_tracker_proyects')) || [];
         let proyectoSeleccionado = null;
         let timerInterval = null;
         let tiempoInicio = null;
         let tiempoPausado = 0;
+        let archivoActual = null; // Para el adjunto temporal
 
         // ========== INICIALIZAR ==========
         document.addEventListener('DOMContentLoaded', () => {
@@ -489,6 +634,8 @@
             if (tabId === 'reportes') {
                 actualizarStats();
                 dibujarGrafico();
+            } else if (tabId === 'adjuntos') {
+                actualizarAdjuntos();
             }
         }
 
@@ -512,7 +659,8 @@
                 descripcion: desc,
                 tiempoTotal: 0,
                 dineroExtra: 0,
-                sesiones: []
+                sesiones: [],
+                adjuntos: [] // NUEVO: array de archivos adjuntos
             };
             
             proyectos.push(proyecto);
@@ -538,13 +686,17 @@
             cont.innerHTML = proyectos.map((p, i) => {
                 const horas = (p.tiempoTotal / 3600).toFixed(1);
                 const ingreso = ((p.tiempoTotal / 3600) * p.tarifa + p.dineroExtra).toFixed(2);
+                const numAdjuntos = p.adjuntos ? p.adjuntos.length : 0;
                 const selected = proyectoSeleccionado === i ? 'selected' : '';
                 
                 return `
                     <div class="project-item ${selected}" onclick="seleccionarProyecto(${i})">
                         <h3>${p.nombre}</h3>
                         <p>👤 ${p.cliente || 'Sin cliente'} | 💰 $${ingreso} | ⏱️ ${horas}h</p>
-                        <p style="font-size: 0.8rem; margin-top: 5px;">Tarifa: $${p.tarifa}/h | Extras: $${p.dineroExtra}</p>
+                        <p style="font-size: 0.8rem; margin-top: 5px;">
+                            Tarifa: $${p.tarifa}/h | Extras: $${p.dineroExtra}
+                            ${numAdjuntos > 0 ? `| 📎 ${numAdjuntos} adjunto${numAdjuntos > 1 ? 's' : ''}` : ''}
+                        </p>
                     </div>
                 `;
             }).join('');
@@ -556,13 +708,157 @@
             alert('Proyecto seleccionado: ' + proyectos[index].nombre);
         }
 
-        function eliminarProyecto(index) {
-            if (!confirm('¿Eliminar este proyecto?')) return;
-            proyectos.splice(index, 1);
-            if (proyectoSeleccionado === index) proyectoSeleccionado = null;
+        // ========== ADJUNTOS (NUEVO) ==========
+        function actualizarAdjuntos() {
+            const infoDiv = document.getElementById('adjunto-proyecto-info');
+            const formDiv = document.getElementById('adjunto-form');
+            const listaDiv = document.getElementById('lista-adjuntos');
+            
+            if (proyectoSeleccionado === null) {
+                infoDiv.textContent = 'Selecciona un proyecto en la pestaña "Proyectos" primero';
+                formDiv.style.display = 'none';
+                listaDiv.innerHTML = '<p style="color: #8b949e; text-align: center;">Selecciona un proyecto para ver sus adjuntos</p>';
+                return;
+            }
+            
+            const p = proyectos[proyectoSeleccionado];
+            infoDiv.innerHTML = `<strong style="color: #58a6ff;">Proyecto: ${p.nombre}</strong>`;
+            formDiv.style.display = 'block';
+            
+            // Mostrar lista de adjuntos
+            if (!p.adjuntos || p.adjuntos.length === 0) {
+                listaDiv.innerHTML = '<p style="color: #8b949e; text-align: center;">No hay archivos adjuntos aún</p>';
+            } else {
+                listaDiv.innerHTML = '<div class="adjuntos-list">' + p.adjuntos.map((adj, idx) => {
+                    const iconos = {
+                        ticket: '🧾', factura: '📄', contrato: '📋',
+                        cotizacion: '💰', evidencia: '📸', otro: '📎'
+                    };
+                    const badges = {
+                        ticket: 'badge-ticket', factura: 'badge-factura', contrato: 'badge-contrato',
+                        cotizacion: 'badge-factura', evidencia: 'badge-ticket', otro: 'badge-otro'
+                    };
+                    
+                    return `
+                        <div class="adjunto-item">
+                            <div class="adjunto-info">
+                                <span class="adjunto-icon">${iconos[adj.tipo] || '📎'}</span>
+                                <div>
+                                    <div class="adjunto-nombre">${adj.nombre || adj.nombreOriginal}</div>
+                                    <div class="adjunto-tipo">
+                                        ${adj.tipo.toUpperCase()}
+                                        <span class="badge ${badges[adj.tipo] || 'badge-otro'}">${adj.tipo}</span>
+                                        <span style="color: #8b949e;">${(adj.size / 1024).toFixed(1)} KB</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div>
+                                <button class="btn btn-blue btn-small" onclick="verAdjunto(${idx})">👁️ Ver</button>
+                                <button class="btn btn-red btn-small" onclick="eliminarAdjunto(${idx})">🗑️</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('') + '</div>';
+            }
+        }
+
+        function procesarArchivo(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            // Validar tamaño (máximo 2MB para localStorage)
+            if (file.size > 2 * 1024 * 1024) {
+                alert('El archivo es muy grande. Máximo 2MB. Para archivos grandes, usa el backup JSON.');
+                return;
+            }
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                archivoActual = {
+                    nombreOriginal: file.name,
+                    data: e.target.result, // base64
+                    size: file.size,
+                    tipoMime: file.type
+                };
+                
+                // Preview
+                const preview = document.getElementById('preview-adjunto');
+                if (file.type.startsWith('image/')) {
+                    preview.innerHTML = `<img src="${e.target.result}" class="preview-img" alt="Preview"><p style="color: #3fb950; margin-top: 5px;">✅ ${file.name} listo para adjuntar</p>`;
+                } else {
+                    preview.innerHTML = `<p style="color: #3fb950;">✅ ${file.name} (${(file.size/1024).toFixed(1)} KB) listo para adjuntar</p>`;
+                }
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function guardarAdjunto() {
+            if (proyectoSeleccionado === null) {
+                alert('Selecciona un proyecto primero');
+                return;
+            }
+            
+            if (!archivoActual) {
+                alert('Selecciona un archivo primero');
+                return;
+            }
+            
+            const tipo = document.getElementById('tipo-adjunto').value;
+            const nombre = document.getElementById('nombre-adjunto').value.trim() || archivoActual.nombreOriginal;
+            
+            const p = proyectos[proyectoSeleccionado];
+            if (!p.adjuntos) p.adjuntos = [];
+            
+            p.adjuntos.push({
+                id: Date.now(),
+                nombre: nombre,
+                nombreOriginal: archivoActual.nombreOriginal,
+                tipo: tipo,
+                data: archivoActual.data,
+                size: archivoActual.size,
+                tipoMime: archivoActual.tipoMime,
+                fecha: new Date().toLocaleString()
+            });
+            
             guardar();
+            
+            // Limpiar
+            archivoActual = null;
+            document.getElementById('input-file').value = '';
+            document.getElementById('nombre-adjunto').value = '';
+            document.getElementById('preview-adjunto').innerHTML = '';
+            
+            actualizarAdjuntos();
+            renderizarProyectos(); // Para actualizar el contador de adjuntos
+            alert('✅ Archivo adjuntado correctamente');
+        }
+
+        function verAdjunto(idx) {
+            const p = proyectos[proyectoSeleccionado];
+            const adj = p.adjuntos[idx];
+            
+            // Abrir en nueva ventana/pestaña
+            const win = window.open('', '_blank');
+            if (adj.tipoMime.startsWith('image/')) {
+                win.document.write(`<img src="${adj.data}" style="max-width:100%;"><p>${adj.nombre}</p>`);
+            } else {
+                // Para PDFs y otros, crear un blob y descargar
+                const link = document.createElement('a');
+                link.href = adj.data;
+                link.download = adj.nombreOriginal;
+                link.click();
+                win.close();
+            }
+        }
+
+        function eliminarAdjunto(idx) {
+            if (!confirm('¿Eliminar este archivo adjunto?')) return;
+            
+            const p = proyectos[proyectoSeleccionado];
+            p.adjuntos.splice(idx, 1);
+            guardar();
+            actualizarAdjuntos();
             renderizarProyectos();
-            actualizarStats();
         }
 
         // ========== TIMER ==========
@@ -596,6 +892,11 @@
         function registrarSesion() {
             if (proyectoSeleccionado === null || tiempoInicio === null) {
                 alert('Inicia el timer primero');
+                return;
+            }
+            
+            if (!timerInterval) {
+                alert('El timer está pausado');
                 return;
             }
             
@@ -693,11 +994,13 @@
             cont.innerHTML = resultados.map(p => {
                 const horas = (p.tiempoTotal / 3600).toFixed(1);
                 const ingreso = ((p.tiempoTotal / 3600) * p.tarifa + p.dineroExtra).toFixed(2);
+                const numAdjuntos = p.adjuntos ? p.adjuntos.length : 0;
                 return `
                     <div class="project-item">
                         <h3>${p.nombre}</h3>
                         <p>👤 ${p.cliente || 'Sin cliente'}</p>
                         <p>💰 Total: $${ingreso} | ⏱️ ${horas}h | 📋 ${p.sesiones.length} sesiones</p>
+                        ${numAdjuntos > 0 ? `<p>📎 ${numAdjuntos} adjunto${numAdjuntos > 1 ? 's' : ''}</p>` : ''}
                     </div>
                 `;
             }).join('');
@@ -710,6 +1013,7 @@
             const totalHoras = (totalSeg / 3600).toFixed(1);
             const totalDinero = proyectos.reduce((sum, p) => sum + (p.tiempoTotal / 3600) * p.tarifa, 0).toFixed(2);
             const totalExtra = proyectos.reduce((sum, p) => sum + p.dineroExtra, 0).toFixed(2);
+            const totalAdjuntos = proyectos.reduce((sum, p) => sum + (p.adjuntos ? p.adjuntos.length : 0), 0);
             
             document.getElementById('total-proyectos').textContent = totalProy;
             document.getElementById('total-horas').textContent = totalHoras + 'h';
@@ -774,40 +1078,47 @@
                 const x = i * spacing + spacing * 0.2;
                 const y = canvas.height - height - 30;
                 
-                // Barra
                 ctx.fillStyle = `hsl(${200 + i * 30}, 70%, 50%)`;
                 ctx.fillRect(x, y, barWidth, height);
                 
-                // Valor
                 ctx.fillStyle = '#c9d1d9';
                 ctx.font = '12px Arial';
                 ctx.textAlign = 'center';
                 ctx.fillText('$' + d.valor.toFixed(0), x + barWidth/2, y - 5);
-                
-                // Nombre
                 ctx.fillText(d.nombre, x + barWidth/2, canvas.height - 10);
             });
         }
 
         // ========== EXPORTAR ==========
         function exportarPDF() {
-            let contenido = 'DC FREELANCE TRACKER - REPORTE\n\n';
+            let contenido = 'DC TRACKER PROYECTS - REPORTE\n\n';
             contenido += 'Generado: ' + new Date().toLocaleString() + '\n\n';
             
             proyectos.forEach(p => {
                 const horas = (p.tiempoTotal / 3600).toFixed(2);
                 const ingreso = ((p.tiempoTotal / 3600) * p.tarifa + p.dineroExtra).toFixed(2);
+                const numAdjuntos = p.adjuntos ? p.adjuntos.length : 0;
+                
                 contenido += `📁 ${p.nombre}\n`;
                 contenido += `   Cliente: ${p.cliente}\n`;
                 contenido += `   Tarifa: $${p.tarifa}/h\n`;
                 contenido += `   Tiempo: ${horas}h\n`;
                 contenido += `   Extras: $${p.dineroExtra}\n`;
+                contenido += `   Adjuntos: ${numAdjuntos}\n`;
                 contenido += `   TOTAL: $${ingreso}\n\n`;
                 
                 if (p.sesiones.length > 0) {
                     contenido += '   Sesiones:\n';
                     p.sesiones.forEach(s => {
                         contenido += `      • ${s.fecha} - ${s.duracion} - ${s.nota}${s.extra > 0 ? ' (+$' + s.extra + ')' : ''}\n`;
+                    });
+                    contenido += '\n';
+                }
+                
+                if (p.adjuntos && p.adjuntos.length > 0) {
+                    contenido += '   Adjuntos:\n';
+                    p.adjuntos.forEach(a => {
+                        contenido += `      📎 ${a.nombre} (${a.tipo}) - ${(a.size/1024).toFixed(1)}KB\n`;
                     });
                     contenido += '\n';
                 }
@@ -820,7 +1131,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'DC_Freelance_Report.txt';
+            a.download = 'DC_Tracker_Proyects_Report.txt';
             a.click();
             URL.revokeObjectURL(url);
             
@@ -828,19 +1139,20 @@
         }
 
         function exportarExcel() {
-            let csv = 'Proyecto,Cliente,Tarifa,Horas,Extras,Total\n';
+            let csv = 'Proyecto,Cliente,Tarifa,Horas,Extras,Adjuntos,Total\n';
             
             proyectos.forEach(p => {
                 const horas = (p.tiempoTotal / 3600).toFixed(2);
                 const total = ((p.tiempoTotal / 3600) * p.tarifa + p.dineroExtra).toFixed(2);
-                csv += `"${p.nombre}","${p.cliente}",${p.tarifa},${horas},${p.dineroExtra},${total}\n`;
+                const numAdjuntos = p.adjuntos ? p.adjuntos.length : 0;
+                csv += `"${p.nombre}","${p.cliente}",${p.tarifa},${horas},${p.dineroExtra},${numAdjuntos},${total}\n`;
             });
             
             const blob = new Blob([csv], {type: 'text/csv'});
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'DC_Freelance_Report.csv';
+            a.download = 'DC_Tracker_Proyects_Report.csv';
             a.click();
             URL.revokeObjectURL(url);
             
@@ -849,6 +1161,8 @@
 
         function exportarJSON() {
             const datos = {
+                app: 'DC Tracker Proyects',
+                version: '1.1',
                 fecha: new Date().toISOString(),
                 proyectos: proyectos
             };
@@ -856,7 +1170,7 @@
             const url = URL.createObjectURL(blob);
             const a = document.createElement('a');
             a.href = url;
-            a.download = 'DC_Freelance_Backup.json';
+            a.download = 'DC_Tracker_Proyects_Backup.json';
             a.click();
             URL.revokeObjectURL(url);
         }
@@ -887,7 +1201,7 @@
 
         // ========== UTILIDADES ==========
         function guardar() {
-            localStorage.setItem('dc_proyectos', JSON.stringify(proyectos));
+            localStorage.setItem('dc_tracker_proyects', JSON.stringify(proyectos));
         }
     </script>
 </body>
