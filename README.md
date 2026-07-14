@@ -101,9 +101,9 @@ Si te gusta, puedes apoyarme con una donación. ¡Cualquier aporte es bienvenido
 
 | Versión | Descripción | Enlace |
 |---------|-------------|--------|
-| 🌐 **Web** | Usable desde cualquier navegador
-| 💻 **EXE** | Versión para Windows 
-| 📄 **HTML** | Archivo único para usar sin internet 
+| 🌐 **Web** | Usable desde cualquier navegador| [En github](https://danielc1231.github.io/DC-Tracker-Proyects/)
+| 💻 **EXE** | Versión para Windows | [En itch](https://watecompany.itch.io/dc-tracker-proyects) |
+| 📄 **HTML** | Archivo único para usar sin internet | [En itch](https://watecompany.itch.io/dc-tracker-proyects) |
 
 ---
 
