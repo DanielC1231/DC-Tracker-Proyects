@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>💼 DC Tracker Proyects - Web</title>
     <style>
-        /* ===== ESTILOS GENERALES ===== */
+        /* ============================================================
+           ESTILOS - IMITANDO TKINTER
+           ============================================================ */
         * {
             margin: 0;
             padding: 0;
@@ -13,70 +15,114 @@
         }
         
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
             background: #0d1117;
             color: #c9d1d9;
             min-height: 100vh;
             padding: 10px;
         }
         
+        /* ===== CONTENEDOR PRINCIPAL ===== */
+        .app-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #0d1117;
+        }
+        
         /* ===== TÍTULO ===== */
         .header {
             text-align: center;
-            padding: 15px 0;
+            padding: 15px 0 5px 0;
+            border-bottom: 1px solid #21262d;
         }
         
         .header h1 {
             color: #e94560;
             font-size: 28px;
+            font-weight: bold;
+            letter-spacing: 1px;
         }
         
         .header p {
             color: #a0a0a0;
-            font-size: 14px;
-            margin-top: 5px;
+            font-size: 13px;
+            margin-top: 4px;
         }
         
-        /* ===== TABS ===== */
+        /* ===== BARRA DE PROGRESO ===== */
+        .progress-container {
+            background: #0d1117;
+            padding: 8px 20px;
+            text-align: center;
+        }
+        
+        .progress-container .label {
+            color: #8b949e;
+            font-size: 12px;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            max-width: 400px;
+            height: 6px;
+            background: #21262d;
+            border-radius: 3px;
+            margin: 4px auto;
+            overflow: hidden;
+        }
+        
+        .progress-bar .fill {
+            width: 0%;
+            height: 100%;
+            background: #238636;
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+        
+        /* ===== TABS (PESTAÑAS) ===== */
         .tabs {
             display: flex;
             flex-wrap: wrap;
-            gap: 5px;
-            margin: 15px 0;
+            gap: 4px;
             background: #161b22;
-            border-radius: 10px;
-            padding: 5px;
-            overflow-x: auto;
+            border-radius: 8px;
+            padding: 6px;
+            margin: 10px 0;
+            border: 1px solid #21262d;
         }
         
         .tab-btn {
             flex: 1;
-            min-width: 60px;
+            min-width: 70px;
             padding: 10px 12px;
             background: transparent;
             border: none;
+            border-radius: 6px;
             color: #8b949e;
             font-size: 13px;
+            font-weight: 600;
             cursor: pointer;
-            border-radius: 8px;
-            transition: all 0.3s;
+            transition: all 0.25s;
             white-space: nowrap;
         }
         
         .tab-btn:hover {
             background: #21262d;
+            color: #c9d1d9;
         }
         
         .tab-btn.active {
             background: #238636;
             color: white;
+            box-shadow: 0 2px 8px rgba(35, 134, 54, 0.3);
         }
         
+        /* ===== CONTENIDO DE TABS ===== */
         .tab-content {
             display: none;
             background: #0d1117;
             padding: 10px 0;
-            animation: fadeIn 0.3s;
+            animation: fadeIn 0.3s ease;
         }
         
         .tab-content.active {
@@ -84,11 +130,11 @@
         }
         
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* ===== FORMULARIOS ===== */
+        /* ===== FORMULARIOS (estilo Tkinter) ===== */
         .form-group {
             margin-bottom: 12px;
         }
@@ -97,7 +143,8 @@
             display: block;
             color: #8b949e;
             font-size: 13px;
-            margin-bottom: 4px;
+            font-weight: 500;
+            margin-bottom: 3px;
         }
         
         .form-group input,
@@ -107,10 +154,10 @@
             padding: 10px 12px;
             background: #0d1117;
             border: 1px solid #30363d;
-            border-radius: 8px;
+            border-radius: 6px;
             color: white;
             font-size: 14px;
-            transition: border 0.3s;
+            transition: border 0.3s, box-shadow 0.3s;
         }
         
         .form-group input:focus,
@@ -118,64 +165,93 @@
         .form-group select:focus {
             outline: none;
             border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
         }
         
         .form-group textarea {
             resize: vertical;
             min-height: 60px;
+            font-family: inherit;
         }
         
-        /* ===== BOTONES ===== */
+        /* ===== BOTONES (estilo Tkinter) ===== */
         .btn {
-            padding: 10px 20px;
+            padding: 10px 24px;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.25s;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
         }
         
         .btn:hover {
-            transform: scale(1.02);
-            opacity: 0.9;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        .btn:active {
+            transform: translateY(0px);
+        }
+        
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
         }
         
         .btn-primary { background: #238636; color: white; }
-        .btn-danger { background: #da3633; color: white; }
-        .btn-success { background: #1f6feb; color: white; }
-        .btn-warning { background: #f0883e; color: white; }
-        .btn-purple { background: #8957e5; color: white; }
-        .btn-outline { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
+        .btn-primary:hover { background: #2ea043; }
         
-        .btn-sm { padding: 6px 12px; font-size: 12px; }
+        .btn-danger { background: #da3633; color: white; }
+        .btn-danger:hover { background: #f85149; }
+        
+        .btn-success { background: #1f6feb; color: white; }
+        .btn-success:hover { background: #388bfd; }
+        
+        .btn-warning { background: #f0883e; color: white; }
+        .btn-warning:hover { background: #f2994b; }
+        
+        .btn-purple { background: #8957e5; color: white; }
+        .btn-purple:hover { background: #9e6ff0; }
+        
+        .btn-outline { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
+        .btn-outline:hover { background: #30363d; }
+        
+        .btn-sm { padding: 6px 14px; font-size: 12px; }
         .btn-block { width: 100%; }
         
         /* ===== LISTAS ===== */
         .list-container {
             background: #161b22;
-            border-radius: 10px;
+            border-radius: 8px;
             padding: 10px;
-            max-height: 400px;
+            max-height: 380px;
             overflow-y: auto;
+            border: 1px solid #21262d;
         }
         
         .list-item {
             background: #0f3460;
             padding: 12px 15px;
-            border-radius: 8px;
+            border-radius: 6px;
             margin-bottom: 8px;
-            cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
         }
         
         .list-item:hover {
-            transform: translateX(5px);
+            transform: translateX(4px);
         }
         
         .list-item.selected {
             background: #1f6feb;
-            border: 2px solid #3fb950;
+            border-left: 3px solid #3fb950;
+            box-shadow: 0 2px 8px rgba(31, 111, 235, 0.3);
         }
         
         .list-item .title {
@@ -184,10 +260,18 @@
             color: #58a6ff;
         }
         
+        .list-item.selected .title {
+            color: white;
+        }
+        
         .list-item .subtitle {
             font-size: 12px;
             color: #8b949e;
-            margin-top: 4px;
+            margin-top: 3px;
+        }
+        
+        .list-item.selected .subtitle {
+            color: #d0d7de;
         }
         
         .list-item .actions {
@@ -201,15 +285,26 @@
             text-align: center;
             color: #8b949e;
             padding: 30px 0;
+            font-size: 14px;
         }
         
         /* ===== TIMER ===== */
-        .timer-display {
-            font-size: 48px;
-            font-family: 'Courier New', monospace;
+        .timer-container {
             text-align: center;
+            padding: 15px 0;
+        }
+        
+        .timer-display {
+            font-size: 52px;
+            font-family: 'Courier New', monospace;
             color: #e94560;
-            padding: 20px;
+            padding: 15px;
+            background: #161b22;
+            border-radius: 10px;
+            border: 1px solid #21262d;
+            display: inline-block;
+            min-width: 250px;
+            letter-spacing: 3px;
         }
         
         .timer-buttons {
@@ -217,12 +312,17 @@
             gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
+            margin-top: 15px;
         }
         
-        /* ===== ESTADÍSTICAS ===== */
+        .timer-buttons .btn {
+            min-width: 100px;
+        }
+        
+        /* ===== ESTADÍSTICAS (estilo Tkinter) ===== */
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
             gap: 10px;
             margin: 15px 0;
         }
@@ -230,12 +330,13 @@
         .stat-card {
             background: #161b22;
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 8px;
             text-align: center;
+            border: 1px solid #21262d;
         }
         
         .stat-card .number {
-            font-size: 24px;
+            font-size: 26px;
             font-weight: bold;
             color: #3fb950;
         }
@@ -243,29 +344,33 @@
         .stat-card .label {
             font-size: 12px;
             color: #8b949e;
+            margin-top: 4px;
         }
         
         /* ===== BUSCADOR ===== */
         .search-input {
             width: 100%;
-            padding: 12px 15px;
+            padding: 12px 16px;
             background: #0d1117;
             border: 1px solid #30363d;
-            border-radius: 8px;
+            border-radius: 6px;
             color: white;
             font-size: 14px;
+            transition: border 0.3s;
         }
         
         .search-input:focus {
             outline: none;
             border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.15);
         }
         
         .result-item {
             background: #0f3460;
             padding: 12px 15px;
-            border-radius: 8px;
+            border-radius: 6px;
             margin-bottom: 8px;
+            border-left: 3px solid #58a6ff;
         }
         
         .result-item .title {
@@ -277,73 +382,162 @@
         .result-item .subtitle {
             font-size: 12px;
             color: #c9d1d9;
+            margin-top: 2px;
         }
         
         /* ===== HISTORIAL ===== */
+        .historial-container {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
         .historial-item {
             background: #0f3460;
             padding: 10px 15px;
-            border-radius: 8px;
+            border-radius: 6px;
             margin-bottom: 6px;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
             font-size: 13px;
+            align-items: center;
+            border-left: 3px solid #238636;
         }
         
         .historial-item .proyecto { color: #58a6ff; font-weight: bold; }
-        .historial-item .fecha { color: #8b949e; }
-        .historial-item .duracion { color: #3fb950; }
+        .historial-item .fecha { color: #8b949e; font-size: 12px; }
+        .historial-item .duracion { color: #3fb950; font-weight: bold; }
         .historial-item .extra { color: #f0883e; }
+        .historial-item .nota { color: #c9d1d9; font-size: 12px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         
-        /* ===== RESPONSIVE ===== */
-        @media (max-width: 600px) {
-            .header h1 { font-size: 22px; }
-            .tab-btn { font-size: 11px; padding: 8px 10px; }
-            .timer-display { font-size: 32px; }
-            .stats { grid-template-columns: repeat(2, 1fr); }
-            .list-item .actions { flex-direction: column; }
-            .list-item .actions .btn { width: 100%; }
+        /* ===== ADJUNTOS - NAVEGACIÓN ===== */
+        .nav-adjuntos {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 8px 0;
         }
         
-        @media (min-width: 768px) {
-            body { padding: 20px 40px; max-width: 1200px; margin: 0 auto; }
+        .nav-adjuntos .pos {
+            color: #8b949e;
+            font-size: 14px;
+            font-weight: bold;
+            min-width: 50px;
+            text-align: center;
         }
         
-        /* ===== SCROLLBAR ===== */
+        .adjunto-info {
+            text-align: center;
+            color: #8b949e;
+            font-size: 13px;
+            padding: 5px;
+        }
+        
+        .adjunto-info .proyecto-nombre {
+            color: #58a6ff;
+            font-weight: bold;
+        }
+        
+        /* ===== SCROLLBAR PERSONALIZADA ===== */
         ::-webkit-scrollbar { width: 8px; }
         ::-webkit-scrollbar-track { background: #161b22; border-radius: 4px; }
         ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
         ::-webkit-scrollbar-thumb:hover { background: #484f58; }
         
-        /* ===== TOAST / ALERT ===== */
+        /* ===== TOAST ===== */
         .toast {
             position: fixed;
-            bottom: 20px;
+            bottom: 30px;
             left: 50%;
             transform: translateX(-50%);
             background: #238636;
             color: white;
-            padding: 12px 24px;
+            padding: 14px 28px;
             border-radius: 8px;
             font-size: 14px;
-            z-index: 1000;
+            font-weight: 500;
+            z-index: 9999;
             opacity: 0;
-            transition: opacity 0.3s;
+            transition: opacity 0.35s, transform 0.35s;
             pointer-events: none;
             max-width: 90%;
             text-align: center;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.4);
         }
         
         .toast.show {
             opacity: 1;
+            transform: translateX(-50%) translateY(0);
         }
         
         .toast.error {
             background: #da3633;
         }
         
-        /* ===== BADGE ===== */
+        .toast.warning {
+            background: #f0883e;
+        }
+        
+        /* ===== BOTONES DE ACCIÓN RÁPIDA ===== */
+        .action-bar {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+        
+        .action-bar .btn {
+            flex: 1;
+            min-width: 80px;
+        }
+        
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 600px) {
+            .header h1 { font-size: 22px; }
+            .tab-btn { font-size: 11px; padding: 8px 6px; min-width: 50px; }
+            .timer-display { font-size: 32px; min-width: 180px; padding: 12px; }
+            .stats { grid-template-columns: repeat(2, 1fr); }
+            .list-item .actions .btn { font-size: 11px; padding: 4px 10px; }
+            .historial-item { font-size: 12px; }
+            .historial-item .nota { max-width: 80px; }
+            body { padding: 5px; }
+        }
+        
+        @media (min-width: 768px) {
+            body { padding: 20px 30px; }
+        }
+        
+        @media (min-width: 1024px) {
+            body { padding: 20px 50px; }
+        }
+        
+        /* ===== DIVISORES ===== */
+        .divider {
+            border: none;
+            border-top: 1px solid #21262d;
+            margin: 15px 0;
+        }
+        
+        /* ===== LABEL FRAME (estilo Tkinter) ===== */
+        .label-frame {
+            background: #161b22;
+            border: 1px solid #21262d;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+        
+        .label-frame .label-title {
+            color: #c9d1d9;
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 10px;
+            display: block;
+        }
+        
+        /* ===== BADGES ===== */
         .badge {
             display: inline-block;
             padding: 2px 10px;
@@ -351,39 +545,46 @@
             font-size: 11px;
             font-weight: bold;
         }
-        
         .badge-green { background: #238636; color: white; }
         .badge-blue { background: #1f6feb; color: white; }
         .badge-orange { background: #f0883e; color: white; }
         .badge-red { background: #da3633; color: white; }
         
-        /* ===== BOTONES DE NAVEGACIÓN ===== */
-        .nav-buttons {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin: 10px 0;
-        }
-        
-        .nav-buttons .btn {
-            min-width: 80px;
-        }
-        
-        .position-indicator {
+        /* ===== PREVIEW IMAGEN ===== */
+        .preview-container {
+            margin: 8px 0;
             text-align: center;
+        }
+        
+        .preview-container img {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 6px;
+            border: 1px solid #21262d;
+        }
+        
+        .preview-container .placeholder {
             color: #8b949e;
-            font-size: 14px;
-            padding: 5px;
+            font-size: 13px;
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== TÍTULO ===== -->
+<div class="app-container">
+
+    <!-- ===== HEADER ===== -->
     <div class="header">
         <h1>💼 DC Tracker Proyects</h1>
         <p>Organiza proyectos, controla tiempo, adjunta tickets y cobra lo que mereces</p>
+    </div>
+
+    <!-- ===== PROGRESS BAR ===== -->
+    <div class="progress-container">
+        <div class="label" id="progress-label">Listo</div>
+        <div class="progress-bar">
+            <div class="fill" id="progress-fill" style="width:0%"></div>
+        </div>
     </div>
 
     <!-- ===== TABS ===== -->
@@ -396,53 +597,70 @@
         <button class="tab-btn" data-tab="tab-reportes">📊 Reportes</button>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- ===== TAB 1: PROYECTOS ===== -->
-    <!-- ============================================================ -->
+    <!-- ========================================================== -->
+    <!-- TAB 1: PROYECTOS -->
+    <!-- ========================================================== -->
     <div id="tab-proyectos" class="tab-content active">
-        <div class="form-group">
-            <label>Nombre del proyecto</label>
-            <input type="text" id="proy-nombre" placeholder="Ej: Mi proyecto">
+
+        <div class="label-frame">
+            <span class="label-title">➕ Nuevo Proyecto</span>
+
+            <div class="form-group">
+                <label>Nombre</label>
+                <input type="text" id="proy-nombre" placeholder="Ej: Mi proyecto">
+            </div>
+            <div class="form-group">
+                <label>Cliente</label>
+                <input type="text" id="proy-cliente" placeholder="Nombre del cliente">
+            </div>
+            <div class="form-group">
+                <label>Tarifa por hora ($)</label>
+                <input type="number" id="proy-tarifa" value="20">
+            </div>
+            <div class="form-group">
+                <label>Descripción</label>
+                <textarea id="proy-desc" placeholder="Descripción del proyecto" rows="3"></textarea>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="crearProyecto()">Crear Proyecto</button>
         </div>
-        <div class="form-group">
-            <label>Cliente</label>
-            <input type="text" id="proy-cliente" placeholder="Nombre del cliente">
-        </div>
-        <div class="form-group">
-            <label>Tarifa por hora ($)</label>
-            <input type="number" id="proy-tarifa" value="20">
-        </div>
-        <div class="form-group">
-            <label>Descripción</label>
-            <textarea id="proy-desc" placeholder="Descripción del proyecto"></textarea>
-        </div>
-        <button class="btn btn-primary btn-block" onclick="crearProyecto()">➕ Crear Proyecto</button>
-        
-        <hr style="border-color: #30363d; margin: 15px 0;">
-        
-        <h3 style="margin-bottom: 10px;">📋 Mis Proyectos</h3>
-        <div id="lista-proyectos" class="list-container">
-            <div class="list-empty">No hay proyectos creados</div>
+
+        <div class="label-frame">
+            <span class="label-title">📋 Mis Proyectos</span>
+            <div id="lista-proyectos" class="list-container">
+                <div class="list-empty">No hay proyectos creados</div>
+            </div>
+            <div class="action-bar" style="margin-top:10px;">
+                <button class="btn btn-danger btn-sm" onclick="eliminarProyectoSeleccionado()">🗑️ Eliminar</button>
+                <button class="btn btn-success btn-sm" onclick="guardarCambiosProyecto()">💾 Guardar Cambios</button>
+            </div>
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- ===== TAB 2: TIMER ===== -->
-    <!-- ============================================================ -->
+    <!-- ========================================================== -->
+    <!-- TAB 2: TIMER -->
+    <!-- ========================================================== -->
     <div id="tab-timer" class="tab-content">
-        <h2 style="text-align:center; color:#58a6ff;">⏱️ Timer Automático</h2>
-        <div class="timer-display" id="timer-display">00:00:00</div>
-        <div class="timer-buttons">
-            <button class="btn btn-primary" id="btn-iniciar" onclick="iniciarTimer()">▶️ Iniciar</button>
-            <button class="btn btn-warning" id="btn-pausar" onclick="pausarTimer()" disabled>⏸️ Pausar</button>
-            <button class="btn btn-danger" onclick="registrarTimer()">⏹️ Registrar</button>
+        <div class="label-frame">
+            <span class="label-title" style="font-size:18px; text-align:center; display:block; color:#58a6ff;">⏱️ Timer Automático</span>
+
+            <div class="timer-container">
+                <div class="timer-display" id="timer-display">00:00:00</div>
+            </div>
+
+            <div class="timer-buttons">
+                <button class="btn btn-primary" id="btn-iniciar" onclick="iniciarTimer()">▶️ Iniciar</button>
+                <button class="btn btn-warning" id="btn-pausar" onclick="pausarTimer()" disabled>⏸️ Pausar</button>
+                <button class="btn btn-danger" onclick="registrarTimer()">⏹️ Registrar</button>
+            </div>
+
+            <div class="form-group" style="margin-top:15px;">
+                <label>Nota</label>
+                <input type="text" id="timer-nota" placeholder="Nota de esta sesión">
+            </div>
         </div>
-        <div class="form-group" style="margin-top:15px;">
-            <label>Nota</label>
-            <input type="text" id="timer-nota" placeholder="Nota de esta sesión">
-        </div>
-        <div style="background:#1a4a2a; padding:15px; border-radius:10px; margin-top:15px;">
-            <h4 style="color:#3fb950;">💸 Dinero extra por contratiempos</h4>
+
+        <div class="label-frame" style="background:#1a4a2a; border-color:#238636;">
+            <span class="label-title" style="color:#3fb950;">💸 Dinero extra por contratiempos</span>
             <div class="form-group">
                 <label>Cantidad extra ($)</label>
                 <input type="number" id="timer-extra" value="0">
@@ -451,58 +669,71 @@
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- ===== TAB 3: MANUAL ===== -->
-    <!-- ============================================================ -->
+    <!-- ========================================================== -->
+    <!-- TAB 3: MANUAL -->
+    <!-- ========================================================== -->
     <div id="tab-manual" class="tab-content">
-        <h2 style="text-align:center; color:#58a6ff;">✏️ Agregar Tiempo Manual</h2>
-        <div style="display:flex; gap:10px; flex-wrap:wrap;">
-            <div class="form-group" style="flex:1; min-width:80px;">
-                <label>Horas</label>
-                <input type="number" id="manual-h" value="0" min="0">
+        <div class="label-frame">
+            <span class="label-title" style="font-size:18px; text-align:center; display:block; color:#58a6ff;">✏️ Agregar Tiempo Manual</span>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <div class="form-group" style="flex:1; min-width:80px;">
+                    <label>Horas</label>
+                    <input type="number" id="manual-h" value="0" min="0">
+                </div>
+                <div class="form-group" style="flex:1; min-width:80px;">
+                    <label>Minutos</label>
+                    <input type="number" id="manual-m" value="0" min="0" max="59">
+                </div>
             </div>
-            <div class="form-group" style="flex:1; min-width:80px;">
-                <label>Minutos</label>
-                <input type="number" id="manual-m" value="0" min="0" max="59">
+
+            <div class="form-group">
+                <label>Nota</label>
+                <input type="text" id="manual-nota" placeholder="Nota de esta sesión">
             </div>
         </div>
-        <div class="form-group">
-            <label>Nota</label>
-            <input type="text" id="manual-nota" placeholder="Nota de esta sesión">
-        </div>
-        <div style="background:#1a4a2a; padding:15px; border-radius:10px; margin-top:10px;">
-            <h4 style="color:#3fb950;">💸 Dinero extra por contratiempos</h4>
+
+        <div class="label-frame" style="background:#1a4a2a; border-color:#238636;">
+            <span class="label-title" style="color:#3fb950;">💸 Dinero extra por contratiempos</span>
             <div class="form-group">
                 <label>Cantidad extra ($)</label>
                 <input type="number" id="manual-extra" value="0">
             </div>
         </div>
-        <button class="btn btn-success btn-block" onclick="agregarManual()" style="margin-top:15px;">➕ Agregar Sesión</button>
+
+        <button class="btn btn-success btn-block" onclick="agregarManual()" style="margin-top:10px;">➕ Agregar Sesión</button>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- ===== TAB 4: ADJUNTOS ===== -->
-    <!-- ============================================================ -->
+    <!-- ========================================================== -->
+    <!-- TAB 4: ADJUNTOS -->
+    <!-- ========================================================== -->
     <div id="tab-adjuntos" class="tab-content">
-        <h2 style="text-align:center; color:#58a6ff;">📎 Adjuntar Archivos al Proyecto</h2>
-        
-        <div class="nav-buttons">
-            <button class="btn btn-success btn-sm" onclick="navegarAdjuntos(-1)">⬆ Subir</button>
-            <span class="position-indicator" id="pos-adjuntos">0/0</span>
-            <button class="btn btn-success btn-sm" onclick="navegarAdjuntos(1)">⬇ Bajar</button>
-        </div>
-        <p style="text-align:center; color:#f0883e; font-size:12px;">💡 Usa ↑ ↓ para navegar</p>
-        
-        <div id="info-adjunto" style="text-align:center; color:#8b949e; padding:5px;">
-            Selecciona un proyecto primero
-        </div>
-        
-        <div style="background:#161b22; padding:15px; border-radius:10px; margin:10px 0;">
+        <div class="label-frame">
+            <span class="label-title" style="font-size:18px; text-align:center; display:block; color:#58a6ff;">📎 Adjuntar Archivos al Proyecto</span>
+
+            <div class="adjunto-info" id="info-adjunto">
+                Selecciona un proyecto en la pestaña <strong>Proyectos</strong> primero
+            </div>
+
+            <div class="nav-adjuntos">
+                <button class="btn btn-success btn-sm" onclick="navegarAdjuntos(-1)">⬆ Subir</button>
+                <span class="pos" id="pos-adjuntos">0/0</span>
+                <button class="btn btn-success btn-sm" onclick="navegarAdjuntos(1)">⬇ Bajar</button>
+            </div>
+
+            <div style="text-align:center; color:#f0883e; font-size:12px; margin-bottom:8px;">
+                💡 Usa ↑ ↓ para navegar, Enter para abrir, Delete para eliminar
+            </div>
+
+            <hr class="divider">
+
             <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
                 <button class="btn btn-outline btn-sm" onclick="seleccionarArchivo()">📁 Seleccionar archivo</button>
                 <span id="archivo-seleccionado" style="color:#8b949e; font-size:13px;">Ningún archivo seleccionado</span>
             </div>
-            <div id="preview-imagen" style="margin-top:10px;"></div>
+
+            <div class="preview-container" id="preview-container"></div>
+
             <div class="form-group" style="margin-top:10px;">
                 <label>Tipo</label>
                 <select id="tipo-adjunto">
@@ -514,935 +745,870 @@
                     <option>📎 Otro</option>
                 </select>
             </div>
+
             <div class="form-group">
                 <label>Nombre descriptivo</label>
                 <input type="text" id="nombre-adjunto" placeholder="Nombre del archivo">
             </div>
+
             <button class="btn btn-primary btn-block" onclick="guardarAdjunto()">📎 Adjuntar al Proyecto</button>
         </div>
-        
-        <h3 style="margin:10px 0;">📁 Archivos Adjuntos del Proyecto</h3>
-        <div id="lista-adjuntos" class="list-container">
-            <div class="list-empty">No hay archivos adjuntos</div>
+
+        <div class="label-frame">
+            <span class="label-title">📁 Archivos Adjuntos del Proyecto</span>
+            <div id="lista-adjuntos" class="list-container">
+                <div class="list-empty">No hay archivos adjuntos</div>
+            </div>
         </div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- ===== TAB 5: BUSCAR ===== -->
-    <!-- ============================================================ -->
+    <!-- ========================================================== -->
+    <!-- TAB 5: BUSCAR -->
+    <!-- ========================================================== -->
     <div id="tab-buscar" class="tab-content">
-        <h2 style="text-align:center; color:#58a6ff;">🔍 Buscar Cliente o Proyecto</h2>
-        <input type="text" class="search-input" id="input-buscar" placeholder="Escribe para buscar..." oninput="buscar()">
-        <div id="resultados-busqueda" style="margin-top:15px;"></div>
+        <div class="label-frame">
+            <span class="label-title" style="font-size:18px; text-align:center; display:block; color:#58a6ff;">🔍 Buscar Cliente o Proyecto</span>
+            <input type="text" class="search-input" id="input-buscar" placeholder="Escribe para buscar..." oninput="buscar()">
+        </div>
+        <div id="resultados-busqueda" style="margin-top:10px;"></div>
     </div>
 
-    <!-- ============================================================ -->
-    <!-- ===== TAB 6: REPORTES ===== -->
-    <!-- ============================================================ -->
+    <!-- ========================================================== -->
+    <!-- TAB 6: REPORTES -->
+    <!-- ========================================================== -->
     <div id="tab-reportes" class="tab-content">
-        <h2 style="text-align:center; color:#58a6ff;">📊 Resumen General</h2>
-        
-        <div class="stats">
-            <div class="stat-card">
-                <div class="number" id="stat-proyectos">0</div>
-                <div class="label">Proyectos</div>
-            </div>
-            <div class="stat-card">
-                <div class="number" id="stat-horas">0h</div>
-                <div class="label">Horas totales</div>
-            </div>
-            <div class="stat-card">
-                <div class="number" id="stat-total">$0</div>
-                <div class="label">Total a cobrar</div>
-            </div>
-            <div class="stat-card">
-                <div class="number" id="stat-extras">$0</div>
-                <div class="label">Extras</div>
+        <div class="label-frame">
+            <span class="label-title" style="font-size:18px; text-align:center; display:block; color:#58a6ff;">📊 Resumen General</span>
+
+            <div class="stats">
+                <div class="stat-card">
+                    <div class="number" id="stat-proyectos">0</div>
+                    <div class="label">Proyectos</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="stat-horas">0h</div>
+                    <div class="label">Horas totales</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="stat-total">$0</div>
+                    <div class="label">Total a cobrar</div>
+                </div>
+                <div class="stat-card">
+                    <div class="number" id="stat-extras">$0</div>
+                    <div class="label">Extras</div>
+                </div>
             </div>
         </div>
-        
-        <h3 style="margin:15px 0 10px;">📜 Historial de Sesiones</h3>
-        <div id="historial-sesiones" style="max-height:300px; overflow-y:auto;">
-            <div class="list-empty">No hay sesiones registradas</div>
+
+        <div class="label-frame">
+            <span class="label-title">📜 Historial de Sesiones</span>
+            <div class="historial-container" id="historial-sesiones">
+                <div class="list-empty">No hay sesiones registradas</div>
+            </div>
         </div>
-        
-        <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:15px;">
-            <button class="btn btn-purple" onclick="exportarTXT()">📄 Exportar TXT</button>
-            <button class="btn btn-danger" onclick="exportarPDF()">📕 Exportar PDF</button>
-            <button class="btn btn-success" onclick="exportarCSV()">📊 Exportar CSV</button>
-            <button class="btn btn-primary" onclick="exportarJSON()">💾 Backup JSON</button>
-            <button class="btn btn-warning" onclick="importarJSON()">📂 Cargar Backup</button>
+
+        <div class="label-frame">
+            <span class="label-title">📤 Exportar</span>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="btn btn-purple btn-sm" onclick="exportarTXT()">📄 TXT</button>
+                <button class="btn btn-danger btn-sm" onclick="exportarPDF()">📕 PDF</button>
+                <button class="btn btn-success btn-sm" onclick="exportarCSV()">📊 CSV</button>
+                <button class="btn btn-primary btn-sm" onclick="exportarJSON()">💾 Backup</button>
+                <button class="btn btn-warning btn-sm" onclick="importarJSON()">📂 Cargar</button>
+            </div>
         </div>
     </div>
 
     <!-- ===== TOAST ===== -->
     <div id="toast" class="toast"></div>
 
-    <!-- ============================================================ -->
-    <!-- ===== JAVASCRIPT ===== -->
-    <!-- ============================================================ -->
-    <script>
-        // ============================================================
-        // ===== ESTADO =====
-        // ============================================================
-        let proyectos = [];
-        let proyectoActual = null;
-        let adjuntoSeleccionado = -1;
-        let archivoTemp = null;
-        
-        // Timer
-        let tiempoInicio = null;
-        let timerActivo = false;
-        let timerInterval = null;
-        let segundosTotales = 0;
-        
-        // ============================================================
-        // ===== INICIALIZACIÓN =====
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            // Cargar datos guardados
-            cargarDatos();
-            
-            // Configurar tabs
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                    this.classList.add('active');
-                    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                    document.getElementById(this.dataset.tab).classList.add('active');
-                });
+</div>
+
+<!-- ========================================================== -->
+<!-- ===== JAVASCRIPT ===== -->
+<!-- ========================================================== -->
+<script>
+    // ============================================================
+    // ===== ESTADO =====
+    // ============================================================
+    let proyectos = [];
+    let proyectoActual = null;
+    let adjuntoSeleccionado = -1;
+    let archivoTemp = null;
+
+    // Timer
+    let tiempoInicio = null;
+    let timerActivo = false;
+    let timerInterval = null;
+    let segundosTotales = 0;
+
+    // ============================================================
+    // ===== INICIALIZACIÓN =====
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        cargarDatos();
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                document.getElementById(this.dataset.tab).classList.add('active');
             });
-            
-            actualizarListaProyectos();
-            actualizarReportes();
         });
-        
-        // ============================================================
-        // ===== LOCAL STORAGE =====
-        // ============================================================
-        function cargarDatos() {
-            const data = localStorage.getItem('dc_tracker_data');
-            if (data) {
+
+        actualizarListaProyectos();
+        actualizarReportes();
+        actualizarTimerDisplay();
+    });
+
+    // ============================================================
+    // ===== LOCAL STORAGE =====
+    // ============================================================
+    function cargarDatos() {
+        const data = localStorage.getItem('dc_tracker_data');
+        if (data) {
+            try { proyectos = JSON.parse(data); } catch(e) { proyectos = []; }
+        }
+    }
+
+    function guardarDatos() {
+        localStorage.setItem('dc_tracker_data', JSON.stringify(proyectos));
+    }
+
+    // ============================================================
+    // ===== PROGRESS BAR =====
+    // ============================================================
+    function actualizarProgreso(valor, texto) {
+        document.getElementById('progress-fill').style.width = valor + '%';
+        document.getElementById('progress-label').textContent = texto || '';
+    }
+
+    // ============================================================
+    // ===== TOAST =====
+    // ============================================================
+    function showToast(mensaje, tipo = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = mensaje;
+        toast.className = 'toast show ' + tipo;
+        clearTimeout(toast._timeout);
+        toast._timeout = setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    // ============================================================
+    // ===== PROYECTOS =====
+    // ============================================================
+    function crearProyecto() {
+        const nombre = document.getElementById('proy-nombre').value.trim();
+        if (!nombre) { showToast('Ingresa un nombre', 'error'); return; }
+
+        const proyecto = {
+            id: Date.now(),
+            nombre: nombre,
+            cliente: document.getElementById('proy-cliente').value.trim(),
+            tarifa: parseFloat(document.getElementById('proy-tarifa').value) || 20,
+            descripcion: document.getElementById('proy-desc').value.trim(),
+            tiempo_total: 0,
+            dinero_extra: 0,
+            sesiones: [],
+            adjuntos: []
+        };
+
+        proyectos.push(proyecto);
+        guardarDatos();
+        actualizarListaProyectos();
+        actualizarReportes();
+
+        document.getElementById('proy-nombre').value = '';
+        document.getElementById('proy-cliente').value = '';
+        document.getElementById('proy-desc').value = '';
+
+        showToast(`✅ Proyecto "${nombre}" creado`);
+    }
+
+    function actualizarListaProyectos() {
+        const container = document.getElementById('lista-proyectos');
+        container.innerHTML = '';
+
+        if (proyectos.length === 0) {
+            container.innerHTML = '<div class="list-empty">No hay proyectos creados</div>';
+            return;
+        }
+
+        proyectos.forEach((p, index) => {
+            const horas = p.tiempo_total / 3600;
+            const ingreso = (horas * p.tarifa) + p.dinero_extra;
+            const numAdj = (p.adjuntos || []).length;
+
+            const div = document.createElement('div');
+            div.className = 'list-item' + (proyectoActual === index ? ' selected' : '');
+            div.innerHTML = `
+                <div class="title">${p.nombre}</div>
+                <div class="subtitle">👤 ${p.cliente || 'N/A'} | 💰 $${ingreso.toFixed(0)} | ⏱️ ${horas.toFixed(1)}h${numAdj > 0 ? ` | 📎 ${numAdj}` : ''}</div>
+                <div class="actions">
+                    <button class="btn btn-success btn-sm" onclick="seleccionarProyecto(${index})">Seleccionar</button>
+                    <button class="btn btn-danger btn-sm" onclick="eliminarProyecto(${index})">🗑️</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function seleccionarProyecto(index) {
+        proyectoActual = index;
+        adjuntoSeleccionado = -1;
+        const p = proyectos[index];
+
+        document.getElementById('info-adjunto').innerHTML = `Proyecto seleccionado: <span class="proyecto-nombre">${p.nombre}</span>`;
+
+        document.getElementById('proy-nombre').value = p.nombre;
+        document.getElementById('proy-cliente').value = p.cliente || '';
+        document.getElementById('proy-tarifa').value = p.tarifa || 20;
+        document.getElementById('proy-desc').value = p.descripcion || '';
+
+        actualizarListaProyectos();
+        actualizarListaAdjuntos();
+        actualizarReportes();
+        showToast(`📁 Proyecto: ${p.nombre}`);
+    }
+
+    function eliminarProyecto(index) {
+        if (confirm('¿Eliminar este proyecto?')) {
+            proyectos.splice(index, 1);
+            if (proyectoActual === index) proyectoActual = null;
+            else if (proyectoActual > index) proyectoActual--;
+            guardarDatos();
+            actualizarListaProyectos();
+            actualizarReportes();
+            showToast('🗑️ Proyecto eliminado');
+        }
+    }
+
+    function eliminarProyectoSeleccionado() {
+        if (proyectoActual !== null) eliminarProyecto(proyectoActual);
+        else showToast('Selecciona un proyecto primero', 'error');
+    }
+
+    function guardarCambiosProyecto() {
+        if (proyectoActual === null) { showToast('Selecciona un proyecto', 'error'); return; }
+        const p = proyectos[proyectoActual];
+        p.nombre = document.getElementById('proy-nombre').value;
+        p.cliente = document.getElementById('proy-cliente').value;
+        p.tarifa = parseFloat(document.getElementById('proy-tarifa').value) || 20;
+        p.descripcion = document.getElementById('proy-desc').value;
+        guardarDatos();
+        actualizarListaProyectos();
+        showToast('💾 Cambios guardados');
+    }
+
+    // ============================================================
+    // ===== TIMER =====
+    // ============================================================
+    function iniciarTimer() {
+        if (proyectoActual === null) { showToast('Selecciona un proyecto', 'error'); return; }
+        if (timerActivo) return;
+
+        tiempoInicio = Date.now();
+        timerActivo = true;
+        document.getElementById('btn-iniciar').disabled = true;
+        document.getElementById('btn-pausar').disabled = false;
+
+        timerInterval = setInterval(actualizarTimerDisplay, 1000);
+        showToast('⏱️ Timer iniciado');
+    }
+
+    function pausarTimer() {
+        if (!timerActivo) return;
+        timerActivo = false;
+        segundosTotales += Math.floor((Date.now() - tiempoInicio) / 1000);
+        document.getElementById('btn-iniciar').disabled = false;
+        document.getElementById('btn-pausar').disabled = true;
+        clearInterval(timerInterval);
+        showToast('⏸️ Timer pausado');
+    }
+
+    function actualizarTimerDisplay() {
+        let total = segundosTotales;
+        if (timerActivo && tiempoInicio) {
+            total += Math.floor((Date.now() - tiempoInicio) / 1000);
+        }
+        const h = String(Math.floor(total / 3600)).padStart(2, '0');
+        const m = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
+        const s = String(total % 60).padStart(2, '0');
+        document.getElementById('timer-display').textContent = `${h}:${m}:${s}`;
+    }
+
+    function registrarTimer() {
+        if (proyectoActual === null) { showToast('Selecciona un proyecto', 'error'); return; }
+
+        let total = segundosTotales;
+        if (timerActivo && tiempoInicio) {
+            total += Math.floor((Date.now() - tiempoInicio) / 1000);
+        }
+
+        if (total < 60) { showToast('Mínimo 1 minuto', 'error'); return; }
+
+        const extra = parseFloat(document.getElementById('timer-extra').value) || 0;
+        const nota = document.getElementById('timer-nota').value.trim();
+
+        registrarSesion(total, nota, extra);
+
+        segundosTotales = 0;
+        tiempoInicio = null;
+        timerActivo = false;
+        document.getElementById('btn-iniciar').disabled = false;
+        document.getElementById('btn-pausar').disabled = true;
+        document.getElementById('timer-display').textContent = '00:00:00';
+        document.getElementById('timer-nota').value = '';
+        document.getElementById('timer-extra').value = '0';
+        clearInterval(timerInterval);
+    }
+
+    // ============================================================
+    // ===== MANUAL =====
+    // ============================================================
+    function agregarManual() {
+        if (proyectoActual === null) { showToast('Selecciona un proyecto', 'error'); return; }
+
+        const h = parseInt(document.getElementById('manual-h').value) || 0;
+        const m = parseInt(document.getElementById('manual-m').value) || 0;
+        const extra = parseFloat(document.getElementById('manual-extra').value) || 0;
+        const nota = document.getElementById('manual-nota').value.trim();
+
+        if (h < 0 || m < 0 || m >= 60) { showToast('Valores inválidos', 'error'); return; }
+
+        const segundos = (h * 3600) + (m * 60);
+        if (segundos === 0 && extra === 0) { showToast('Ingresa tiempo o extra', 'error'); return; }
+
+        registrarSesion(segundos, nota, extra);
+
+        document.getElementById('manual-h').value = '0';
+        document.getElementById('manual-m').value = '0';
+        document.getElementById('manual-extra').value = '0';
+        document.getElementById('manual-nota').value = '';
+    }
+
+    // ============================================================
+    // ===== REGISTRAR SESIÓN =====
+    // ============================================================
+    function registrarSesion(segundos, nota, extra) {
+        const p = proyectos[proyectoActual];
+        p.tiempo_total += segundos;
+        p.dinero_extra += extra;
+
+        const h = Math.floor(segundos / 3600);
+        const m = Math.floor((segundos % 3600) / 60);
+
+        p.sesiones.push({
+            fecha: new Date().toLocaleString(),
+            duracion: `${h}h ${m}m`,
+            segundos: segundos,
+            nota: nota || 'Sin nota',
+            extra: extra
+        });
+
+        guardarDatos();
+        actualizarListaProyectos();
+        actualizarReportes();
+
+        showToast(`✅ Sesión: ${h}h ${m}m${extra ? ` + $${extra} extra` : ''}`);
+    }
+
+    // ============================================================
+    // ===== ADJUNTOS =====
+    // ============================================================
+    function seleccionarArchivo() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = 'image/*,.pdf,.doc,.docx,.txt';
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            if (file.size > 5 * 1024 * 1024) {
+                showToast('Archivo muy grande. Máximo 5MB', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                archivoTemp = {
+                    nombre_original: file.name,
+                    datos: event.target.result.split(',')[1],
+                    tamaño: file.size,
+                    tipo: detectarTipo(file.name)
+                };
+
+                document.getElementById('archivo-seleccionado').textContent = `✅ ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
+                document.getElementById('archivo-seleccionado').style.color = '#3fb950';
+
+                const container = document.getElementById('preview-container');
+                if (archivoTemp.tipo === 'imagen') {
+                    container.innerHTML = `<img src="${event.target.result}" alt="Preview">`;
+                } else {
+                    container.innerHTML = `<span class="placeholder">📄 ${archivoTemp.tipo.toUpperCase()}</span>`;
+                }
+            };
+            reader.readAsDataURL(file);
+        };
+        input.click();
+    }
+
+    function detectarTipo(nombre) {
+        const ext = nombre.split('.').pop().toLowerCase();
+        const tipos = {
+            'png': 'imagen', 'jpg': 'imagen', 'jpeg': 'imagen',
+            'gif': 'imagen', 'bmp': 'imagen', 'webp': 'imagen',
+            'pdf': 'pdf', 'doc': 'doc', 'docx': 'doc', 'txt': 'txt'
+        };
+        return tipos[ext] || 'otro';
+    }
+
+    function guardarAdjunto() {
+        if (proyectoActual === null) { showToast('Selecciona un proyecto', 'error'); return; }
+        if (!archivoTemp) { showToast('Selecciona un archivo', 'error'); return; }
+
+        const p = proyectos[proyectoActual];
+        const tipoCombo = document.getElementById('tipo-adjunto').value;
+        const tipoMap = {
+            '🧾 Ticket': 'ticket',
+            '📄 Factura': 'factura',
+            '📋 Contrato': 'contrato',
+            '💰 Cotización': 'cotizacion',
+            '📸 Evidencia/Foto': 'evidencia',
+            '📎 Otro': 'otro'
+        };
+
+        const adjunto = {
+            id: Date.now(),
+            nombre: document.getElementById('nombre-adjunto').value || archivoTemp.nombre_original,
+            nombre_original: archivoTemp.nombre_original,
+            tipo: tipoMap[tipoCombo] || 'otro',
+            tipo_display: tipoCombo,
+            tipo_mime: archivoTemp.tipo,
+            datos: archivoTemp.datos,
+            tamaño: archivoTemp.tamaño,
+            fecha: new Date().toLocaleString()
+        };
+
+        if (!p.adjuntos) p.adjuntos = [];
+        p.adjuntos.push(adjunto);
+        guardarDatos();
+
+        archivoTemp = null;
+        document.getElementById('archivo-seleccionado').textContent = 'Ningún archivo seleccionado';
+        document.getElementById('archivo-seleccionado').style.color = '#8b949e';
+        document.getElementById('preview-container').innerHTML = '';
+        document.getElementById('nombre-adjunto').value = '';
+
+        actualizarListaAdjuntos();
+        actualizarListaProyectos();
+        showToast('📎 Archivo adjuntado');
+    }
+
+    function actualizarListaAdjuntos() {
+        const container = document.getElementById('lista-adjuntos');
+        container.innerHTML = '';
+
+        if (proyectoActual === null || !proyectos[proyectoActual]) {
+            container.innerHTML = '<div class="list-empty">Selecciona un proyecto primero</div>';
+            return;
+        }
+
+        const p = proyectos[proyectoActual];
+        const adjuntos = p.adjuntos || [];
+
+        if (adjuntos.length === 0) {
+            container.innerHTML = '<div class="list-empty">No hay archivos adjuntos</div>';
+            document.getElementById('pos-adjuntos').textContent = '0/0';
+            return;
+        }
+
+        document.getElementById('pos-adjuntos').textContent = `${adjuntoSeleccionado + 1}/${adjuntos.length}`;
+
+        adjuntos.forEach((adj, idx) => {
+            const esSeleccionado = idx === adjuntoSeleccionado;
+            const iconos = {
+                'ticket': '🧾', 'factura': '📄', 'contrato': '📋',
+                'cotizacion': '💰', 'evidencia': '📸', 'otro': '📎',
+                'imagen': '🖼️', 'pdf': '📕', 'doc': '📝', 'txt': '📃'
+            };
+            const icono = iconos[adj.tipo] || '📎';
+
+            const div = document.createElement('div');
+            div.className = 'list-item' + (esSeleccionado ? ' selected' : '');
+            div.innerHTML = `
+                <div class="title">${icono} ${adj.nombre}</div>
+                <div class="subtitle">${adj.tipo_display || adj.tipo} | ${(adj.tamaño/1024).toFixed(1)} KB | ${adj.fecha}</div>
+                <div class="actions">
+                    <button class="btn btn-success btn-sm" onclick="verAdjunto(${idx})">👁️ Ver</button>
+                    <button class="btn btn-primary btn-sm" onclick="guardarAdjuntoComo(${idx})">💾 Guardar</button>
+                    <button class="btn btn-danger btn-sm" onclick="eliminarAdjunto(${idx})">🗑️</button>
+                </div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function navegarAdjuntos(direccion) {
+        if (proyectoActual === null) return;
+        const p = proyectos[proyectoActual];
+        const adjuntos = p.adjuntos || [];
+        if (adjuntos.length === 0) return;
+
+        adjuntoSeleccionado += direccion;
+        if (adjuntoSeleccionado < 0) adjuntoSeleccionado = 0;
+        if (adjuntoSeleccionado >= adjuntos.length) adjuntoSeleccionado = adjuntos.length - 1;
+
+        actualizarListaAdjuntos();
+    }
+
+    function verAdjunto(idx) {
+        if (proyectoActual === null) return;
+        const p = proyectos[proyectoActual];
+        const adj = p.adjuntos[idx];
+
+        if (adj.tipo_mime === 'imagen') {
+            const ventana = window.open('', '_blank');
+            ventana.document.write(`
+                <html><head><title>${adj.nombre}</title>
+                <style>body{background:#0d1117;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;flex-direction:column;font-family:Arial;}
+                img{max-width:90%;max-height:80vh;border-radius:10px;}
+                p{color:#8b949e;margin-top:10px;}</style></head>
+                <body>
+                    <img src="data:image/jpeg;base64,${adj.datos}">
+                    <p>${adj.nombre} | ${(adj.tamaño/1024).toFixed(1)} KB</p>
+                </body></html>
+            `);
+        } else {
+            const a = document.createElement('a');
+            a.href = `data:application/octet-stream;base64,${adj.datos}`;
+            a.download = adj.nombre_original;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        }
+    }
+
+    function guardarAdjuntoComo(idx) {
+        if (proyectoActual === null) return;
+        const p = proyectos[proyectoActual];
+        const adj = p.adjuntos[idx];
+
+        const a = document.createElement('a');
+        a.href = `data:application/octet-stream;base64,${adj.datos}`;
+        a.download = adj.nombre_original;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        showToast('💾 Archivo guardado');
+    }
+
+    function eliminarAdjunto(idx) {
+        if (!confirm('¿Eliminar este adjunto?')) return;
+        if (proyectoActual === null) return;
+
+        const p = proyectos[proyectoActual];
+        p.adjuntos.splice(idx, 1);
+        guardarDatos();
+
+        if (adjuntoSeleccionado >= p.adjuntos.length) {
+            adjuntoSeleccionado = p.adjuntos.length - 1;
+        }
+
+        actualizarListaAdjuntos();
+        actualizarListaProyectos();
+        showToast('🗑️ Adjunto eliminado');
+    }
+
+    // ============================================================
+    // ===== BUSCAR =====
+    // ============================================================
+    function buscar() {
+        const query = document.getElementById('input-buscar').value.toLowerCase().trim();
+        const container = document.getElementById('resultados-busqueda');
+        container.innerHTML = '';
+
+        if (!query) return;
+
+        const resultados = proyectos.filter(p =>
+            p.nombre.toLowerCase().includes(query) ||
+            (p.cliente || '').toLowerCase().includes(query) ||
+            (p.descripcion || '').toLowerCase().includes(query)
+        );
+
+        if (resultados.length === 0) {
+            container.innerHTML = '<div class="list-empty">No se encontraron resultados</div>';
+            return;
+        }
+
+        resultados.forEach(p => {
+            const horas = p.tiempo_total / 3600;
+            const ingreso = (horas * p.tarifa) + p.dinero_extra;
+            const numAdj = (p.adjuntos || []).length;
+
+            const div = document.createElement('div');
+            div.className = 'result-item';
+            div.innerHTML = `
+                <div class="title">${p.nombre}</div>
+                <div class="subtitle">👤 ${p.cliente || 'N/A'} | 💰 $${ingreso.toFixed(2)} | ⏱️ ${horas.toFixed(1)}h${numAdj > 0 ? ` | 📎 ${numAdj}` : ''}</div>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // ============================================================
+    // ===== REPORTES =====
+    // ============================================================
+    function actualizarReportes() {
+        const totalProy = proyectos.length;
+        const totalSeg = proyectos.reduce((sum, p) => sum + p.tiempo_total, 0);
+        const totalHoras = totalSeg / 3600;
+        const totalDinero = proyectos.reduce((sum, p) => sum + ((p.tiempo_total / 3600) * p.tarifa), 0);
+        const totalExtra = proyectos.reduce((sum, p) => sum + p.dinero_extra, 0);
+
+        document.getElementById('stat-proyectos').textContent = totalProy;
+        document.getElementById('stat-horas').textContent = totalHoras.toFixed(1) + 'h';
+        document.getElementById('stat-total').textContent = '$' + totalDinero.toFixed(2);
+        document.getElementById('stat-extras').textContent = '$' + totalExtra.toFixed(2);
+
+        const container = document.getElementById('historial-sesiones');
+        container.innerHTML = '';
+
+        let todas = [];
+        proyectos.forEach(p => {
+            (p.sesiones || []).forEach(s => {
+                todas.push({ ...s, proyecto: p.nombre });
+            });
+        });
+
+        todas.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+
+        if (todas.length === 0) {
+            container.innerHTML = '<div class="list-empty">No hay sesiones registradas</div>';
+            return;
+        }
+
+        todas.slice(0, 50).forEach(s => {
+            const div = document.createElement('div');
+            div.className = 'historial-item';
+            div.innerHTML = `
+                <span class="proyecto">${s.proyecto}</span>
+                <span class="fecha">${s.fecha}</span>
+                <span class="duracion">${s.duracion}</span>
+                <span class="extra">${s.extra ? '+$' + s.extra : ''}</span>
+                <span class="nota">${s.nota}</span>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // ============================================================
+    // ===== EXPORTAR =====
+    // ============================================================
+    function exportarTXT() {
+        if (proyectos.length === 0) { showToast('No hay proyectos', 'error'); return; }
+
+        let texto = 'DC TRACKER PROYECTS - REPORTE\n';
+        texto += '='.repeat(50) + '\n\n';
+        texto += `Generado: ${new Date().toLocaleString()}\n\n`;
+
+        proyectos.forEach(p => {
+            const horas = p.tiempo_total / 3600;
+            const ingreso = (horas * p.tarifa) + p.dinero_extra;
+            const numAdj = (p.adjuntos || []).length;
+
+            texto += `📁 ${p.nombre}\n`;
+            texto += `   Cliente: ${p.cliente || 'N/A'}\n`;
+            texto += `   Tarifa: $${p.tarifa}/h\n`;
+            texto += `   Tiempo: ${horas.toFixed(2)}h\n`;
+            texto += `   Extras: $${p.dinero_extra}\n`;
+            texto += `   Adjuntos: ${numAdj}\n`;
+            texto += `   TOTAL: $${ingreso.toFixed(2)}\n\n`;
+
+            if (p.sesiones && p.sesiones.length > 0) {
+                texto += '   Sesiones:\n';
+                p.sesiones.forEach(s => {
+                    texto += `      • ${s.fecha} - ${s.duracion} - ${s.nota}`;
+                    if (s.extra) texto += ` (+$${s.extra})`;
+                    texto += '\n';
+                });
+                texto += '\n';
+            }
+        });
+
+        const total = proyectos.reduce((sum, p) => sum + ((p.tiempo_total / 3600) * p.tarifa) + p.dinero_extra, 0);
+        texto += '='.repeat(50) + '\n';
+        texto += `💰 TOTAL GENERAL: $${total.toFixed(2)}\n`;
+
+        descargarArchivo(texto, 'DC_Tracker_Report.txt', 'text/plain');
+        showToast('📄 TXT generado');
+    }
+
+    function exportarCSV() {
+        if (proyectos.length === 0) { showToast('No hay proyectos', 'error'); return; }
+
+        let csv = 'Proyecto,Cliente,Tarifa,Horas,Extras,Adjuntos,Total\n';
+        proyectos.forEach(p => {
+            const horas = p.tiempo_total / 3600;
+            const total = (horas * p.tarifa) + p.dinero_extra;
+            const numAdj = (p.adjuntos || []).length;
+            csv += `"${p.nombre}","${p.cliente || ''}",${p.tarifa},${horas.toFixed(2)},${p.dinero_extra},${numAdj},${total.toFixed(2)}\n`;
+        });
+
+        descargarArchivo(csv, 'DC_Tracker_Report.csv', 'text/csv');
+        showToast('📊 CSV generado');
+    }
+
+    function exportarJSON() {
+        const datos = {
+            app: 'DC Tracker Proyects',
+            version: '1.0',
+            fecha: new Date().toISOString(),
+            proyectos: proyectos
+        };
+        descargarArchivo(JSON.stringify(datos, null, 2), 'DC_Tracker_Backup.json', 'application/json');
+        showToast('💾 Backup guardado');
+    }
+
+    function importarJSON() {
+        const input = document.createElement('input');
+        input.type = 'file';
+        input.accept = '.json';
+        input.onchange = function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(event) {
                 try {
-                    proyectos = JSON.parse(data);
-                } catch(e) {
-                    proyectos = [];
-                }
-            }
-        }
-        
-        function guardarDatos() {
-            localStorage.setItem('dc_tracker_data', JSON.stringify(proyectos));
-        }
-        
-        // ============================================================
-        // ===== TOAST / NOTIFICACIONES =====
-        // ============================================================
-        function showToast(mensaje, tipo = 'success') {
-            const toast = document.getElementById('toast');
-            toast.textContent = mensaje;
-            toast.className = 'toast show ' + tipo;
-            setTimeout(() => {
-                toast.classList.remove('show');
-            }, 3000);
-        }
-        
-        // ============================================================
-        // ===== PROYECTOS =====
-        // ============================================================
-        function crearProyecto() {
-            const nombre = document.getElementById('proy-nombre').value.trim();
-            if (!nombre) {
-                showToast('Ingresa un nombre para el proyecto', 'error');
-                return;
-            }
-            
-            const proyecto = {
-                id: Date.now(),
-                nombre: nombre,
-                cliente: document.getElementById('proy-cliente').value.trim(),
-                tarifa: parseFloat(document.getElementById('proy-tarifa').value) || 20,
-                descripcion: document.getElementById('proy-desc').value.trim(),
-                tiempo_total: 0,
-                dinero_extra: 0,
-                sesiones: [],
-                adjuntos: []
-            };
-            
-            proyectos.push(proyecto);
-            guardarDatos();
-            actualizarListaProyectos();
-            actualizarReportes();
-            
-            document.getElementById('proy-nombre').value = '';
-            document.getElementById('proy-cliente').value = '';
-            document.getElementById('proy-desc').value = '';
-            
-            showToast(`✅ Proyecto "${nombre}" creado`);
-        }
-        
-        function actualizarListaProyectos() {
-            const container = document.getElementById('lista-proyectos');
-            container.innerHTML = '';
-            
-            if (proyectos.length === 0) {
-                container.innerHTML = '<div class="list-empty">No hay proyectos creados</div>';
-                return;
-            }
-            
-            proyectos.forEach((p, index) => {
-                const horas = p.tiempo_total / 3600;
-                const ingreso = (horas * p.tarifa) + p.dinero_extra;
-                const numAdj = p.adjuntos ? p.adjuntos.length : 0;
-                
-                const div = document.createElement('div');
-                div.className = 'list-item' + (proyectoActual === index ? ' selected' : '');
-                div.innerHTML = `
-                    <div class="title">${p.nombre}</div>
-                    <div class="subtitle">👤 ${p.cliente || 'N/A'} | 💰 $${ingreso.toFixed(0)} | ⏱️ ${horas.toFixed(1)}h${numAdj > 0 ? ` | 📎 ${numAdj}` : ''}</div>
-                    <div class="actions">
-                        <button class="btn btn-success btn-sm" onclick="seleccionarProyecto(${index})">Seleccionar</button>
-                        <button class="btn btn-danger btn-sm" onclick="eliminarProyecto(${index})">🗑️ Eliminar</button>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-        
-        function seleccionarProyecto(index) {
-            proyectoActual = index;
-            adjuntoSeleccionado = -1;
-            const p = proyectos[index];
-            
-            document.getElementById('info-adjunto').textContent = `Proyecto seleccionado: ${p.nombre}`;
-            document.getElementById('info-adjunto').style.color = '#58a6ff';
-            
-            // Cargar datos en el formulario de edición
-            document.getElementById('proy-nombre').value = p.nombre;
-            document.getElementById('proy-cliente').value = p.cliente || '';
-            document.getElementById('proy-tarifa').value = p.tarifa || 20;
-            document.getElementById('proy-desc').value = p.descripcion || '';
-            
-            actualizarListaProyectos();
-            actualizarListaAdjuntos();
-            actualizarReportes();
-            showToast(`📁 Proyecto seleccionado: ${p.nombre}`);
-        }
-        
-        function eliminarProyecto(index) {
-            if (confirm('¿Eliminar este proyecto?')) {
-                proyectos.splice(index, 1);
-                if (proyectoActual === index) proyectoActual = null;
-                else if (proyectoActual > index) proyectoActual--;
-                guardarDatos();
-                actualizarListaProyectos();
-                actualizarReportes();
-                showToast('🗑️ Proyecto eliminado');
-            }
-        }
-        
-        // ============================================================
-        // ===== TIMER =====
-        // ============================================================
-        function iniciarTimer() {
-            if (proyectoActual === null) {
-                showToast('Selecciona un proyecto primero', 'error');
-                return;
-            }
-            if (timerActivo) return;
-            
-            tiempoInicio = Date.now();
-            timerActivo = true;
-            document.getElementById('btn-iniciar').disabled = true;
-            document.getElementById('btn-pausar').disabled = false;
-            
-            timerInterval = setInterval(actualizarTimerDisplay, 1000);
-            showToast('⏱️ Timer iniciado');
-        }
-        
-        function pausarTimer() {
-            if (!timerActivo) return;
-            timerActivo = false;
-            segundosTotales += Math.floor((Date.now() - tiempoInicio) / 1000);
-            document.getElementById('btn-iniciar').disabled = false;
-            document.getElementById('btn-pausar').disabled = true;
-            clearInterval(timerInterval);
-            showToast('⏸️ Timer pausado');
-        }
-        
-        function actualizarTimerDisplay() {
-            let total = segundosTotales;
-            if (timerActivo && tiempoInicio) {
-                total += Math.floor((Date.now() - tiempoInicio) / 1000);
-            }
-            const h = String(Math.floor(total / 3600)).padStart(2, '0');
-            const m = String(Math.floor((total % 3600) / 60)).padStart(2, '0');
-            const s = String(total % 60).padStart(2, '0');
-            document.getElementById('timer-display').textContent = `${h}:${m}:${s}`;
-        }
-        
-        function registrarTimer() {
-            if (proyectoActual === null) {
-                showToast('Selecciona un proyecto', 'error');
-                return;
-            }
-            
-            let total = segundosTotales;
-            if (timerActivo && tiempoInicio) {
-                total += Math.floor((Date.now() - tiempoInicio) / 1000);
-            }
-            
-            if (total < 60) {
-                showToast('Mínimo 1 minuto', 'error');
-                return;
-            }
-            
-            const extra = parseFloat(document.getElementById('timer-extra').value) || 0;
-            const nota = document.getElementById('timer-nota').value.trim();
-            
-            registrarSesion(total, nota, extra);
-            
-            // Resetear timer
-            segundosTotales = 0;
-            tiempoInicio = null;
-            timerActivo = false;
-            document.getElementById('btn-iniciar').disabled = false;
-            document.getElementById('btn-pausar').disabled = true;
-            document.getElementById('timer-display').textContent = '00:00:00';
-            document.getElementById('timer-nota').value = '';
-            document.getElementById('timer-extra').value = '0';
-            clearInterval(timerInterval);
-        }
-        
-        // ============================================================
-        // ===== MANUAL =====
-        // ============================================================
-        function agregarManual() {
-            if (proyectoActual === null) {
-                showToast('Selecciona un proyecto primero', 'error');
-                return;
-            }
-            
-            const h = parseInt(document.getElementById('manual-h').value) || 0;
-            const m = parseInt(document.getElementById('manual-m').value) || 0;
-            const extra = parseFloat(document.getElementById('manual-extra').value) || 0;
-            const nota = document.getElementById('manual-nota').value.trim();
-            
-            if (h < 0 || m < 0 || m >= 60) {
-                showToast('Valores inválidos', 'error');
-                return;
-            }
-            
-            const segundos = (h * 3600) + (m * 60);
-            if (segundos === 0 && extra === 0) {
-                showToast('Ingresa tiempo o extra', 'error');
-                return;
-            }
-            
-            registrarSesion(segundos, nota, extra);
-            
-            document.getElementById('manual-h').value = '0';
-            document.getElementById('manual-m').value = '0';
-            document.getElementById('manual-extra').value = '0';
-            document.getElementById('manual-nota').value = '';
-        }
-        
-        // ============================================================
-        // ===== REGISTRAR SESIÓN =====
-        // ============================================================
-        function registrarSesion(segundos, nota, extra) {
-            const p = proyectos[proyectoActual];
-            p.tiempo_total += segundos;
-            p.dinero_extra += extra;
-            
-            const h = Math.floor(segundos / 3600);
-            const m = Math.floor((segundos % 3600) / 60);
-            
-            p.sesiones.push({
-                fecha: new Date().toLocaleString(),
-                duracion: `${h}h ${m}m`,
-                segundos: segundos,
-                nota: nota || 'Sin nota',
-                extra: extra
-            });
-            
-            guardarDatos();
-            actualizarListaProyectos();
-            actualizarReportes();
-            
-            showToast(`✅ Sesión: ${h}h ${m}m${extra ? ` + $${extra} extra` : ''}`);
-        }
-        
-        // ============================================================
-        // ===== ADJUNTOS =====
-        // ============================================================
-        function seleccionarArchivo() {
-            // Crear input file oculto
-            const input = document.createElement('input');
-            input.type = 'file';
-            input.accept = 'image/*,.pdf,.doc,.docx,.txt';
-            input.onchange = function(e) {
-                const file = e.target.files[0];
-                if (!file) return;
-                
-                if (file.size > 5 * 1024 * 1024) {
-                    showToast('Archivo muy grande. Máximo 5MB', 'error');
-                    return;
-                }
-                
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    archivoTemp = {
-                        nombre_original: file.name,
-                        datos: event.target.result.split(',')[1],
-                        tamaño: file.size,
-                        tipo: detectarTipo(file.name)
-                    };
-                    
-                    document.getElementById('archivo-seleccionado').textContent = `✅ ${file.name} (${(file.size/1024).toFixed(1)} KB)`;
-                    document.getElementById('archivo-seleccionado').style.color = '#3fb950';
-                    
-                    // Preview si es imagen
-                    if (archivoTemp.tipo === 'imagen') {
-                        const img = document.createElement('img');
-                        img.src = event.target.result;
-                        img.style.maxWidth = '200px';
-                        img.style.maxHeight = '200px';
-                        img.style.borderRadius = '8px';
-                        const preview = document.getElementById('preview-imagen');
-                        preview.innerHTML = '';
-                        preview.appendChild(img);
+                    const datos = JSON.parse(event.target.result);
+                    if (datos.proyectos) {
+                        proyectos = datos.proyectos;
+                        guardarDatos();
+                        actualizarListaProyectos();
+                        actualizarReportes();
+                        actualizarListaAdjuntos();
+                        showToast('📂 Datos cargados correctamente');
                     } else {
-                        document.getElementById('preview-imagen').innerHTML = `<span style="color:#8b949e;">📄 ${archivoTemp.tipo.toUpperCase()}</span>`;
+                        showToast('Archivo inválido', 'error');
                     }
-                };
-                reader.readAsDataURL(file);
+                } catch(err) {
+                    showToast('Error al cargar el archivo', 'error');
+                }
             };
-            input.click();
-        }
-        
-        function detectarTipo(nombre) {
-            const ext = nombre.split('.').pop().toLowerCase();
-            const tipos = {
-                'png': 'imagen', 'jpg': 'imagen', 'jpeg': 'imagen', 'gif': 'imagen', 'bmp': 'imagen',
-                'pdf': 'pdf', 'doc': 'doc', 'docx': 'doc', 'txt': 'txt'
-            };
-            return tipos[ext] || 'otro';
-        }
-        
-        function guardarAdjunto() {
-            if (proyectoActual === null) {
-                showToast('Selecciona un proyecto primero', 'error');
-                return;
-            }
-            if (!archivoTemp) {
-                showToast('Selecciona un archivo primero', 'error');
-                return;
-            }
-            
-            const p = proyectos[proyectoActual];
-            const tipoCombo = document.getElementById('tipo-adjunto').value;
-            const tipoMap = {
-                '🧾 Ticket': 'ticket',
-                '📄 Factura': 'factura',
-                '📋 Contrato': 'contrato',
-                '💰 Cotización': 'cotizacion',
-                '📸 Evidencia/Foto': 'evidencia',
-                '📎 Otro': 'otro'
-            };
-            
-            const adjunto = {
-                id: Date.now(),
-                nombre: document.getElementById('nombre-adjunto').value || archivoTemp.nombre_original,
-                nombre_original: archivoTemp.nombre_original,
-                tipo: tipoMap[tipoCombo] || 'otro',
-                tipo_display: tipoCombo,
-                tipo_mime: archivoTemp.tipo,
-                datos: archivoTemp.datos,
-                tamaño: archivoTemp.tamaño,
-                fecha: new Date().toLocaleString()
-            };
-            
-            if (!p.adjuntos) p.adjuntos = [];
-            p.adjuntos.push(adjunto);
-            guardarDatos();
-            
-            archivoTemp = null;
-            document.getElementById('archivo-seleccionado').textContent = 'Ningún archivo seleccionado';
-            document.getElementById('archivo-seleccionado').style.color = '#8b949e';
-            document.getElementById('preview-imagen').innerHTML = '';
-            document.getElementById('nombre-adjunto').value = '';
-            
-            actualizarListaAdjuntos();
-            actualizarListaProyectos();
-            showToast('📎 Archivo adjuntado');
-        }
-        
-        function actualizarListaAdjuntos() {
-            const container = document.getElementById('lista-adjuntos');
-            container.innerHTML = '';
-            
-            if (proyectoActual === null || !proyectos[proyectoActual]) {
-                container.innerHTML = '<div class="list-empty">Selecciona un proyecto primero</div>';
-                return;
-            }
-            
-            const p = proyectos[proyectoActual];
-            const adjuntos = p.adjuntos || [];
-            
-            if (adjuntos.length === 0) {
-                container.innerHTML = '<div class="list-empty">No hay archivos adjuntos</div>';
-                document.getElementById('pos-adjuntos').textContent = '0/0';
-                return;
-            }
-            
-            document.getElementById('pos-adjuntos').textContent = `${adjuntoSeleccionado + 1}/${adjuntos.length}`;
-            
-            adjuntos.forEach((adj, idx) => {
-                const esSeleccionado = idx === adjuntoSeleccionado;
-                const iconos = {
-                    'ticket': '🧾', 'factura': '📄', 'contrato': '📋',
-                    'cotizacion': '💰', 'evidencia': '📸', 'otro': '📎',
-                    'imagen': '🖼️', 'pdf': '📕', 'doc': '📝', 'txt': '📃'
-                };
-                const icono = iconos[adj.tipo] || '📎';
-                
-                const div = document.createElement('div');
-                div.className = 'list-item' + (esSeleccionado ? ' selected' : '');
-                div.innerHTML = `
-                    <div class="title">${icono} ${adj.nombre}</div>
-                    <div class="subtitle">${adj.tipo_display || adj.tipo} | ${(adj.tamaño/1024).toFixed(1)} KB | ${adj.fecha}</div>
-                    <div class="actions">
-                        <button class="btn btn-success btn-sm" onclick="verAdjunto(${idx})">👁️ Ver</button>
-                        <button class="btn btn-primary btn-sm" onclick="guardarAdjuntoComo(${idx})">💾 Guardar</button>
-                        <button class="btn btn-danger btn-sm" onclick="eliminarAdjunto(${idx})">🗑️ Eliminar</button>
-                    </div>
-                `;
-                container.appendChild(div);
+            reader.readAsText(file);
+        };
+        input.click();
+    }
+
+    function exportarPDF() {
+        if (proyectos.length === 0) { showToast('No hay proyectos', 'error'); return; }
+
+        let html = `
+        <html><head><meta charset="UTF-8"><title>DC Tracker Reporte</title>
+        <style>
+            body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
+            h1 { color: #e94560; }
+            h2 { color: #58a6ff; }
+            table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+            th { background: #238636; color: white; padding: 8px; text-align: left; }
+            td { padding: 8px; border: 1px solid #ddd; }
+            tr:nth-child(even) { background: #f8f8f8; }
+            .total { background: #1a4a2a; color: white; padding: 15px; text-align: center; font-size: 18px; }
+            .proyecto { margin: 20px 0; border-bottom: 1px solid #ddd; padding-bottom: 15px; }
+            .proyecto h3 { color: #58a6ff; }
+    </style></head><body>
+        <h1>💼 DC Tracker Proyects</h1>
+        <p>Reporte generado: ${new Date().toLocaleString()}</p>
+        <hr>
+    `;
+
+    let totalGeneral = 0;
+    proyectos.forEach(p => {
+        const horas = p.tiempo_total / 3600;
+        const ingreso = (horas * p.tarifa) + p.dinero_extra;
+        totalGeneral += ingreso;
+
+        html += `
+            <div class="proyecto">
+                <h3>📁 ${p.nombre}</h3>
+                <p><strong>Cliente:</strong> ${p.cliente || 'N/A'}</p>
+                <p><strong>Tarifa:</strong> $${p.tarifa}/hora</p>
+                <p><strong>Tiempo total:</strong> ${horas.toFixed(2)} horas</p>
+                <p><strong>Dinero extra:</strong> $${p.dinero_extra.toFixed(2)}</p>
+                <p><strong>Adjuntos:</strong> ${(p.adjuntos || []).length}</p>
+                <p><strong>TOTAL:</strong> <strong>$${ingreso.toFixed(2)}</strong></p>
+        `;
+
+        if (p.sesiones && p.sesiones.length > 0) {
+            html += `<h4>Sesiones:</h4><table><tr><th>Fecha</th><th>Duración</th><th>Nota</th><th>Extra</th></tr>`;
+            p.sesiones.forEach(s => {
+                html += `<tr><td>${s.fecha}</td><td>${s.duracion}</td><td>${s.nota}</td><td>${s.extra ? '$' + s.extra : '-'}</td></tr>`;
             });
+            html += `</table>`;
         }
-        
-        function navegarAdjuntos(direccion) {
-            if (proyectoActual === null) return;
-            const p = proyectos[proyectoActual];
-            const adjuntos = p.adjuntos || [];
-            if (adjuntos.length === 0) return;
-            
-            adjuntoSeleccionado += direccion;
-            if (adjuntoSeleccionado < 0) adjuntoSeleccionado = 0;
-            if (adjuntoSeleccionado >= adjuntos.length) adjuntoSeleccionado = adjuntos.length - 1;
-            
-            actualizarListaAdjuntos();
-            showToast(`Adjunto: ${adjuntos[adjuntoSeleccionado].nombre}`);
-        }
-        
-        function verAdjunto(idx) {
-            if (proyectoActual === null) return;
-            const p = proyectos[proyectoActual];
-            const adj = p.adjuntos[idx];
-            
-            // Mostrar imagen si es posible
-            if (adj.tipo_mime === 'imagen') {
-                const ventana = window.open('', '_blank');
-                ventana.document.write(`
-                    <html><head><title>${adj.nombre}</title>
-                    <style>body{background:#0d1117;display:flex;justify-content:center;align-items:center;height:100vh;margin:0;flex-direction:column;}
-                    img{max-width:90%;max-height:80vh;border-radius:10px;}
-                    p{color:#8b949e;font-family:Arial;margin-top:10px;}
-</style></head>
-<body>
-    <img src="data:image/jpeg;base64,${adj.datos}">
-    <p>${adj.nombre} | ${(adj.tamaño/1024).toFixed(1)} KB</p>
-</body></html>
-`);
-} else {
-// Descargar archivo
-const a = document.createElement('a');
-a.href = `data:application/octet-stream;base64,${adj.datos}`;
-a.download = adj.nombre_original;
-document.body.appendChild(a);
-a.click();
-document.body.removeChild(a);
-}
-}
+        html += `</div>`;
+    });
 
-function guardarAdjuntoComo(idx) {
-if (proyectoActual === null) return;
-const p = proyectos[proyectoActual];
-const adj = p.adjuntos[idx];
+    html += `
+        <div class="total">
+            <h2>💰 TOTAL GENERAL A COBRAR: $${totalGeneral.toFixed(2)}</h2>
+        </div>
+    </body></html>
+    `;
 
-const a = document.createElement('a');
-a.href = `data:application/octet-stream;base64,${adj.datos}`;
-a.download = adj.nombre_original;
-document.body.appendChild(a);
-a.click();
-document.body.removeChild(a);
-
-showToast('💾 Archivo guardado');
-}
-
-function eliminarAdjunto(idx) {
-if (!confirm('¿Eliminar este adjunto?')) return;
-if (proyectoActual === null) return;
-
-const p = proyectos[proyectoActual];
-p.adjuntos.splice(idx, 1);
-guardarDatos();
-
-if (adjuntoSeleccionado >= p.adjuntos.length) {
-adjuntoSeleccionado = p.adjuntos.length - 1;
-}
-
-actualizarListaAdjuntos();
-actualizarListaProyectos();
-showToast('🗑️ Adjunto eliminado');
-}
-
-// ============================================================
-// ===== BUSCAR =====
-// ============================================================
-function buscar() {
-const query = document.getElementById('input-buscar').value.toLowerCase().trim();
-const container = document.getElementById('resultados-busqueda');
-container.innerHTML = '';
-
-if (!query) return;
-
-const resultados = proyectos.filter(p =>
-p.nombre.toLowerCase().includes(query) ||
-(p.cliente || '').toLowerCase().includes(query) ||
-(p.descripcion || '').toLowerCase().includes(query)
-);
-
-if (resultados.length === 0) {
-container.innerHTML = '<div class="list-empty">No se encontraron resultados</div>';
-return;
-}
-
-resultados.forEach(p => {
-const horas = p.tiempo_total / 3600;
-const ingreso = (horas * p.tarifa) + p.dinero_extra;
-const numAdj = (p.adjuntos || []).length;
-
-const div = document.createElement('div');
-div.className = 'result-item';
-div.innerHTML = `
-<div class="title">${p.nombre}</div>
-<div class="subtitle">👤 ${p.cliente || 'N/A'} | 💰 $${ingreso.toFixed(2)} | ⏱️ ${horas.toFixed(1)}h${numAdj > 0 ? ` | 📎 ${numAdj}` : ''}</div>
-`;
-container.appendChild(div);
-});
-}
-
-// ============================================================
-// ===== REPORTES =====
-// ============================================================
-function actualizarReportes() {
-const totalProy = proyectos.length;
-const totalSeg = proyectos.reduce((sum, p) => sum + p.tiempo_total, 0);
-const totalHoras = totalSeg / 3600;
-const totalDinero = proyectos.reduce((sum, p) => sum + ((p.tiempo_total / 3600) * p.tarifa), 0);
-const totalExtra = proyectos.reduce((sum, p) => sum + p.dinero_extra, 0);
-
-document.getElementById('stat-proyectos').textContent = totalProy;
-document.getElementById('stat-horas').textContent = totalHoras.toFixed(1) + 'h';
-document.getElementById('stat-total').textContent = '$' + totalDinero.toFixed(2);
-document.getElementById('stat-extras').textContent = '$' + totalExtra.toFixed(2);
-
-// Historial
-const container = document.getElementById('historial-sesiones');
-container.innerHTML = '';
-
-let todas = [];
-proyectos.forEach(p => {
-(p.sesiones || []).forEach(s => {
-todas.push({ ...s, proyecto: p.nombre });
-});
-});
-
-todas.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
-
-if (todas.length === 0) {
-container.innerHTML = '<div class="list-empty">No hay sesiones registradas</div>';
-return;
-}
-
-todas.slice(0, 50).forEach(s => {
-const div = document.createElement('div');
-div.className = 'historial-item';
-div.innerHTML = `
-<span class="proyecto">${s.proyecto}</span>
-<span class="fecha">${s.fecha}</span>
-<span class="duracion">${s.duracion}</span>
-<span class="extra">${s.extra ? '+$' + s.extra : ''}</span>
-`;
-container.appendChild(div);
-});
-}
-
-// ============================================================
-// ===== EXPORTAR =====
-// ============================================================
-function exportarTXT() {
-if (proyectos.length === 0) {
-showToast('No hay proyectos para exportar', 'error');
-return;
-}
-
-let texto = 'DC TRACKER PROYECTS - REPORTE\n';
-texto += '='.repeat(50) + '\n\n';
-texto += `Generado: ${new Date().toLocaleString()}\n\n`;
-
-proyectos.forEach(p => {
-const horas = p.tiempo_total / 3600;
-const ingreso = (horas * p.tarifa) + p.dinero_extra;
-const numAdj = (p.adjuntos || []).length;
-
-texto += `📁 ${p.nombre}\n`;
-texto += `   Cliente: ${p.cliente || 'N/A'}\n`;
-texto += `   Tarifa: $${p.tarifa}/h\n`;
-texto += `   Tiempo: ${horas.toFixed(2)}h\n`;
-texto += `   Extras: $${p.dinero_extra}\n`;
-texto += `   Adjuntos: ${numAdj}\n`;
-texto += `   TOTAL: $${ingreso.toFixed(2)}\n\n`;
-
-if (p.sesiones && p.sesiones.length > 0) {
-texto += '   Sesiones:\n';
-p.sesiones.forEach(s => {
-texto += `      • ${s.fecha} - ${s.duracion} - ${s.nota}`;
-if (s.extra) texto += ` (+$${s.extra})`;
-texto += '\n';
-});
-texto += '\n';
-}
-});
-
-const total = proyectos.reduce((sum, p) => sum + ((p.tiempo_total / 3600) * p.tarifa) + p.dinero_extra, 0);
-texto += '='.repeat(50) + '\n';
-texto += `💰 TOTAL GENERAL: $${total.toFixed(2)}\n`;
-
-descargarArchivo(texto, 'DC_Tracker_Report.txt', 'text/plain');
-showToast('📄 TXT generado');
-}
-
-function exportarCSV() {
-if (proyectos.length === 0) {
-showToast('No hay proyectos para exportar', 'error');
-return;
-}
-
-let csv = 'Proyecto,Cliente,Tarifa,Horas,Extras,Adjuntos,Total\n';
-proyectos.forEach(p => {
-const horas = p.tiempo_total / 3600;
-const total = (horas * p.tarifa) + p.dinero_extra;
-const numAdj = (p.adjuntos || []).length;
-csv += `"${p.nombre}","${p.cliente || ''}",${p.tarifa},${horas.toFixed(2)},${p.dinero_extra},${numAdj},${total.toFixed(2)}\n`;
-});
-
-descargarArchivo(csv, 'DC_Tracker_Report.csv', 'text/csv');
-showToast('📊 CSV generado');
-}
-
-function exportarJSON() {
-const datos = {
-app: 'DC Tracker Proyects',
-version: '1.0',
-fecha: new Date().toISOString(),
-proyectos: proyectos
-};
-
-const json = JSON.stringify(datos, null, 2);
-descargarArchivo(json, 'DC_Tracker_Backup.json', 'application/json');
-showToast('💾 Backup guardado');
-}
-
-function importarJSON() {
-const input = document.createElement('input');
-input.type = 'file';
-input.accept = '.json';
-input.onchange = function(e) {
-const file = e.target.files[0];
-if (!file) return;
-
-const reader = new FileReader();
-reader.onload = function(event) {
-try {
-const datos = JSON.parse(event.target.result);
-if (datos.proyectos) {
-proyectos = datos.proyectos;
-guardarDatos();
-actualizarListaProyectos();
-actualizarReportes();
-actualizarListaAdjuntos();
-showToast('📂 Datos cargados correctamente');
-} else {
-showToast('Archivo inválido', 'error');
-}
-} catch(err) {
-showToast('Error al cargar el archivo', 'error');
-}
-};
-reader.readAsText(file);
-};
-input.click();
-}
-
-function exportarPDF() {
-if (proyectos.length === 0) {
-showToast('No hay proyectos para exportar', 'error');
-return;
-}
-
-// Generar HTML para PDF
-let html = `
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>DC Tracker Proyects - Reporte</title>
-    <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-        h1 { color: #e94560; }
-        h2 { color: #58a6ff; }
-        table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-        th { background: #238636; color: white; padding: 8px; text-align: left; }
-        td { padding: 8px; border: 1px solid #ddd; }
-        tr:nth-child(even) { background: #f8f8f8; }
-        .total { background: #1a4a2a; color: white; padding: 15px; text-align: center; font-size: 18px; }
-        .proyecto { margin: 20px 0; }
-        .proyecto h3 { color: #58a6ff; }
-        .adjunto { margin: 5px 0; }
-    </style>
-</head>
-<body>
-    <h1>💼 DC Tracker Proyects</h1>
-    <p>Reporte generado: ${new Date().toLocaleString()}</p>
-    <hr>
-`;
-
-let totalGeneral = 0;
-
-proyectos.forEach(p => {
-const horas = p.tiempo_total / 3600;
-const ingreso = (horas * p.tarifa) + p.dinero_extra;
-totalGeneral += ingreso;
-
-html += `
-    <div class="proyecto">
-        <h3>📁 ${p.nombre}</h3>
-        <p><strong>Cliente:</strong> ${p.cliente || 'N/A'}</p>
-        <p><strong>Tarifa:</strong> $${p.tarifa}/hora</p>
-        <p><strong>Tiempo total:</strong> ${horas.toFixed(2)} horas</p>
-        <p><strong>Dinero extra:</strong> $${p.dinero_extra.toFixed(2)}</p>
-        <p><strong>Adjuntos:</strong> ${(p.adjuntos || []).length}</p>
-        <p><strong>TOTAL:</strong> <strong>$${ingreso.toFixed(2)}</strong></p>
-`;
-
-if (p.sesiones && p.sesiones.length > 0) {
-html += `
-    <h4>Sesiones:</h4>
-    <table>
-        <tr><th>Fecha</th><th>Duración</th><th>Nota</th><th>Extra</th></tr>
-`;
-p.sesiones.forEach(s => {
-html += `
-    <tr>
-        <td>${s.fecha}</td>
-        <td>${s.duracion}</td>
-        <td>${s.nota}</td>
-        <td>${s.extra ? '$' + s.extra : '-'}</td>
-    </tr>
-`;
-});
-html += `</table>`;
-}
-
-if (p.adjuntos && p.adjuntos.length > 0) {
-html += `<h4>Archivos adjuntos:</h4>`;
-p.adjuntos.forEach(a => {
-html += `<div class="adjunto">📎 ${a.nombre} (${a.tipo_display || a.tipo}) - ${(a.tamaño/1024).toFixed(1)} KB</div>`;
-});
-}
-
-html += `</div><hr>`;
-});
-
-html += `
-    <div class="total">
-        <h2>💰 TOTAL GENERAL A COBRAR: $${totalGeneral.toFixed(2)}</h2>
-    </div>
-</body>
-</html>
-`;
-
-// Abrir en nueva ventana para imprimir/guardar como PDF
-const ventana = window.open('', '_blank');
-ventana.document.write(html);
-ventana.document.close();
-ventana.print();
-
-showToast('📕 PDF generado (usa imprimir > guardar como PDF)');
+    const ventana = window.open('', '_blank');
+    ventana.document.write(html);
+    ventana.document.close();
+    ventana.print();
+    showToast('📕 PDF generado (usa imprimir > guardar como PDF)');
 }
 
 // ============================================================
 // ===== UTILIDADES =====
 // ============================================================
 function descargarArchivo(contenido, nombre, tipo) {
-const blob = new Blob([contenido], { type: tipo });
-const url = URL.createObjectURL(blob);
-const a = document.createElement('a');
-a.href = url;
-a.download = nombre;
-document.body.appendChild(a);
-a.click();
-document.body.removeChild(a);
-URL.revokeObjectURL(url);
+    const blob = new Blob([contenido], { type: tipo });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = nombre;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
 }
 
 // ============================================================
 // ===== NAVEGACIÓN CON TECLADO =====
 // ============================================================
 document.addEventListener('keydown', function(e) {
-// Navegación en adjuntos
-if (document.getElementById('tab-adjuntos').classList.contains('active')) {
-if (e.key === 'ArrowUp') {
-e.preventDefault();
-navegarAdjuntos(-1);
-}
-if (e.key === 'ArrowDown') {
-e.preventDefault();
-navegarAdjuntos(1);
-}
-if (e.key === 'Enter') {
-if (adjuntoSeleccionado >= 0) {
-verAdjunto(adjuntoSeleccionado);
-}
-}
-if (e.key === 'Delete') {
-if (adjuntoSeleccionado >= 0) {
-eliminarAdjunto(adjuntoSeleccionado);
-}
-}
-}
+    // Navegación en adjuntos
+    if (document.getElementById('tab-adjuntos').classList.contains('active')) {
+        if (e.key === 'ArrowUp') { e.preventDefault(); navegarAdjuntos(-1); }
+        if (e.key === 'ArrowDown') { e.preventDefault(); navegarAdjuntos(1); }
+        if (e.key === 'Enter' && adjuntoSeleccionado >= 0) { verAdjunto(adjuntoSeleccionado); }
+        if (e.key === 'Delete' && adjuntoSeleccionado >= 0) { eliminarAdjunto(adjuntoSeleccionado); }
+    }
 
-// Atajos de teclado Ctrl+
-if (e.ctrlKey) {
-switch(e.key) {
-case 'n': e.preventDefault(); document.querySelector('[data-tab="tab-proyectos"]').click(); break;
-case 't': e.preventDefault(); document.querySelector('[data-tab="tab-timer"]').click(); break;
-case 'a': e.preventDefault(); document.querySelector('[data-tab="tab-adjuntos"]').click(); break;
-case 'b': e.preventDefault(); document.querySelector('[data-tab="tab-buscar"]').click(); break;
-case 'r': e.preventDefault(); document.querySelector('[data-tab="tab-reportes"]').click(); break;
-}
-}
+    // Atajos Ctrl+
+    if (e.ctrlKey) {
+        switch(e.key) {
+            case 'n': e.preventDefault(); document.querySelector('[data-tab="tab-proyectos"]').click(); break;
+            case 't': e.preventDefault(); document.querySelector('[data-tab="tab-timer"]').click(); break;
+            case 'a': e.preventDefault(); document.querySelector('[data-tab="tab-adjuntos"]').click(); break;
+            case 'b': e.preventDefault(); document.querySelector('[data-tab="tab-buscar"]').click(); break;
+            case 'r': e.preventDefault(); document.querySelector('[data-tab="tab-reportes"]').click(); break;
+        }
+    }
 });
 
 // ============================================================
 // ===== ACTUALIZACIÓN PERIÓDICA =====
 // ============================================================
 setInterval(() => {
-if (timerActivo) {
-actualizarTimerDisplay();
-}
+    if (timerActivo) actualizarTimerDisplay();
 }, 1000);
 
 console.log('💼 DC Tracker Proyects - Web version loaded!');
