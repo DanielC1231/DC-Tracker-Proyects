@@ -3,11 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>💼 DC Tracker Proyects - Web</title>
+    <title>💼 DC Tracker Proyects</title>
+    
+    <!-- LIBRERÍA PARA PDF CON IMÁGENES -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    
     <style>
-        /* ============================================================
-           ESTILOS - IMITANDO TKINTER
-           ============================================================ */
+        /* ===== ESTILOS BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -15,59 +17,56 @@
         }
         
         body {
-            font-family: 'Segoe UI', Tahoma, Arial, sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background: #0d1117;
             color: #c9d1d9;
             min-height: 100vh;
-            padding: 10px;
+            padding: 8px;
+            -webkit-tap-highlight-color: transparent;
         }
         
-        /* ===== CONTENEDOR PRINCIPAL ===== */
         .app-container {
-            max-width: 1200px;
+            max-width: 800px;
             margin: 0 auto;
             background: #0d1117;
         }
         
-        /* ===== TÍTULO ===== */
+        /* ===== HEADER ===== */
         .header {
             text-align: center;
-            padding: 15px 0 5px 0;
-            border-bottom: 1px solid #21262d;
+            padding: 10px 0 5px 0;
         }
         
         .header h1 {
             color: #e94560;
-            font-size: 28px;
+            font-size: 24px;
             font-weight: bold;
-            letter-spacing: 1px;
         }
         
         .header p {
             color: #a0a0a0;
-            font-size: 13px;
-            margin-top: 4px;
+            font-size: 12px;
+            margin-top: 2px;
         }
         
         /* ===== BARRA DE PROGRESO ===== */
         .progress-container {
-            background: #0d1117;
-            padding: 8px 20px;
+            padding: 5px 10px;
             text-align: center;
         }
         
         .progress-container .label {
             color: #8b949e;
-            font-size: 12px;
+            font-size: 11px;
         }
         
         .progress-bar {
             width: 100%;
-            max-width: 400px;
-            height: 6px;
+            max-width: 300px;
+            height: 5px;
             background: #21262d;
             border-radius: 3px;
-            margin: 4px auto;
+            margin: 3px auto;
             overflow: hidden;
         }
         
@@ -79,36 +78,35 @@
             transition: width 0.3s;
         }
         
-        /* ===== TABS (PESTAÑAS) ===== */
+        /* ===== TABS ===== */
         .tabs {
             display: flex;
             flex-wrap: wrap;
-            gap: 4px;
+            gap: 3px;
             background: #161b22;
             border-radius: 8px;
-            padding: 6px;
-            margin: 10px 0;
+            padding: 4px;
+            margin: 8px 0;
             border: 1px solid #21262d;
         }
         
         .tab-btn {
             flex: 1;
-            min-width: 70px;
-            padding: 10px 12px;
+            min-width: 45px;
+            padding: 10px 4px;
             background: transparent;
             border: none;
             border-radius: 6px;
             color: #8b949e;
-            font-size: 13px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.25s;
-            white-space: nowrap;
+            touch-action: manipulation;
         }
         
-        .tab-btn:hover {
-            background: #21262d;
-            color: #c9d1d9;
+        .tab-btn:active {
+            transform: scale(0.95);
         }
         
         .tab-btn.active {
@@ -117,11 +115,10 @@
             box-shadow: 0 2px 8px rgba(35, 134, 54, 0.3);
         }
         
-        /* ===== CONTENIDO DE TABS ===== */
         .tab-content {
             display: none;
             background: #0d1117;
-            padding: 10px 0;
+            padding: 8px 0;
             animation: fadeIn 0.3s ease;
         }
         
@@ -134,9 +131,9 @@
             to { opacity: 1; transform: translateY(0); }
         }
         
-        /* ===== FORMULARIOS (estilo Tkinter) ===== */
+        /* ===== FORMULARIOS ===== */
         .form-group {
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
         
         .form-group label {
@@ -151,13 +148,15 @@
         .form-group textarea,
         .form-group select {
             width: 100%;
-            padding: 10px 12px;
+            padding: 12px 14px;
             background: #0d1117;
             border: 1px solid #30363d;
-            border-radius: 6px;
+            border-radius: 8px;
             color: white;
-            font-size: 14px;
-            transition: border 0.3s, box-shadow 0.3s;
+            font-size: 16px;
+            transition: border 0.3s;
+            -webkit-appearance: none;
+            appearance: none;
         }
         
         .form-group input:focus,
@@ -172,30 +171,29 @@
             resize: vertical;
             min-height: 60px;
             font-family: inherit;
+            font-size: 15px;
         }
         
-        /* ===== BOTONES (estilo Tkinter) ===== */
+        /* ===== BOTONES ===== */
         .btn {
-            padding: 10px 24px;
+            padding: 14px 20px;
             border: none;
-            border-radius: 6px;
-            font-size: 14px;
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.25s;
+            transition: all 0.2s;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             gap: 6px;
-        }
-        
-        .btn:hover {
-            transform: translateY(-1px);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            touch-action: manipulation;
+            min-height: 48px;
+            min-width: 60px;
         }
         
         .btn:active {
-            transform: translateY(0px);
+            transform: scale(0.95);
         }
         
         .btn:disabled {
@@ -205,47 +203,70 @@
         }
         
         .btn-primary { background: #238636; color: white; }
-        .btn-primary:hover { background: #2ea043; }
-        
         .btn-danger { background: #da3633; color: white; }
-        .btn-danger:hover { background: #f85149; }
-        
         .btn-success { background: #1f6feb; color: white; }
-        .btn-success:hover { background: #388bfd; }
-        
         .btn-warning { background: #f0883e; color: white; }
-        .btn-warning:hover { background: #f2994b; }
-        
         .btn-purple { background: #8957e5; color: white; }
-        .btn-purple:hover { background: #9e6ff0; }
-        
         .btn-outline { background: #21262d; color: #c9d1d9; border: 1px solid #30363d; }
-        .btn-outline:hover { background: #30363d; }
         
-        .btn-sm { padding: 6px 14px; font-size: 12px; }
+        .btn-sm { padding: 10px 14px; font-size: 14px; min-height: 40px; }
         .btn-block { width: 100%; }
+        
+        /* ===== BOTÓN ADJUNTAR ===== */
+        .btn-adjuntar {
+            padding: 16px 24px;
+            font-size: 18px;
+            min-height: 56px;
+            background: #238636;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            touch-action: manipulation;
+            box-shadow: 0 4px 12px rgba(35, 134, 54, 0.3);
+        }
+        
+        .btn-adjuntar:active {
+            transform: scale(0.97);
+        }
+        
+        .btn-seleccionar {
+            padding: 14px 20px;
+            font-size: 16px;
+            min-height: 50px;
+            background: #21262d;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            touch-action: manipulation;
+        }
+        
+        .btn-seleccionar:active {
+            transform: scale(0.97);
+        }
         
         /* ===== LISTAS ===== */
         .list-container {
             background: #161b22;
             border-radius: 8px;
-            padding: 10px;
-            max-height: 380px;
+            padding: 8px;
+            max-height: 350px;
             overflow-y: auto;
             border: 1px solid #21262d;
+            -webkit-overflow-scrolling: touch;
         }
         
         .list-item {
             background: #0f3460;
-            padding: 12px 15px;
+            padding: 12px 14px;
             border-radius: 6px;
             margin-bottom: 8px;
             transition: all 0.2s;
             border-left: 3px solid transparent;
-        }
-        
-        .list-item:hover {
-            transform: translateX(4px);
         }
         
         .list-item.selected {
@@ -277,7 +298,7 @@
         .list-item .actions {
             margin-top: 8px;
             display: flex;
-            gap: 5px;
+            gap: 6px;
             flex-wrap: wrap;
         }
         
@@ -291,11 +312,11 @@
         /* ===== TIMER ===== */
         .timer-container {
             text-align: center;
-            padding: 15px 0;
+            padding: 10px 0;
         }
         
         .timer-display {
-            font-size: 52px;
+            font-size: 48px;
             font-family: 'Courier New', monospace;
             color: #e94560;
             padding: 15px;
@@ -303,7 +324,7 @@
             border-radius: 10px;
             border: 1px solid #21262d;
             display: inline-block;
-            min-width: 250px;
+            min-width: 220px;
             letter-spacing: 3px;
         }
         
@@ -312,51 +333,51 @@
             gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
-            margin-top: 15px;
+            margin-top: 12px;
         }
         
         .timer-buttons .btn {
-            min-width: 100px;
+            min-width: 80px;
+            flex: 1;
         }
         
-        /* ===== ESTADÍSTICAS (estilo Tkinter) ===== */
+        /* ===== ESTADÍSTICAS ===== */
         .stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
-            gap: 10px;
-            margin: 15px 0;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 8px;
+            margin: 12px 0;
         }
         
         .stat-card {
             background: #161b22;
-            padding: 15px;
+            padding: 12px;
             border-radius: 8px;
             text-align: center;
             border: 1px solid #21262d;
         }
         
         .stat-card .number {
-            font-size: 26px;
+            font-size: 22px;
             font-weight: bold;
             color: #3fb950;
         }
         
         .stat-card .label {
-            font-size: 12px;
+            font-size: 11px;
             color: #8b949e;
-            margin-top: 4px;
+            margin-top: 3px;
         }
         
         /* ===== BUSCADOR ===== */
         .search-input {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 16px;
             background: #0d1117;
             border: 1px solid #30363d;
-            border-radius: 6px;
+            border-radius: 8px;
             color: white;
-            font-size: 14px;
-            transition: border 0.3s;
+            font-size: 16px;
         }
         
         .search-input:focus {
@@ -367,7 +388,7 @@
         
         .result-item {
             background: #0f3460;
-            padding: 12px 15px;
+            padding: 12px 14px;
             border-radius: 6px;
             margin-bottom: 8px;
             border-left: 3px solid #58a6ff;
@@ -387,52 +408,37 @@
         
         /* ===== HISTORIAL ===== */
         .historial-container {
-            max-height: 300px;
+            max-height: 280px;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         
         .historial-item {
             background: #0f3460;
-            padding: 10px 15px;
+            padding: 10px 14px;
             border-radius: 6px;
             margin-bottom: 6px;
             display: flex;
             justify-content: space-between;
             flex-wrap: wrap;
-            font-size: 13px;
+            font-size: 12px;
             align-items: center;
             border-left: 3px solid #238636;
+            gap: 4px;
         }
         
-        .historial-item .proyecto { color: #58a6ff; font-weight: bold; }
-        .historial-item .fecha { color: #8b949e; font-size: 12px; }
+        .historial-item .proyecto { color: #58a6ff; font-weight: bold; font-size: 13px; }
+        .historial-item .fecha { color: #8b949e; font-size: 11px; }
         .historial-item .duracion { color: #3fb950; font-weight: bold; }
         .historial-item .extra { color: #f0883e; }
-        .historial-item .nota { color: #c9d1d9; font-size: 12px; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .historial-item .nota { color: #c9d1d9; font-size: 11px; max-width: 100px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
         
-        /* ===== ADJUNTOS - NAVEGACIÓN ===== */
-        .nav-adjuntos {
-            display: flex;
-            gap: 10px;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            margin: 8px 0;
-        }
-        
-        .nav-adjuntos .pos {
-            color: #8b949e;
-            font-size: 14px;
-            font-weight: bold;
-            min-width: 50px;
-            text-align: center;
-        }
-        
+        /* ===== ADJUNTOS ===== */
         .adjunto-info {
             text-align: center;
             color: #8b949e;
             font-size: 13px;
-            padding: 5px;
+            padding: 6px;
         }
         
         .adjunto-info .proyecto-nombre {
@@ -440,11 +446,79 @@
             font-weight: bold;
         }
         
-        /* ===== SCROLLBAR PERSONALIZADA ===== */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: #161b22; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: #484f58; }
+        .nav-adjuntos {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 10px 0;
+        }
+        
+        .nav-adjuntos .btn {
+            min-width: 70px;
+            min-height: 44px;
+            font-size: 14px;
+            padding: 10px 16px;
+            border-radius: 10px;
+        }
+        
+        .nav-adjuntos .pos {
+            color: #8b949e;
+            font-size: 16px;
+            font-weight: bold;
+            min-width: 60px;
+            text-align: center;
+        }
+        
+        .archivo-seleccionado {
+            color: #3fb950;
+            font-size: 14px;
+            padding: 8px;
+            text-align: center;
+            word-break: break-all;
+        }
+        
+        .preview-container {
+            margin: 8px 0;
+            text-align: center;
+        }
+        
+        .preview-container img {
+            max-width: 200px;
+            max-height: 150px;
+            border-radius: 6px;
+            border: 1px solid #21262d;
+        }
+        
+        .preview-container .placeholder {
+            color: #8b949e;
+            font-size: 13px;
+        }
+        
+        /* ===== LABEL FRAME ===== */
+        .label-frame {
+            background: #161b22;
+            border: 1px solid #21262d;
+            border-radius: 8px;
+            padding: 12px;
+            margin: 8px 0;
+        }
+        
+        .label-frame .label-title {
+            color: #c9d1d9;
+            font-weight: bold;
+            font-size: 13px;
+            margin-bottom: 8px;
+            display: block;
+        }
+        
+        /* ===== DIVISOR ===== */
+        .divider {
+            border: none;
+            border-top: 1px solid #21262d;
+            margin: 12px 0;
+        }
         
         /* ===== TOAST ===== */
         .toast {
@@ -454,8 +528,8 @@
             transform: translateX(-50%);
             background: #238636;
             color: white;
-            padding: 14px 28px;
-            border-radius: 8px;
+            padding: 14px 24px;
+            border-radius: 10px;
             font-size: 14px;
             font-weight: 500;
             z-index: 9999;
@@ -480,92 +554,27 @@
             background: #f0883e;
         }
         
-        /* ===== BOTONES DE ACCIÓN RÁPIDA ===== */
-        .action-bar {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
-            margin: 10px 0;
-        }
-        
-        .action-bar .btn {
-            flex: 1;
-            min-width: 80px;
-        }
+        /* ===== SCROLLBAR ===== */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #161b22; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb { background: #30363d; border-radius: 3px; }
         
         /* ===== RESPONSIVE ===== */
-        @media (max-width: 600px) {
-            .header h1 { font-size: 22px; }
-            .tab-btn { font-size: 11px; padding: 8px 6px; min-width: 50px; }
-            .timer-display { font-size: 32px; min-width: 180px; padding: 12px; }
+        @media (max-width: 480px) {
+            .header h1 { font-size: 20px; }
+            .tab-btn { font-size: 12px; padding: 8px 4px; min-width: 40px; }
+            .timer-display { font-size: 36px; min-width: 160px; padding: 12px; }
+            .btn { font-size: 14px; padding: 12px 16px; min-height: 44px; }
             .stats { grid-template-columns: repeat(2, 1fr); }
-            .list-item .actions .btn { font-size: 11px; padding: 4px 10px; }
-            .historial-item { font-size: 12px; }
-            .historial-item .nota { max-width: 80px; }
-            body { padding: 5px; }
+            .historial-item { font-size: 11px; }
+            .historial-item .nota { max-width: 70px; }
+            .nav-adjuntos .btn { min-width: 60px; font-size: 13px; padding: 10px 14px; }
+            body { padding: 4px; }
         }
         
         @media (min-width: 768px) {
             body { padding: 20px 30px; }
-        }
-        
-        @media (min-width: 1024px) {
-            body { padding: 20px 50px; }
-        }
-        
-        /* ===== DIVISORES ===== */
-        .divider {
-            border: none;
-            border-top: 1px solid #21262d;
-            margin: 15px 0;
-        }
-        
-        /* ===== LABEL FRAME (estilo Tkinter) ===== */
-        .label-frame {
-            background: #161b22;
-            border: 1px solid #21262d;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 10px 0;
-        }
-        
-        .label-frame .label-title {
-            color: #c9d1d9;
-            font-weight: bold;
-            font-size: 13px;
-            margin-bottom: 10px;
-            display: block;
-        }
-        
-        /* ===== BADGES ===== */
-        .badge {
-            display: inline-block;
-            padding: 2px 10px;
-            border-radius: 12px;
-            font-size: 11px;
-            font-weight: bold;
-        }
-        .badge-green { background: #238636; color: white; }
-        .badge-blue { background: #1f6feb; color: white; }
-        .badge-orange { background: #f0883e; color: white; }
-        .badge-red { background: #da3633; color: white; }
-        
-        /* ===== PREVIEW IMAGEN ===== */
-        .preview-container {
-            margin: 8px 0;
-            text-align: center;
-        }
-        
-        .preview-container img {
-            max-width: 200px;
-            max-height: 150px;
-            border-radius: 6px;
-            border: 1px solid #21262d;
-        }
-        
-        .preview-container .placeholder {
-            color: #8b949e;
-            font-size: 13px;
+            .stats { grid-template-columns: repeat(4, 1fr); }
         }
     </style>
 </head>
@@ -576,7 +585,7 @@
     <!-- ===== HEADER ===== -->
     <div class="header">
         <h1>💼 DC Tracker Proyects</h1>
-        <p>Organiza proyectos, controla tiempo, adjunta tickets y cobra lo que mereces</p>
+        <p>Organiza proyectos, controla tiempo y cobra lo que mereces</p>
     </div>
 
     <!-- ===== PROGRESS BAR ===== -->
@@ -589,12 +598,12 @@
 
     <!-- ===== TABS ===== -->
     <div class="tabs">
-        <button class="tab-btn active" data-tab="tab-proyectos">📁 Proyectos</button>
-        <button class="tab-btn" data-tab="tab-timer">⏱️ Timer</button>
-        <button class="tab-btn" data-tab="tab-manual">✏️ Manual</button>
-        <button class="tab-btn" data-tab="tab-adjuntos">📎 Adjuntos</button>
-        <button class="tab-btn" data-tab="tab-buscar">🔍 Buscar</button>
-        <button class="tab-btn" data-tab="tab-reportes">📊 Reportes</button>
+        <button class="tab-btn active" data-tab="tab-proyectos">📁</button>
+        <button class="tab-btn" data-tab="tab-timer">⏱️</button>
+        <button class="tab-btn" data-tab="tab-manual">✏️</button>
+        <button class="tab-btn" data-tab="tab-adjuntos">📎</button>
+        <button class="tab-btn" data-tab="tab-buscar">🔍</button>
+        <button class="tab-btn" data-tab="tab-reportes">📊</button>
     </div>
 
     <!-- ========================================================== -->
@@ -629,9 +638,9 @@
             <div id="lista-proyectos" class="list-container">
                 <div class="list-empty">No hay proyectos creados</div>
             </div>
-            <div class="action-bar" style="margin-top:10px;">
-                <button class="btn btn-danger btn-sm" onclick="eliminarProyectoSeleccionado()">🗑️ Eliminar</button>
-                <button class="btn btn-success btn-sm" onclick="guardarCambiosProyecto()">💾 Guardar Cambios</button>
+            <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+                <button class="btn btn-danger btn-sm" onclick="eliminarProyectoSeleccionado()" style="flex:1;">🗑️ Eliminar</button>
+                <button class="btn btn-success btn-sm" onclick="guardarCambiosProyecto()" style="flex:1;">💾 Guardar</button>
             </div>
         </div>
     </div>
@@ -653,19 +662,18 @@
                 <button class="btn btn-danger" onclick="registrarTimer()">⏹️ Registrar</button>
             </div>
 
-            <div class="form-group" style="margin-top:15px;">
+            <div class="form-group" style="margin-top:12px;">
                 <label>Nota</label>
                 <input type="text" id="timer-nota" placeholder="Nota de esta sesión">
             </div>
         </div>
 
         <div class="label-frame" style="background:#1a4a2a; border-color:#238636;">
-            <span class="label-title" style="color:#3fb950;">💸 Dinero extra por contratiempos</span>
+            <span class="label-title" style="color:#3fb950;">💸 Dinero extra</span>
             <div class="form-group">
                 <label>Cantidad extra ($)</label>
                 <input type="number" id="timer-extra" value="0">
             </div>
-            <small style="color:#8b949e;">Agrega lo que quieras: 50, 100, etc.</small>
         </div>
     </div>
 
@@ -677,11 +685,11 @@
             <span class="label-title" style="font-size:18px; text-align:center; display:block; color:#58a6ff;">✏️ Agregar Tiempo Manual</span>
 
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <div class="form-group" style="flex:1; min-width:80px;">
+                <div class="form-group" style="flex:1; min-width:70px;">
                     <label>Horas</label>
                     <input type="number" id="manual-h" value="0" min="0">
                 </div>
-                <div class="form-group" style="flex:1; min-width:80px;">
+                <div class="form-group" style="flex:1; min-width:70px;">
                     <label>Minutos</label>
                     <input type="number" id="manual-m" value="0" min="0" max="59">
                 </div>
@@ -694,7 +702,7 @@
         </div>
 
         <div class="label-frame" style="background:#1a4a2a; border-color:#238636;">
-            <span class="label-title" style="color:#3fb950;">💸 Dinero extra por contratiempos</span>
+            <span class="label-title" style="color:#3fb950;">💸 Dinero extra</span>
             <div class="form-group">
                 <label>Cantidad extra ($)</label>
                 <input type="number" id="manual-extra" value="0">
@@ -705,16 +713,17 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- TAB 4: ADJUNTOS -->
+    <!-- TAB 4: ADJUNTOS (VERSIÓN MÓVIL) -->
     <!-- ========================================================== -->
     <div id="tab-adjuntos" class="tab-content">
         <div class="label-frame">
-            <span class="label-title" style="font-size:18px; text-align:center; display:block; color:#58a6ff;">📎 Adjuntar Archivos al Proyecto</span>
+            <span class="label-title" style="font-size:18px; text-align:center; display:block; color:#58a6ff;">📎 Adjuntar Archivos</span>
 
             <div class="adjunto-info" id="info-adjunto">
-                Selecciona un proyecto en la pestaña <strong>Proyectos</strong> primero
+                Selecciona un proyecto en <strong>Proyectos</strong> primero
             </div>
 
+            <!-- ===== NAVEGACIÓN ===== -->
             <div class="nav-adjuntos">
                 <button class="btn btn-success btn-sm" onclick="navegarAdjuntos(-1)">⬆ Subir</button>
                 <span class="pos" id="pos-adjuntos">0/0</span>
@@ -722,18 +731,19 @@
             </div>
 
             <div style="text-align:center; color:#f0883e; font-size:12px; margin-bottom:8px;">
-                💡 Usa ↑ ↓ para navegar, Enter para abrir, Delete para eliminar
+                💡 Usa ↑ ↓ para navegar
             </div>
 
             <hr class="divider">
 
-            <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-                <button class="btn btn-outline btn-sm" onclick="seleccionarArchivo()">📁 Seleccionar archivo</button>
-                <span id="archivo-seleccionado" style="color:#8b949e; font-size:13px;">Ningún archivo seleccionado</span>
-            </div>
-
+            <!-- ===== SELECCIONAR ARCHIVO ===== -->
+            <button class="btn-seleccionar" onclick="seleccionarArchivo()">📁 Seleccionar archivo</button>
+            
+            <div id="archivo-seleccionado" class="archivo-seleccionado">Ningún archivo seleccionado</div>
+            
             <div class="preview-container" id="preview-container"></div>
 
+            <!-- ===== TIPO Y NOMBRE ===== -->
             <div class="form-group" style="margin-top:10px;">
                 <label>Tipo</label>
                 <select id="tipo-adjunto">
@@ -751,11 +761,13 @@
                 <input type="text" id="nombre-adjunto" placeholder="Nombre del archivo">
             </div>
 
-            <button class="btn btn-primary btn-block" onclick="guardarAdjunto()">📎 Adjuntar al Proyecto</button>
+            <!-- ===== BOTÓN ADJUNTAR (GRANDE) ===== -->
+            <button class="btn-adjuntar" onclick="guardarAdjunto()">📎 Adjuntar al Proyecto</button>
         </div>
 
+        <!-- ===== LISTA DE ADJUNTOS ===== -->
         <div class="label-frame">
-            <span class="label-title">📁 Archivos Adjuntos del Proyecto</span>
+            <span class="label-title">📁 Archivos Adjuntos</span>
             <div id="lista-adjuntos" class="list-container">
                 <div class="list-empty">No hay archivos adjuntos</div>
             </div>
@@ -767,7 +779,7 @@
     <!-- ========================================================== -->
     <div id="tab-buscar" class="tab-content">
         <div class="label-frame">
-            <span class="label-title" style="font-size:18px; text-align:center; display:block; color:#58a6ff;">🔍 Buscar Cliente o Proyecto</span>
+            <span class="label-title" style="font-size:18px; text-align:center; display:block; color:#58a6ff;">🔍 Buscar</span>
             <input type="text" class="search-input" id="input-buscar" placeholder="Escribe para buscar..." oninput="buscar()">
         </div>
         <div id="resultados-busqueda" style="margin-top:10px;"></div>
@@ -1404,7 +1416,7 @@
     }
 
     // ============================================================
-    // ===== EXPORTAR =====
+    // ===== EXPORTAR TXT =====
     // ============================================================
     function exportarTXT() {
         if (proyectos.length === 0) { showToast('No hay proyectos', 'error'); return; }
@@ -1445,6 +1457,9 @@
         showToast('📄 TXT generado');
     }
 
+    // ============================================================
+    // ===== EXPORTAR CSV =====
+    // ============================================================
     function exportarCSV() {
         if (proyectos.length === 0) { showToast('No hay proyectos', 'error'); return; }
 
@@ -1460,6 +1475,9 @@
         showToast('📊 CSV generado');
     }
 
+    // ============================================================
+    // ===== EXPORTAR JSON =====
+    // ============================================================
     function exportarJSON() {
         const datos = {
             app: 'DC Tracker Proyects',
@@ -1471,6 +1489,9 @@
         showToast('💾 Backup guardado');
     }
 
+    // ============================================================
+    // ===== IMPORTAR JSON =====
+    // ============================================================
     function importarJSON() {
         const input = document.createElement('input');
         input.type = 'file';
@@ -1502,35 +1523,100 @@
         input.click();
     }
 
+    // ============================================================
+    // ===== EXPORTAR PDF (CON IMÁGENES) =====
+    // ============================================================
     function exportarPDF() {
-        if (proyectos.length === 0) { showToast('No hay proyectos', 'error'); return; }
+        if (proyectos.length === 0) { 
+            showToast('No hay proyectos', 'error'); 
+            return; 
+        }
 
+        showToast('📕 Generando PDF...', 'success');
+        actualizarProgreso(20, 'Preparando contenido...');
+
+        // ===== CONSTRUIR HTML PARA EL PDF =====
         let html = `
-        <html><head><meta charset="UTF-8"><title>DC Tracker Reporte</title>
-        <style>
-            body { font-family: Arial, sans-serif; max-width: 800px; margin: 0 auto; padding: 20px; }
-            h1 { color: #e94560; }
-            h2 { color: #58a6ff; }
-            table { width: 100%; border-collapse: collapse; margin: 10px 0; }
-            th { background: #238636; color: white; padding: 8px; text-align: left; }
-            td { padding: 8px; border: 1px solid #ddd; }
-            tr:nth-child(even) { background: #f8f8f8; }
-            .total { background: #1a4a2a; color: white; padding: 15px; text-align: center; font-size: 18px; }
-            .proyecto { margin: 20px 0; border-bottom: 1px solid #ddd; padding-bottom: 15px; }
-            .proyecto h3 { color: #58a6ff; }
-    </style></head><body>
-        <h1>💼 DC Tracker Proyects</h1>
-        <p>Reporte generado: ${new Date().toLocaleString()}</p>
-        <hr>
-    `;
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>DC Tracker Reporte</title>
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { 
+                    font-family: Arial, sans-serif; 
+                    max-width: 800px; 
+                    margin: 0 auto; 
+                    padding: 20px; 
+                    background: white;
+                    color: #333;
+                }
+                h1 { color: #e94560; font-size: 24px; }
+                h2 { color: #58a6ff; font-size: 18px; margin-top: 15px; }
+                h3 { color: #58a6ff; font-size: 16px; margin-top: 12px; }
+                .header { text-align: center; padding-bottom: 15px; border-bottom: 2px solid #e94560; }
+                .proyecto { 
+                    margin: 15px 0; 
+                    padding: 15px; 
+                    border: 1px solid #ddd; 
+                    border-radius: 8px;
+                    background: #fafafa;
+                    page-break-inside: avoid;
+                }
+                .proyecto h3 { color: #58a6ff; }
+                table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
+                th { background: #238636; color: white; padding: 6px; text-align: left; }
+                td { padding: 6px; border: 1px solid #ddd; }
+                tr:nth-child(even) { background: #f5f5f5; }
+                .total { 
+                    background: #1a4a2a; 
+                    color: white; 
+                    padding: 15px; 
+                    text-align: center; 
+                    font-size: 20px; 
+                    border-radius: 8px;
+                    margin-top: 20px;
+                }
+                .imagen-pdf {
+                    max-width: 300px;
+                    max-height: 200px;
+                    margin: 8px 0;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                }
+                .adjunto-item {
+                    margin: 4px 0;
+                    padding: 4px 8px;
+                    background: #f0f0f0;
+                    border-radius: 4px;
+                    display: inline-block;
+                }
+                .fecha-info { color: #888; font-size: 12px; }
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>💼 DC Tracker Proyects</h1>
+                <p>Reporte generado: ${new Date().toLocaleString()}</p>
+            </div>
+        `;
 
-    let totalGeneral = 0;
-    proyectos.forEach(p => {
-        const horas = p.tiempo_total / 3600;
-        const ingreso = (horas * p.tarifa) + p.dinero_extra;
-        totalGeneral += ingreso;
+        actualizarProgreso(40, 'Procesando proyectos...');
 
-        html += `
+        let totalGeneral = 0;
+        let contador = 0;
+        const totalProyectos = proyectos.length;
+
+        proyectos.forEach((p, idx) => {
+            const horas = p.tiempo_total / 3600;
+            const ingreso = (horas * p.tarifa) + p.dinero_extra;
+            totalGeneral += ingreso;
+            contador++;
+            
+            actualizarProgreso(40 + (contador / totalProyectos) * 40, `Procesando: ${p.nombre}`);
+
+            html += `
             <div class="proyecto">
                 <h3>📁 ${p.nombre}</h3>
                 <p><strong>Cliente:</strong> ${p.cliente || 'N/A'}</p>
@@ -1538,81 +1624,149 @@
                 <p><strong>Tiempo total:</strong> ${horas.toFixed(2)} horas</p>
                 <p><strong>Dinero extra:</strong> $${p.dinero_extra.toFixed(2)}</p>
                 <p><strong>Adjuntos:</strong> ${(p.adjuntos || []).length}</p>
-                <p><strong>TOTAL:</strong> <strong>$${ingreso.toFixed(2)}</strong></p>
+                <p style="font-size:16px; color:#e94560;"><strong>TOTAL:</strong> $${ingreso.toFixed(2)}</p>
+            `;
+
+            // ===== SESIONES =====
+            if (p.sesiones && p.sesiones.length > 0) {
+                html += `<h4>Sesiones:</h4><table><tr><th>Fecha</th><th>Duración</th><th>Nota</th><th>Extra</th></tr>`;
+                p.sesiones.forEach(s => {
+                    html += `<tr><td>${s.fecha}</td><td>${s.duracion}</td><td>${s.nota}</td><td>${s.extra ? '$' + s.extra : '-'}</td></tr>`;
+                });
+                html += `</table>`;
+            }
+
+            // ===== ADJUNTOS CON IMÁGENES (CORREGIDO) =====
+            if (p.adjuntos && p.adjuntos.length > 0) {
+                html += `<h4>📎 Archivos adjuntos:</h4>`;
+                p.adjuntos.forEach(a => {
+                    if (a.tipo_mime === 'imagen') {
+                        // ✅ IMAGEN: se muestra en el PDF
+                        html += `
+                            <div style="margin:8px 0; padding:8px; background:#f8f8f8; border-radius:6px; border:1px solid #eee;">
+                                <p><strong>${a.nombre}</strong> (${a.tipo_display || a.tipo}) - ${(a.tamaño/1024).toFixed(1)} KB</p>
+                                <img src="data:image/jpeg;base64,${a.datos}" style="max-width:300px; max-height:200px; border:1px solid #ddd; border-radius:4px; margin:4px 0;">
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <span style="margin:4px 0; padding:4px 10px; background:#f0f0f0; border-radius:4px; display:inline-block; margin-right:4px;">
+                                📎 ${a.nombre} (${a.tipo_display || a.tipo})
+                            </span>
+                        `;
+                    }
+                });
+            }
+
+            html += `</div>`;
+        });
+
+        html += `
+            <div class="total">
+                <h2>💰 TOTAL GENERAL A COBRAR: $${totalGeneral.toFixed(2)}</h2>
+            </div>
+        </body>
+        </html>
         `;
 
-        if (p.sesiones && p.sesiones.length > 0) {
-            html += `<h4>Sesiones:</h4><table><tr><th>Fecha</th><th>Duración</th><th>Nota</th><th>Extra</th></tr>`;
-            p.sesiones.forEach(s => {
-                html += `<tr><td>${s.fecha}</td><td>${s.duracion}</td><td>${s.nota}</td><td>${s.extra ? '$' + s.extra : '-'}</td></tr>`;
-            });
-            html += `</table>`;
+        actualizarProgreso(80, 'Generando PDF...');
+
+        // ===== CREAR PDF CON html2pdf =====
+        const ventanaPDF = window.open('', '_blank', 'width=800,height=600');
+        ventanaPDF.document.write(html);
+        ventanaPDF.document.close();
+
+        // Esperar a que cargue todo
+        setTimeout(() => {
+            ventanaPDF.focus();
+            
+            // Verificar si html2pdf está disponible
+            if (typeof ventanaPDF.html2pdf === 'undefined' && typeof html2pdf !== 'undefined') {
+                ventanaPDF.html2pdf = html2pdf;
+            }
+            
+            const opt = {
+                margin:        [10, 10, 10, 10],
+                filename:     'DC_Tracker_Report.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true, logging: false },
+                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            // Intentar con html2pdf
+            try {
+                if (typeof ventanaPDF.html2pdf !== 'undefined') {
+                    ventanaPDF.html2pdf().set(opt).from(ventanaPDF.document.body).save().then(() => {
+                        actualizarProgreso(100, '¡PDF generado!');
+                        setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
+                        showToast('📕 PDF generado correctamente', 'success');
+                    }).catch((err) => {
+                        console.error('Error PDF:', err);
+                        ventanaPDF.print();
+                        showToast('📕 PDF generado (usa guardar como PDF)', 'success');
+                        actualizarProgreso(0, 'Listo');
+                    });
+                } else {
+                    // Fallback: imprimir
+                    ventanaPDF.print();
+                    showToast('📕 PDF generado (usa guardar como PDF)', 'success');
+                    actualizarProgreso(0, 'Listo');
+                }
+            } catch(e) {
+                ventanaPDF.print();
+                showToast('📕 PDF generado (usa guardar como PDF)', 'success');
+                actualizarProgreso(0, 'Listo');
+            }
+            
+        }, 2000);
+    }
+
+    // ============================================================
+    // ===== UTILIDADES =====
+    // ============================================================
+    function descargarArchivo(contenido, nombre, tipo) {
+        const blob = new Blob([contenido], { type: tipo });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = nombre;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+
+    // ============================================================
+    // ===== NAVEGACIÓN CON TECLADO =====
+    // ============================================================
+    document.addEventListener('keydown', function(e) {
+        if (document.getElementById('tab-adjuntos').classList.contains('active')) {
+            if (e.key === 'ArrowUp') { e.preventDefault(); navegarAdjuntos(-1); }
+            if (e.key === 'ArrowDown') { e.preventDefault(); navegarAdjuntos(1); }
+            if (e.key === 'Enter' && adjuntoSeleccionado >= 0) { verAdjunto(adjuntoSeleccionado); }
+            if (e.key === 'Delete' && adjuntoSeleccionado >= 0) { eliminarAdjunto(adjuntoSeleccionado); }
         }
-        html += `</div>`;
+
+        if (e.ctrlKey) {
+            switch(e.key) {
+                case 'n': e.preventDefault(); document.querySelector('[data-tab="tab-proyectos"]').click(); break;
+                case 't': e.preventDefault(); document.querySelector('[data-tab="tab-timer"]').click(); break;
+                case 'a': e.preventDefault(); document.querySelector('[data-tab="tab-adjuntos"]').click(); break;
+                case 'b': e.preventDefault(); document.querySelector('[data-tab="tab-buscar"]').click(); break;
+                case 'r': e.preventDefault(); document.querySelector('[data-tab="tab-reportes"]').click(); break;
+            }
+        }
     });
 
-    html += `
-        <div class="total">
-            <h2>💰 TOTAL GENERAL A COBRAR: $${totalGeneral.toFixed(2)}</h2>
-        </div>
-    </body></html>
-    `;
+    // ============================================================
+    // ===== ACTUALIZACIÓN PERIÓDICA =====
+    // ============================================================
+    setInterval(() => {
+        if (timerActivo) actualizarTimerDisplay();
+    }, 1000);
 
-    const ventana = window.open('', '_blank');
-    ventana.document.write(html);
-    ventana.document.close();
-    ventana.print();
-    showToast('📕 PDF generado (usa imprimir > guardar como PDF)');
-}
-
-// ============================================================
-// ===== UTILIDADES =====
-// ============================================================
-function descargarArchivo(contenido, nombre, tipo) {
-    const blob = new Blob([contenido], { type: tipo });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = nombre;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-}
-
-// ============================================================
-// ===== NAVEGACIÓN CON TECLADO =====
-// ============================================================
-document.addEventListener('keydown', function(e) {
-    // Navegación en adjuntos
-    if (document.getElementById('tab-adjuntos').classList.contains('active')) {
-        if (e.key === 'ArrowUp') { e.preventDefault(); navegarAdjuntos(-1); }
-        if (e.key === 'ArrowDown') { e.preventDefault(); navegarAdjuntos(1); }
-        if (e.key === 'Enter' && adjuntoSeleccionado >= 0) { verAdjunto(adjuntoSeleccionado); }
-        if (e.key === 'Delete' && adjuntoSeleccionado >= 0) { eliminarAdjunto(adjuntoSeleccionado); }
-    }
-
-    // Atajos Ctrl+
-    if (e.ctrlKey) {
-        switch(e.key) {
-            case 'n': e.preventDefault(); document.querySelector('[data-tab="tab-proyectos"]').click(); break;
-            case 't': e.preventDefault(); document.querySelector('[data-tab="tab-timer"]').click(); break;
-            case 'a': e.preventDefault(); document.querySelector('[data-tab="tab-adjuntos"]').click(); break;
-            case 'b': e.preventDefault(); document.querySelector('[data-tab="tab-buscar"]').click(); break;
-            case 'r': e.preventDefault(); document.querySelector('[data-tab="tab-reportes"]').click(); break;
-        }
-    }
-});
-
-// ============================================================
-// ===== ACTUALIZACIÓN PERIÓDICA =====
-// ============================================================
-setInterval(() => {
-    if (timerActivo) actualizarTimerDisplay();
-}, 1000);
-
-console.log('💼 DC Tracker Proyects - Web version loaded!');
-console.log('📌 Atajos: Ctrl+N (Nuevo), Ctrl+T (Timer), Ctrl+A (Adjuntos), Ctrl+B (Buscar), Ctrl+R (Reportes)');
+    console.log('💼 DC Tracker Proyects - Web version loaded!');
+    console.log('📌 Atajos: Ctrl+N (Proyectos), Ctrl+T (Timer), Ctrl+A (Adjuntos), Ctrl+B (Buscar), Ctrl+R (Reportes)');
 </script>
 
 </body>
