@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DC Freelance Tracker</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #0d1117;
+            color: #c9d1d9;
+            min-height: 100vh;
+            padding: 10px;
+        }
+        
+        .header {
+            text-align: center;
+            padding: 15px;
+            background: #161b22;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border: 1px solid #30363d;
+        }
+        
+        .header h1 {
+            color: #e94560;
+            font-size: 1.8rem;
+        }
+        
+        .header p {
+            color: #8b949e;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+        
+        .tabs {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .tab-btn {
+            flex: 1;
+            min-width: 100px;
+            padding: 12px;
+            background: #21262d;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .tab-btn:hover {
+            background: #30363d;
+        }
+        
+        .tab-btn.active {
+            background: #238636;
+            color: white;
+            border-color: #238636;
+        }
+        
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .card h2 {
+            color: #58a6ff;
+            font-size: 1.2rem;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            color: #c9d1d9;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #58a6ff;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-green {
+            background: #238636;
+            color: white;
+        }
+        
+        .btn-green:hover {
+            background: #2ea043;
+        }
+        
+        .btn-blue {
+            background: #1f6feb;
+            color: white;
+        }
+        
+        .btn-blue:hover {
+            background: #388bfd;
+        }
+        
+        .btn-orange {
+            background: #f0883e;
+            color: white;
+        }
+        
+        .btn-orange:hover {
+            background: #ffa657;
+        }
+        
+        .btn-red {
+            background: #da3633;
+            color: white;
+        }
+        
+        .btn-red:hover {
+            background: #f85149;
+        }
+        
+        .btn-purple {
+            background: #8957e5;
+            color: white;
+        }
+        
+        .timer-display {
+            font-size: 3rem;
+            font-family: 'Courier New', monospace;
+            color: #e94560;
+            text-align: center;
+            padding: 20px;
+            background: #0d1117;
+            border-radius: 12px;
+            margin: 15px 0;
+            border: 2px solid #30363d;
+        }
+        
+        .project-list {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        
+        .project-item {
+            background: #0f3460;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: 2px solid transparent;
+        }
+        
+        .project-item:hover {
+            border-color: #58a6ff;
+        }
+        
+        .project-item.selected {
+            border-color: #238636;
+            background: #1a4a2a;
+        }
+        
+        .project-item h3 {
+            color: #58a6ff;
+            margin-bottom: 5px;
+        }
+        
+        .project-item p {
+            color: #8b949e;
+            font-size: 0.9rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .stat-box {
+            background: #0d1117;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .stat-box .number {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #3fb950;
+        }
+        
+        .stat-box .label {
+            color: #8b949e;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+        
+        .session-list {
+            max-height: 250px;
+            overflow-y: auto;
+        }
+        
+        .session-item {
+            background: #0d1117;
+            padding: 10px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .search-box {
+            position: relative;
+            margin-bottom: 15px;
+        }
+        
+        .search-box input {
+            padding-left: 40px;
+        }
+        
+        .search-box::before {
+            content: "🔍";
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 1.2rem;
+        }
+        
+        .extra-money {
+            background: #1a4a2a;
+            border: 1px solid #238636;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+        }
+        
+        .extra-money h3 {
+            color: #3fb950;
+            margin-bottom: 10px;
+        }
+        
+        .chart-container {
+            background: #0d1117;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            height: 300px;
+            position: relative;
+        }
+        
+        .export-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .hidden {
+            display: none !important;
+        }
+        
+        .row {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        
+        .row > * {
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 1.4rem;
+            }
+            
+            .timer-display {
+                font-size: 2.2rem;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>💼 DC Freelance Tracker</h1>
+        <p>Organiza proyectos, controla tiempo, cobra lo que mereces</p>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="showTab('proyectos')">📁 Proyectos</button>
+        <button class="tab-btn" onclick="showTab('timer')">⏱️ Timer</button>
+        <button class="tab-btn" onclick="showTab('manual')">✏️ Manual</button>
+        <button class="tab-btn" onclick="showTab('buscar')">🔍 Buscar</button>
+        <button class="tab-btn" onclick="showTab('reportes')">📊 Reportes</button>
+    </div>
+
+    <!-- TAB PROYECTOS -->
+    <div id="proyectos" class="tab-content active">
+        <div class="card">
+            <h2>➕ Nuevo Proyecto</h2>
+            <input type="text" id="nombre-proyecto" placeholder="Nombre del proyecto">
+            <input type="text" id="cliente-proyecto" placeholder="Nombre del cliente">
+            <input type="number" id="tarifa-proyecto" placeholder="Tarifa por hora ($)" value="20">
+            <textarea id="desc-proyecto" placeholder="Descripción (opcional)" rows="2"></textarea>
+            <button class="btn btn-green" onclick="crearProyecto()">Crear Proyecto</button>
+        </div>
+
+        <div class="card">
+            <h2>📋 Mis Proyectos</h2>
+            <div class="project-list" id="lista-proyectos">
+                <p style="color: #8b949e; text-align: center;">No hay proyectos aún</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB TIMER -->
+    <div id="timer" class="tab-content">
+        <div class="card">
+            <h2>⏱️ Timer Automático</h2>
+            <div class="timer-display" id="timer-display">00:00:00</div>
+            
+            <div class="row">
+                <button class="btn btn-green" id="btn-iniciar" onclick="iniciarTimer()">▶️ Iniciar</button>
+                <button class="btn btn-orange" id="btn-pausar" onclick="pausarTimer()" disabled>⏸️ Pausar</button>
+                <button class="btn btn-red" onclick="registrarSesion()">⏹️ Registrar</button>
+            </div>
+            
+            <input type="text" id="nota-timer" placeholder="Nota de la sesión (opcional)" style="margin-top: 15px;">
+            
+            <div class="extra-money">
+                <h3>💸 Dinero extra por contratiempos</h3>
+                <input type="number" id="extra-timer" placeholder="Cantidad extra ($)" value="0">
+                <small style="color: #8b949e;">Agrega lo que quieras: 50, 100, etc.</small>
+            </div>
+        </div>
+    </div>
+
+    <!-- TAB MANUAL -->
+    <div id="manual" class="tab-content">
+        <div class="card">
+            <h2>✏️ Agregar Tiempo Manual</h2>
+            <div class="row">
+                <input type="number" id="manual-horas" placeholder="Horas" value="0" min="0">
+                <input type="number" id="manual-minutos" placeholder="Minutos" value="0" min="0" max="59">
+            </div>
+            <input type="text" id="manual-nota" placeholder="Nota (opcional)">
+            
+            <div class="extra-money">
+                <h3>💸 Dinero extra por contratiempos</h3>
+                <input type="number" id="extra-manual" placeholder="Cantidad extra ($)" value="0">
+            </div>
+            
+            <button class="btn btn-blue" onclick="agregarManual()" style="margin-top: 15px;">➕ Agregar Sesión</button>
+        </div>
+    </div>
+
+    <!-- TAB BUSCAR -->
+    <div id="buscar" class="tab-content">
+        <div class="card">
+            <h2>🔍 Buscar Cliente o Proyecto</h2>
+            <div class="search-box">
+                <input type="text" id="busqueda" placeholder="Escribe nombre de cliente o proyecto..." onkeyup="buscar()">
+            </div>
+            <div id="resultados-busqueda"></div>
+        </div>
+    </div>
+
+    <!-- TAB REPORTES -->
+    <div id="reportes" class="tab-content">
+        <div class="card">
+            <h2>📊 Resumen</h2>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="number" id="total-proyectos">0</div>
+                    <div class="label">Proyectos</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" id="total-horas">0h</div>
+                    <div class="label">Horas totales</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" id="total-dinero">$0</div>
+                    <div class="label">Total a cobrar</div>
+                </div>
+                <div class="stat-box">
+                    <div class="number" id="total-extra">$0</div>
+                    <div class="label">Extras</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📈 Ingresos por Proyecto</h2>
+            <div class="chart-container" id="chart-container">
+                <canvas id="chart-canvas"></canvas>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📜 Historial de Sesiones</h2>
+            <div class="session-list" id="historial-sesiones"></div>
+        </div>
+
+        <div class="export-buttons">
+            <button class="btn btn-purple" onclick="exportarPDF()">📄 Exportar PDF</button>
+            <button class="btn btn-green" onclick="exportarExcel()">📊 Exportar Excel</button>
+            <button class="btn btn-blue" onclick="exportarJSON()">💾 Backup JSON</button>
+            <button class="btn btn-orange" onclick="importarJSON()">📂 Cargar Backup</button>
+        </div>
+    </div>
+
+    <script>
+        // ========== DATOS ==========
+        let proyectos = JSON.parse(localStorage.getItem('dc_proyectos')) || [];
+        let proyectoSeleccionado = null;
+        let timerInterval = null;
+        let tiempoInicio = null;
+        let tiempoPausado = 0;
+
+        // ========== INICIALIZAR ==========
+        document.addEventListener('DOMContentLoaded', () => {
+            renderizarProyectos();
+            actualizarStats();
+        });
+
+        // ========== TABS ==========
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabId === 'reportes') {
+                actualizarStats();
+                dibujarGrafico();
+            }
+        }
+
+        // ========== PROYECTOS ==========
+        function crearProyecto() {
+            const nombre = document.getElementById('nombre-proyecto').value.trim();
+            const cliente = document.getElementById('cliente-proyecto').value.trim();
+            const tarifa = parseFloat(document.getElementById('tarifa-proyecto').value) || 20;
+            const desc = document.getElementById('desc-proyecto').value.trim();
+            
+            if (!nombre) {
+                alert('Ingresa un nombre para el proyecto');
+                return;
+            }
+            
+            const proyecto = {
+                id: Date.now(),
+                nombre,
+                cliente,
+                tarifa,
+                descripcion: desc,
+                tiempoTotal: 0,
+                dineroExtra: 0,
+                sesiones: []
+            };
+            
+            proyectos.push(proyecto);
+            guardar();
+            
+            document.getElementById('nombre-proyecto').value = '';
+            document.getElementById('cliente-proyecto').value = '';
+            document.getElementById('tarifa-proyecto').value = '20';
+            document.getElementById('desc-proyecto').value = '';
+            
+            renderizarProyectos();
+            actualizarStats();
+            alert('Proyecto creado: ' + nombre);
+        }
+
+        function renderizarProyectos() {
+            const cont = document.getElementById('lista-proyectos');
+            if (proyectos.length === 0) {
+                cont.innerHTML = '<p style="color: #8b949e; text-align: center;">No hay proyectos aún</p>';
+                return;
+            }
+            
+            cont.innerHTML = proyectos.map((p, i) => {
+                const horas = (p.tiempoTotal / 3600).toFixed(1);
+                const ingreso = ((p.tiempoTotal / 3600) * p.tarifa + p.dineroExtra).toFixed(2);
+                const selected = proyectoSeleccionado === i ? 'selected' : '';
+                
+                return `
+                    <div class="project-item ${selected}" onclick="seleccionarProyecto(${i})">
+                        <h3>${p.nombre}</h3>
+                        <p>👤 ${p.cliente || 'Sin cliente'} | 💰 $${ingreso} | ⏱️ ${horas}h</p>
+                        <p style="font-size: 0.8rem; margin-top: 5px;">Tarifa: $${p.tarifa}/h | Extras: $${p.dineroExtra}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function seleccionarProyecto(index) {
+            proyectoSeleccionado = index;
+            renderizarProyectos();
+            alert('Proyecto seleccionado: ' + proyectos[index].nombre);
+        }
+
+        function eliminarProyecto(index) {
+            if (!confirm('¿Eliminar este proyecto?')) return;
+            proyectos.splice(index, 1);
+            if (proyectoSeleccionado === index) proyectoSeleccionado = null;
+            guardar();
+            renderizarProyectos();
+            actualizarStats();
+        }
+
+        // ========== TIMER ==========
+        function iniciarTimer() {
+            if (proyectoSeleccionado === null) {
+                alert('Selecciona un proyecto primero');
+                return;
+            }
+            tiempoInicio = Date.now() - tiempoPausado;
+            timerInterval = setInterval(actualizarDisplay, 1000);
+            document.getElementById('btn-iniciar').disabled = true;
+            document.getElementById('btn-pausar').disabled = false;
+        }
+
+        function pausarTimer() {
+            clearInterval(timerInterval);
+            tiempoPausado = Date.now() - tiempoInicio;
+            document.getElementById('btn-iniciar').disabled = false;
+            document.getElementById('btn-pausar').disabled = true;
+        }
+
+        function actualizarDisplay() {
+            const transcurrido = Math.floor((Date.now() - tiempoInicio) / 1000);
+            const h = Math.floor(transcurrido / 3600);
+            const m = Math.floor((transcurrido % 3600) / 60);
+            const s = transcurrido % 60;
+            document.getElementById('timer-display').textContent = 
+                `${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
+        }
+
+        function registrarSesion() {
+            if (proyectoSeleccionado === null || tiempoInicio === null) {
+                alert('Inicia el timer primero');
+                return;
+            }
+            
+            pausarTimer();
+            const transcurrido = Math.floor((Date.now() - tiempoInicio) / 1000);
+            
+            if (transcurrido < 60) {
+                alert('La sesión debe durar al menos 1 minuto');
+                return;
+            }
+            
+            const extra = parseFloat(document.getElementById('extra-timer').value) || 0;
+            agregarSesion(transcurrido, document.getElementById('nota-timer').value, extra);
+            
+            tiempoInicio = null;
+            tiempoPausado = 0;
+            document.getElementById('timer-display').textContent = '00:00:00';
+            document.getElementById('nota-timer').value = '';
+            document.getElementById('extra-timer').value = '0';
+        }
+
+        // ========== MANUAL ==========
+        function agregarManual() {
+            if (proyectoSeleccionado === null) {
+                alert('Selecciona un proyecto primero');
+                return;
+            }
+            
+            const horas = parseInt(document.getElementById('manual-horas').value) || 0;
+            const minutos = parseInt(document.getElementById('manual-minutos').value) || 0;
+            const extra = parseFloat(document.getElementById('extra-manual').value) || 0;
+            
+            if (horas < 0 || minutos < 0 || minutos >= 60) {
+                alert('Valores inválidos');
+                return;
+            }
+            
+            const segundos = (horas * 3600) + (minutos * 60);
+            if (segundos === 0 && extra === 0) {
+                alert('Ingresa tiempo o dinero extra');
+                return;
+            }
+            
+            agregarSesion(segundos, document.getElementById('manual-nota').value, extra);
+            
+            document.getElementById('manual-horas').value = '0';
+            document.getElementById('manual-minutos').value = '0';
+            document.getElementById('manual-nota').value = '';
+            document.getElementById('extra-manual').value = '0';
+        }
+
+        function agregarSesion(segundos, nota, extra) {
+            const p = proyectos[proyectoSeleccionado];
+            p.tiempoTotal += segundos;
+            p.dineroExtra += extra;
+            
+            const h = Math.floor(segundos / 3600);
+            const m = Math.floor((segundos % 3600) / 60);
+            
+            p.sesiones.push({
+                fecha: new Date().toLocaleString(),
+                duracion: `${h}h ${m}m`,
+                segundos: segundos,
+                nota: nota || 'Sin nota',
+                extra: extra
+            });
+            
+            guardar();
+            renderizarProyectos();
+            actualizarStats();
+            alert(`✅ Sesión registrada: ${h}h ${m}m${extra > 0 ? ' + $' + extra + ' extra' : ''}`);
+        }
+
+        // ========== BUSCAR ==========
+        function buscar() {
+            const query = document.getElementById('busqueda').value.toLowerCase().trim();
+            const cont = document.getElementById('resultados-busqueda');
+            
+            if (!query) {
+                cont.innerHTML = '';
+                return;
+            }
+            
+            const resultados = proyectos.filter(p => 
+                p.nombre.toLowerCase().includes(query) ||
+                p.cliente.toLowerCase().includes(query) ||
+                p.descripcion.toLowerCase().includes(query)
+            );
+            
+            if (resultados.length === 0) {
+                cont.innerHTML = '<p style="color: #8b949e;">No se encontraron resultados</p>';
+                return;
+            }
+            
+            cont.innerHTML = resultados.map(p => {
+                const horas = (p.tiempoTotal / 3600).toFixed(1);
+                const ingreso = ((p.tiempoTotal / 3600) * p.tarifa + p.dineroExtra).toFixed(2);
+                return `
+                    <div class="project-item">
+                        <h3>${p.nombre}</h3>
+                        <p>👤 ${p.cliente || 'Sin cliente'}</p>
+                        <p>💰 Total: $${ingreso} | ⏱️ ${horas}h | 📋 ${p.sesiones.length} sesiones</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ========== REPORTES ==========
+        function actualizarStats() {
+            const totalProy = proyectos.length;
+            const totalSeg = proyectos.reduce((sum, p) => sum + p.tiempoTotal, 0);
+            const totalHoras = (totalSeg / 3600).toFixed(1);
+            const totalDinero = proyectos.reduce((sum, p) => sum + (p.tiempoTotal / 3600) * p.tarifa, 0).toFixed(2);
+            const totalExtra = proyectos.reduce((sum, p) => sum + p.dineroExtra, 0).toFixed(2);
+            
+            document.getElementById('total-proyectos').textContent = totalProy;
+            document.getElementById('total-horas').textContent = totalHoras + 'h';
+            document.getElementById('total-dinero').textContent = '$' + totalDinero;
+            document.getElementById('total-extra').textContent = '$' + totalExtra;
+            
+            // Historial
+            const historial = document.getElementById('historial-sesiones');
+            let todasSesiones = [];
+            proyectos.forEach(p => {
+                p.sesiones.forEach(s => {
+                    todasSesiones.push({...s, proyecto: p.nombre});
+                });
+            });
+            
+            todasSesiones.sort((a, b) => new Date(b.fecha) - new Date(a.fecha));
+            
+            historial.innerHTML = todasSesiones.slice(0, 20).map(s => `
+                <div class="session-item">
+                    <div>
+                        <strong>${s.proyecto}</strong><br>
+                        <small>${s.fecha}</small>
+                    </div>
+                    <div style="text-align: right;">
+                        <strong>${s.duracion}</strong><br>
+                        <small>${s.nota}</small>
+                        ${s.extra > 0 ? '<br><span style="color: #3fb950;">+$' + s.extra + '</span>' : ''}
+                    </div>
+                </div>
+            `).join('') || '<p style="color: #8b949e;">Sin sesiones aún</p>';
+        }
+
+        function dibujarGrafico() {
+            const canvas = document.getElementById('chart-canvas');
+            const ctx = canvas.getContext('2d');
+            const container = document.getElementById('chart-container');
+            
+            canvas.width = container.clientWidth - 30;
+            canvas.height = container.clientHeight - 30;
+            
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (proyectos.length === 0) {
+                ctx.fillStyle = '#8b949e';
+                ctx.font = '16px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('No hay proyectos', canvas.width/2, canvas.height/2);
+                return;
+            }
+            
+            const datos = proyectos.map(p => ({
+                nombre: p.nombre.substring(0, 10),
+                valor: (p.tiempoTotal / 3600) * p.tarifa + p.dineroExtra
+            }));
+            
+            const maxValor = Math.max(...datos.map(d => d.valor)) || 1;
+            const barWidth = canvas.width / datos.length * 0.6;
+            const spacing = canvas.width / datos.length;
+            
+            datos.forEach((d, i) => {
+                const height = (d.valor / maxValor) * (canvas.height - 60);
+                const x = i * spacing + spacing * 0.2;
+                const y = canvas.height - height - 30;
+                
+                // Barra
+                ctx.fillStyle = `hsl(${200 + i * 30}, 70%, 50%)`;
+                ctx.fillRect(x, y, barWidth, height);
+                
+                // Valor
+                ctx.fillStyle = '#c9d1d9';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('$' + d.valor.toFixed(0), x + barWidth/2, y - 5);
+                
+                // Nombre
+                ctx.fillText(d.nombre, x + barWidth/2, canvas.height - 10);
+            });
+        }
+
+        // ========== EXPORTAR ==========
+        function exportarPDF() {
+            let contenido = 'DC FREELANCE TRACKER - REPORTE\n\n';
+            contenido += 'Generado: ' + new Date().toLocaleString() + '\n\n';
+            
+            proyectos.forEach(p => {
+                const horas = (p.tiempoTotal / 3600).toFixed(2);
+                const ingreso = ((p.tiempoTotal / 3600) * p.tarifa + p.dineroExtra).toFixed(2);
+                contenido += `📁 ${p.nombre}\n`;
+                contenido += `   Cliente: ${p.cliente}\n`;
+                contenido += `   Tarifa: $${p.tarifa}/h\n`;
+                contenido += `   Tiempo: ${horas}h\n`;
+                contenido += `   Extras: $${p.dineroExtra}\n`;
+                contenido += `   TOTAL: $${ingreso}\n\n`;
+                
+                if (p.sesiones.length > 0) {
+                    contenido += '   Sesiones:\n';
+                    p.sesiones.forEach(s => {
+                        contenido += `      • ${s.fecha} - ${s.duracion} - ${s.nota}${s.extra > 0 ? ' (+$' + s.extra + ')' : ''}\n`;
+                    });
+                    contenido += '\n';
+                }
+            });
+            
+            const totalGeneral = proyectos.reduce((sum, p) => sum + (p.tiempoTotal / 3600) * p.tarifa + p.dineroExtra, 0).toFixed(2);
+            contenido += `\n💰 TOTAL GENERAL: $${totalGeneral}\n`;
+            
+            const blob = new Blob([contenido], {type: 'text/plain'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'DC_Freelance_Report.txt';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('Reporte descargado (abrelo y usa "Imprimir como PDF")');
+        }
+
+        function exportarExcel() {
+            let csv = 'Proyecto,Cliente,Tarifa,Horas,Extras,Total\n';
+            
+            proyectos.forEach(p => {
+                const horas = (p.tiempoTotal / 3600).toFixed(2);
+                const total = ((p.tiempoTotal / 3600) * p.tarifa + p.dineroExtra).toFixed(2);
+                csv += `"${p.nombre}","${p.cliente}",${p.tarifa},${horas},${p.dineroExtra},${total}\n`;
+            });
+            
+            const blob = new Blob([csv], {type: 'text/csv'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'DC_Freelance_Report.csv';
+            a.click();
+            URL.revokeObjectURL(url);
+            
+            alert('CSV descargado (abre con Excel)');
+        }
+
+        function exportarJSON() {
+            const datos = {
+                fecha: new Date().toISOString(),
+                proyectos: proyectos
+            };
+            const blob = new Blob([JSON.stringify(datos, null, 2)], {type: 'application/json'});
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'DC_Freelance_Backup.json';
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        function importarJSON() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    try {
+                        const datos = JSON.parse(event.target.result);
+                        proyectos = datos.proyectos || [];
+                        guardar();
+                        renderizarProyectos();
+                        actualizarStats();
+                        alert('✅ Datos cargados correctamente');
+                    } catch (err) {
+                        alert('Error al cargar el archivo');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        // ========== UTILIDADES ==========
+        function guardar() {
+            localStorage.setItem('dc_proyectos', JSON.stringify(proyectos));
+        }
+    </script>
+</body>
+</html>
