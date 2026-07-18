@@ -42,7 +42,7 @@ Diseñada para **freelancers, autónomos y pequeños equipos** que necesitan lle
 - ✅ Historial completo de todas las sesiones
 - ✅ Exporta a TXT, CSV o PDF (con imágenes incluidas)
 - ✅ Guarda y restaura backups en formato JSON
-
+### Concepto + Precio en notas
 ---
 
 ## 💰 ¿Cómo funciona el cálculo?
