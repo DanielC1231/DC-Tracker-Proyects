@@ -92,13 +92,13 @@
         
         .tab-btn {
             flex: 1;
-            min-width: 38px;
-            padding: 10px 4px;
+            min-width: 35px;
+            padding: 10px 3px;
             background: transparent;
             border: none;
             border-radius: 6px;
             color: #8b949e;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.25s;
@@ -605,6 +605,43 @@
             border-radius: 8px;
         }
         
+        /* ===== SELECTOR DE MONEDA ===== */
+        .moneda-selector {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            justify-content: flex-end;
+            margin-bottom: 10px;
+        }
+        
+        .moneda-selector label {
+            color: #8b949e;
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .moneda-selector select {
+            padding: 8px 12px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .moneda-selector select:focus {
+            outline: none;
+            border-color: #58a6ff;
+        }
+        
+        .moneda-selector .simbolo {
+            color: #3fb950;
+            font-size: 16px;
+            font-weight: bold;
+        }
+        
         /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #161b22; border-radius: 3px; }
@@ -613,7 +650,7 @@
         /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
             .header h1 { font-size: 20px; }
-            .tab-btn { font-size: 11px; padding: 8px 3px; min-width: 32px; }
+            .tab-btn { font-size: 10px; padding: 8px 2px; min-width: 30px; }
             .timer-display { font-size: 36px; min-width: 160px; padding: 12px; }
             .btn { font-size: 14px; padding: 12px 16px; min-height: 44px; }
             .stats { grid-template-columns: repeat(2, 1fr); }
@@ -622,6 +659,7 @@
             body { padding: 4px; }
             .nota-item .texto { font-size: 13px; }
             .nota-item .precio { font-size: 13px; min-width: 60px; }
+            .moneda-selector { justify-content: center; }
         }
         
         @media (min-width: 768px) {
@@ -837,7 +875,7 @@
                     <input type="text" id="nota-concepto" placeholder="Ej: Cable para barco">
                 </div>
                 <div class="form-group" style="flex:1; min-width:80px;">
-                    <label>Precio ($)</label>
+                    <label>Precio</label>
                     <input type="number" id="nota-precio" placeholder="100">
                 </div>
             </div>
@@ -879,6 +917,16 @@
         <div class="label-frame">
             <span class="label-title" style="font-size:18px; text-align:center; display:block; color:#58a6ff;">📊 Resumen General</span>
 
+            <!-- ===== SELECTOR DE MONEDA ===== -->
+            <div class="moneda-selector">
+                <label>💱 Moneda:</label>
+                <select id="selector-moneda" onchange="actualizarTodo()">
+                    <option value="MXN">🇲🇽 MXN</option>
+                    <option value="USD">🇺🇸 USD</option>
+                </select>
+                <span class="simbolo" id="simbolo-moneda">$</span>
+            </div>
+
             <div class="stats">
                 <div class="stat-card">
                     <div class="number" id="stat-proyectos">0</div>
@@ -895,6 +943,22 @@
                 <div class="stat-card">
                     <div class="number" id="stat-extras">$0</div>
                     <div class="label">Extras</div>
+                </div>
+            </div>
+
+            <!-- ===== DESGLOSE DETALLADO ===== -->
+            <div style="background: #1a2a3a; padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid #21262d;">
+                <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #21262d;">
+                    <span style="color: #8b949e;">💰 Horas trabajadas:</span>
+                    <span style="color: #58a6ff; font-weight: bold;" id="desglose-horas">$0.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #21262d;">
+                    <span style="color: #8b949e;">📓 Notas del proyecto:</span>
+                    <span style="color: #f0883e; font-weight: bold;" id="desglose-notas">$0.00</span>
+                </div>
+                <div style="display: flex; justify-content: space-between; padding: 6px 0; font-size: 16px;">
+                    <span style="color: #c9d1d9; font-weight: bold;">💵 TOTAL A COBRAR:</span>
+                    <span style="color: #3fb950; font-weight: bold; font-size: 18px;" id="desglose-total">$0.00</span>
                 </div>
             </div>
         </div>
@@ -943,6 +1007,28 @@
     let segundosTotales = 0;
 
     // ============================================================
+    // ===== MONEDA =====
+    // ============================================================
+    function getMoneda() {
+        return document.getElementById('selector-moneda').value;
+    }
+
+    function getSimbolo() {
+        const moneda = getMoneda();
+        return moneda === 'MXN' ? '$' : 'US$';
+    }
+
+    function formatearMoneda(cantidad) {
+        const moneda = getMoneda();
+        const simbolo = getSimbolo();
+        const formato = new Intl.NumberFormat('es-MX', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        return `${simbolo}${formato.format(cantidad)}`;
+    }
+
+    // ============================================================
     // ===== INICIALIZACIÓN =====
     // ============================================================
     document.addEventListener('DOMContentLoaded', function() {
@@ -957,10 +1043,17 @@
             });
         });
 
+        // Cargar moneda guardada
+        const monedaGuardada = localStorage.getItem('dc_moneda');
+        if (monedaGuardada) {
+            document.getElementById('selector-moneda').value = monedaGuardada;
+        }
+
         actualizarListaProyectos();
         actualizarReportes();
         actualizarTimerDisplay();
         actualizarListaNotas();
+        actualizarSimbolo();
     });
 
     // ============================================================
@@ -972,7 +1065,6 @@
             try { 
                 const parsed = JSON.parse(data);
                 proyectos = parsed.proyectos || [];
-                // ✅ Cargar proyecto seleccionado
                 proyectoActual = parsed.proyectoActual !== undefined ? parsed.proyectoActual : null;
             } catch(e) { 
                 proyectos = [];
@@ -984,9 +1076,24 @@
     function guardarDatos() {
         const data = {
             proyectos: proyectos,
-            proyectoActual: proyectoActual  // ✅ Guarda el proyecto seleccionado
+            proyectoActual: proyectoActual
         };
         localStorage.setItem('dc_tracker_data', JSON.stringify(data));
+        // Guardar moneda
+        localStorage.setItem('dc_moneda', getMoneda());
+    }
+
+    function actualizarSimbolo() {
+        document.getElementById('simbolo-moneda').textContent = getSimbolo();
+    }
+
+    function actualizarTodo() {
+        guardarDatos();
+        actualizarSimbolo();
+        actualizarListaProyectos();
+        actualizarListaAdjuntos();
+        actualizarListaNotas();
+        actualizarReportes();
     }
 
     // ============================================================
@@ -1029,7 +1136,7 @@
         };
 
         proyectos.push(proyecto);
-        proyectoActual = proyectos.length - 1;  // ✅ Seleccionar automáticamente
+        proyectoActual = proyectos.length - 1;
         guardarDatos();
         actualizarListaProyectos();
         actualizarReportes();
@@ -1052,16 +1159,16 @@
 
         proyectos.forEach((p, index) => {
             const horas = p.tiempo_total / 3600;
-            const ingreso = (horas * p.tarifa) + p.dinero_extra;
+            const totalNotas = (p.notas || []).reduce((sum, n) => sum + n.precio, 0);
+            const ingreso = (horas * p.tarifa) + p.dinero_extra + totalNotas;
             const numAdj = (p.adjuntos || []).length;
             const numNotas = (p.notas || []).length;
 
             const div = document.createElement('div');
-            // ✅ Mostrar selección con clase 'selected'
             div.className = 'list-item' + (proyectoActual === index ? ' selected' : '');
             div.innerHTML = `
                 <div class="title">${p.nombre}</div>
-                <div class="subtitle">👤 ${p.cliente || 'N/A'} | 💰 $${ingreso.toFixed(0)} | ⏱️ ${horas.toFixed(1)}h${numAdj > 0 ? ` | 📎${numAdj}` : ''}${numNotas > 0 ? ` | 📓${numNotas}` : ''}</div>
+                <div class="subtitle">👤 ${p.cliente || 'N/A'} | 💰 ${formatearMoneda(ingreso)} | ⏱️ ${horas.toFixed(1)}h${numAdj > 0 ? ` | 📎${numAdj}` : ''}${numNotas > 0 ? ` | 📓${numNotas}` : ''}</div>
                 <div class="actions">
                     <button class="btn btn-success btn-sm" onclick="seleccionarProyecto(${index})">Seleccionar</button>
                     <button class="btn btn-danger btn-sm" onclick="eliminarProyecto(${index})">🗑️</button>
@@ -1070,7 +1177,6 @@
             container.appendChild(div);
         });
 
-        // ✅ Mostrar proyecto seleccionado en info-adjunto
         if (proyectoActual !== null && proyectos[proyectoActual]) {
             const p = proyectos[proyectoActual];
             document.getElementById('info-adjunto').innerHTML = `Proyecto seleccionado: <span class="proyecto-nombre">${p.nombre}</span>`;
@@ -1083,7 +1189,7 @@
         proyectoActual = index;
         adjuntoSeleccionado = -1;
         notaSeleccionada = -1;
-        guardarDatos();  // ✅ Guardar inmediatamente
+        guardarDatos();
         
         const p = proyectos[index];
         document.getElementById('info-adjunto').innerHTML = `Proyecto seleccionado: <span class="proyecto-nombre">${p.nombre}</span>`;
@@ -1247,7 +1353,7 @@
         actualizarListaProyectos();
         actualizarReportes();
 
-        showToast(`✅ Sesión: ${h}h ${m}m${extra ? ` + $${extra} extra` : ''}`);
+        showToast(`✅ Sesión: ${h}h ${m}m${extra ? ` + ${formatearMoneda(extra)} extra` : ''}`);
     }
 
     // ============================================================
@@ -1474,7 +1580,7 @@
 
         document.getElementById('nota-concepto').value = '';
         document.getElementById('nota-precio').value = '';
-        showToast(`✅ Nota: ${concepto} - $${precio.toFixed(2)}`);
+        showToast(`✅ Nota: ${concepto} - ${formatearMoneda(precio)}`);
     }
 
     function actualizarListaNotas() {
@@ -1483,7 +1589,7 @@
 
         if (proyectoActual === null || !proyectos[proyectoActual]) {
             container.innerHTML = '<div class="list-empty">Selecciona un proyecto primero</div>';
-            document.getElementById('total-notas').textContent = 'Total: $0.00';
+            document.getElementById('total-notas').textContent = `Total: ${formatearMoneda(0)}`;
             return;
         }
 
@@ -1492,13 +1598,13 @@
 
         if (notas.length === 0) {
             container.innerHTML = '<div class="list-empty">No hay notas guardadas</div>';
-            document.getElementById('total-notas').textContent = 'Total: $0.00';
+            document.getElementById('total-notas').textContent = `Total: ${formatearMoneda(0)}`;
             return;
         }
 
         let total = 0;
         notas.forEach(n => total += n.precio);
-        document.getElementById('total-notas').textContent = `Total: $${total.toFixed(2)}`;
+        document.getElementById('total-notas').textContent = `Total: ${formatearMoneda(total)}`;
 
         notas.forEach((n, idx) => {
             const esSeleccionada = (idx === notaSeleccionada);
@@ -1506,12 +1612,11 @@
             div.className = 'nota-item' + (esSeleccionada ? ' selected' : '');
             div.innerHTML = `
                 <span class="texto">${n.concepto}</span>
-                <span class="precio">$${n.precio.toFixed(2)}</span>
+                <span class="precio">${formatearMoneda(n.precio)}</span>
                 <span class="fecha-nota">${n.fecha}</span>
                 <button class="btn-eliminar-nota" onclick="event.stopPropagation(); eliminarNota(${idx})">✕</button>
             `;
             div.onclick = function() {
-                // ✅ La nota seleccionada NO se deselecciona sola
                 notaSeleccionada = idx;
                 actualizarListaNotas();
                 showToast(`📝 Nota: ${n.concepto}`);
@@ -1563,7 +1668,7 @@
         const notas = p.notas || [];
         let total = 0;
         notas.forEach(n => total += n.precio);
-        showToast(`💰 Total de notas: $${total.toFixed(2)}`, 'success');
+        showToast(`💰 Total de notas: ${formatearMoneda(total)}`, 'success');
     }
 
     // ============================================================
@@ -1589,14 +1694,15 @@
 
         resultados.forEach(p => {
             const horas = p.tiempo_total / 3600;
-            const ingreso = (horas * p.tarifa) + p.dinero_extra;
+            const totalNotas = (p.notas || []).reduce((sum, n) => sum + n.precio, 0);
+            const ingreso = (horas * p.tarifa) + p.dinero_extra + totalNotas;
             const numAdj = (p.adjuntos || []).length;
 
             const div = document.createElement('div');
             div.className = 'result-item';
             div.innerHTML = `
                 <div class="title">${p.nombre}</div>
-                <div class="subtitle">👤 ${p.cliente || 'N/A'} | 💰 $${ingreso.toFixed(2)} | ⏱️ ${horas.toFixed(1)}h${numAdj > 0 ? ` | 📎 ${numAdj}` : ''}</div>
+                <div class="subtitle">👤 ${p.cliente || 'N/A'} | 💰 ${formatearMoneda(ingreso)} | ⏱️ ${horas.toFixed(1)}h${numAdj > 0 ? ` | 📎 ${numAdj}` : ''}</div>
             `;
             container.appendChild(div);
         });
@@ -1609,14 +1715,44 @@
         const totalProy = proyectos.length;
         const totalSeg = proyectos.reduce((sum, p) => sum + p.tiempo_total, 0);
         const totalHoras = totalSeg / 3600;
-        const totalDinero = proyectos.reduce((sum, p) => sum + ((p.tiempo_total / 3600) * p.tarifa), 0);
+        
+        // Total de horas en dinero
+        const totalHorasDinero = proyectos.reduce((sum, p) => sum + ((p.tiempo_total / 3600) * p.tarifa), 0);
         const totalExtra = proyectos.reduce((sum, p) => sum + p.dinero_extra, 0);
+        
+        // Total de notas de todos los proyectos
+        const totalNotas = proyectos.reduce((sum, p) => {
+            const notas = p.notas || [];
+            return sum + notas.reduce((s, n) => s + n.precio, 0);
+        }, 0);
+        
+        // Total general = horas + extras + notas
+        const totalGeneral = totalHorasDinero + totalExtra + totalNotas;
 
         document.getElementById('stat-proyectos').textContent = totalProy;
         document.getElementById('stat-horas').textContent = totalHoras.toFixed(1) + 'h';
-        document.getElementById('stat-total').textContent = '$' + totalDinero.toFixed(2);
-        document.getElementById('stat-extras').textContent = '$' + totalExtra.toFixed(2);
+        document.getElementById('stat-total').textContent = formatearMoneda(totalGeneral);
+        document.getElementById('stat-extras').textContent = formatearMoneda(totalExtra);
 
+        // Desglose detallado del proyecto seleccionado
+        if (proyectoActual !== null && proyectos[proyectoActual]) {
+            const p = proyectos[proyectoActual];
+            const horasP = p.tiempo_total / 3600;
+            const horasDinero = horasP * p.tarifa;
+            const notasP = (p.notas || []).reduce((sum, n) => sum + n.precio, 0);
+            const extrasP = p.dinero_extra || 0;
+            const totalP = horasDinero + notasP + extrasP;
+
+            document.getElementById('desglose-horas').textContent = formatearMoneda(horasDinero);
+            document.getElementById('desglose-notas').textContent = formatearMoneda(notasP);
+            document.getElementById('desglose-total').textContent = formatearMoneda(totalP);
+        } else {
+            document.getElementById('desglose-horas').textContent = formatearMoneda(0);
+            document.getElementById('desglose-notas').textContent = formatearMoneda(0);
+            document.getElementById('desglose-total').textContent = formatearMoneda(0);
+        }
+
+        // Historial
         const container = document.getElementById('historial-sesiones');
         container.innerHTML = '';
 
@@ -1641,7 +1777,7 @@
                 <span class="proyecto">${s.proyecto}</span>
                 <span class="fecha">${s.fecha}</span>
                 <span class="duracion">${s.duracion}</span>
-                <span class="extra">${s.extra ? '+$' + s.extra : ''}</span>
+                <span class="extra">${s.extra ? formatearMoneda(s.extra) : ''}</span>
                 <span class="nota">${s.nota}</span>
             `;
             container.appendChild(div);
@@ -1654,36 +1790,58 @@
     function exportarTXT() {
         if (proyectos.length === 0) { showToast('No hay proyectos', 'error'); return; }
 
+        const moneda = getMoneda();
+        const simbolo = getSimbolo();
+
         let texto = 'DC TRACKER PROYECTS - REPORTE\n';
         texto += '='.repeat(50) + '\n\n';
-        texto += `Generado: ${new Date().toLocaleString()}\n\n`;
+        texto += `Generado: ${new Date().toLocaleString()}\n`;
+        texto += `Moneda: ${moneda}\n\n`;
 
         proyectos.forEach(p => {
             const horas = p.tiempo_total / 3600;
-            const ingreso = (horas * p.tarifa) + p.dinero_extra;
-            const numAdj = (p.adjuntos || []).length;
+            const horasDinero = horas * p.tarifa;
             const notas = p.notas || [];
+            const totalNotas = notas.reduce((sum, n) => sum + n.precio, 0);
+            const ingreso = horasDinero + p.dinero_extra + totalNotas;
+            const numAdj = (p.adjuntos || []).length;
 
             texto += `📁 ${p.nombre}\n`;
             texto += `   Cliente: ${p.cliente || 'N/A'}\n`;
-            texto += `   Tarifa: $${p.tarifa}/h\n`;
-            texto += `   Tiempo: ${horas.toFixed(2)}h\n`;
-            texto += `   Extras: $${p.dinero_extra}\n`;
+            texto += `   Tarifa: ${simbolo}${p.tarifa}/h\n`;
+            texto += `   Horas: ${horas.toFixed(2)}h = ${formatearMoneda(horasDinero)}\n`;
+            texto += `   Extras: ${formatearMoneda(p.dinero_extra)}\n`;
+            texto += `   Notas: ${formatearMoneda(totalNotas)}\n`;
             texto += `   Adjuntos: ${numAdj}\n`;
-            texto += `   TOTAL: $${ingreso.toFixed(2)}\n`;
+            texto += `   TOTAL: ${formatearMoneda(ingreso)}\n\n`;
 
             if (notas.length > 0) {
                 texto += '   Notas:\n';
                 notas.forEach(n => {
-                    texto += `      📓 ${n.concepto} - $${n.precio.toFixed(2)}\n`;
+                    texto += `      📓 ${n.concepto} - ${formatearMoneda(n.precio)}\n`;
                 });
+                texto += '\n';
             }
-            texto += '\n';
+
+            if (p.sesiones && p.sesiones.length > 0) {
+                texto += '   Sesiones:\n';
+                p.sesiones.forEach(s => {
+                    texto += `      • ${s.fecha} - ${s.duracion} - ${s.nota}`;
+                    if (s.extra) texto += ` (+${formatearMoneda(s.extra)})`;
+                    texto += '\n';
+                });
+                texto += '\n';
+            }
         });
 
-        const total = proyectos.reduce((sum, p) => sum + ((p.tiempo_total / 3600) * p.tarifa) + p.dinero_extra, 0);
+        const totalGeneral = proyectos.reduce((sum, p) => {
+            const horas = p.tiempo_total / 3600;
+            const notas = p.notas || [];
+            return sum + (horas * p.tarifa) + p.dinero_extra + notas.reduce((s, n) => s + n.precio, 0);
+        }, 0);
+        
         texto += '='.repeat(50) + '\n';
-        texto += `💰 TOTAL GENERAL: $${total.toFixed(2)}\n`;
+        texto += `💰 TOTAL GENERAL: ${formatearMoneda(totalGeneral)}\n`;
 
         descargarArchivo(texto, 'DC_Tracker_Report.txt', 'text/plain');
         showToast('📄 TXT generado');
@@ -1695,13 +1853,18 @@
     function exportarCSV() {
         if (proyectos.length === 0) { showToast('No hay proyectos', 'error'); return; }
 
-        let csv = 'Proyecto,Cliente,Tarifa,Horas,Extras,Adjuntos,Notas,Total\n';
+        const moneda = getMoneda();
+        const simbolo = getSimbolo();
+
+        let csv = `Proyecto,Cliente,Tarifa (${simbolo}),Horas,Horas (${simbolo}),Extras (${simbolo}),Notas (${simbolo}),Adjuntos,Total (${simbolo})\n`;
         proyectos.forEach(p => {
             const horas = p.tiempo_total / 3600;
-            const total = (horas * p.tarifa) + p.dinero_extra;
+            const horasDinero = horas * p.tarifa;
+            const notas = p.notas || [];
+            const totalNotas = notas.reduce((sum, n) => sum + n.precio, 0);
+            const total = horasDinero + p.dinero_extra + totalNotas;
             const numAdj = (p.adjuntos || []).length;
-            const numNotas = (p.notas || []).length;
-            csv += `"${p.nombre}","${p.cliente || ''}",${p.tarifa},${horas.toFixed(2)},${p.dinero_extra},${numAdj},${numNotas},${total.toFixed(2)}\n`;
+            csv += `"${p.nombre}","${p.cliente || ''}",${p.tarifa},${horas.toFixed(2)},${horasDinero.toFixed(2)},${p.dinero_extra},${totalNotas},${numAdj},${total.toFixed(2)}\n`;
         });
 
         descargarArchivo(csv, 'DC_Tracker_Report.csv', 'text/csv');
@@ -1716,6 +1879,7 @@
             app: 'DC Tracker Proyects',
             version: '1.0',
             fecha: new Date().toISOString(),
+            moneda: getMoneda(),
             proyectos: proyectos
         };
         descargarArchivo(JSON.stringify(datos, null, 2), 'DC_Tracker_Backup.json', 'application/json');
@@ -1740,11 +1904,15 @@
                     if (datos.proyectos) {
                         proyectos = datos.proyectos;
                         proyectoActual = datos.proyectoActual !== undefined ? datos.proyectoActual : null;
+                        if (datos.moneda) {
+                            document.getElementById('selector-moneda').value = datos.moneda;
+                        }
                         guardarDatos();
                         actualizarListaProyectos();
                         actualizarReportes();
                         actualizarListaAdjuntos();
                         actualizarListaNotas();
+                        actualizarSimbolo();
                         showToast('📂 Datos cargados correctamente');
                     } else {
                         showToast('Archivo inválido', 'error');
@@ -1769,6 +1937,9 @@
 
         showToast('📕 Generando PDF...', 'success');
         actualizarProgreso(20, 'Preparando contenido...');
+
+        const moneda = getMoneda();
+        const simbolo = getSimbolo();
 
         let html = `
         <!DOCTYPE html>
@@ -1819,12 +1990,37 @@
                     margin: 2px;
                     font-size: 11px;
                 }
+                .moneda-info {
+                    color: #888;
+                    font-size: 12px;
+                    text-align: right;
+                }
+                .desglose {
+                    margin: 10px 0;
+                    padding: 10px;
+                    background: #f0f0f0;
+                    border-radius: 6px;
+                }
+                .desglose-linea {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 3px 0;
+                }
+                .desglose-total {
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: #1a4a2a;
+                    border-top: 2px solid #1a4a2a;
+                    padding-top: 5px;
+                    margin-top: 5px;
+                }
             </style>
         </head>
         <body>
             <div class="header">
                 <h1>💼 DC Tracker Proyects</h1>
                 <p>Reporte generado: ${new Date().toLocaleString()}</p>
+                <p class="moneda-info">Moneda: ${moneda} (${simbolo})</p>
             </div>
         `;
 
@@ -1836,7 +2032,10 @@
 
         proyectos.forEach((p, idx) => {
             const horas = p.tiempo_total / 3600;
-            const ingreso = (horas * p.tarifa) + p.dinero_extra;
+            const horasDinero = horas * p.tarifa;
+            const notas = p.notas || [];
+            const totalNotas = notas.reduce((sum, n) => sum + n.precio, 0);
+            const ingreso = horasDinero + p.dinero_extra + totalNotas;
             totalGeneral += ingreso;
             contador++;
             
@@ -1846,31 +2045,42 @@
             <div class="proyecto">
                 <h3>📁 ${p.nombre}</h3>
                 <p><strong>Cliente:</strong> ${p.cliente || 'N/A'}</p>
-                <p><strong>Tarifa:</strong> $${p.tarifa}/hora</p>
-                <p><strong>Tiempo total:</strong> ${horas.toFixed(2)} horas</p>
-                <p><strong>Dinero extra:</strong> $${p.dinero_extra.toFixed(2)}</p>
-                <p><strong>Adjuntos:</strong> ${(p.adjuntos || []).length}</p>
-                <p style="font-size:16px; color:#e94560;"><strong>TOTAL:</strong> $${ingreso.toFixed(2)}</p>
+                <p><strong>Tarifa:</strong> ${simbolo}${p.tarifa}/hora</p>
+                <div class="desglose">
+                    <div class="desglose-linea">
+                        <span>⏱️ Horas trabajadas:</span>
+                        <span>${horas.toFixed(2)}h = ${simbolo}${horasDinero.toFixed(2)}</span>
+                    </div>
+                    <div class="desglose-linea">
+                        <span>📓 Notas del proyecto:</span>
+                        <span>${simbolo}${totalNotas.toFixed(2)}</span>
+                    </div>
+                    <div class="desglose-linea">
+                        <span>💸 Extras:</span>
+                        <span>${simbolo}${p.dinero_extra.toFixed(2)}</span>
+                    </div>
+                    <div class="desglose-linea desglose-total">
+                        <span>💰 TOTAL:</span>
+                        <span>${simbolo}${ingreso.toFixed(2)}</span>
+                    </div>
+                </div>
             `;
 
             if (p.sesiones && p.sesiones.length > 0) {
                 html += `<h4>Sesiones:</h4><table><tr><th>Fecha</th><th>Duración</th><th>Nota</th><th>Extra</th></tr>`;
                 p.sesiones.forEach(s => {
-                    html += `<tr><td>${s.fecha}</td><td>${s.duracion}</td><td>${s.nota}</td><td>${s.extra ? '$' + s.extra : '-'}</td></tr>`;
+                    html += `<tr><td>${s.fecha}</td><td>${s.duracion}</td><td>${s.nota}</td><td>${s.extra ? simbolo + s.extra : '-'}</td></tr>`;
                 });
                 html += `</table>`;
             }
 
-            // Notas en PDF
-            const notas = p.notas || [];
             if (notas.length > 0) {
                 html += `<h4>📓 Notas:</h4>`;
                 notas.forEach(n => {
-                    html += `<span class="nota-pdf">📓 ${n.concepto} - $${n.precio.toFixed(2)}</span> `;
+                    html += `<span class="nota-pdf">${n.concepto} - ${simbolo}${n.precio.toFixed(2)}</span> `;
                 });
             }
 
-            // Adjuntos
             if (p.adjuntos && p.adjuntos.length > 0) {
                 html += `<h4>📎 Archivos adjuntos:</h4>`;
                 p.adjuntos.forEach(a => {
@@ -1896,7 +2106,8 @@
 
         html += `
             <div class="total">
-                <h2>💰 TOTAL GENERAL A COBRAR: $${totalGeneral.toFixed(2)}</h2>
+                <h2>💰 TOTAL GENERAL: ${simbolo}${totalGeneral.toFixed(2)}</h2>
+                <p style="font-size:14px; margin-top:5px;">(Horas + Notas + Extras)</p>
             </div>
         </body>
         </html>
@@ -1963,7 +2174,6 @@
     // ===== NAVEGACIÓN CON TECLADO =====
     // ============================================================
     document.addEventListener('keydown', function(e) {
-        // Adjuntos: flechas y teclas
         if (document.getElementById('tab-adjuntos').classList.contains('active')) {
             if (e.key === 'ArrowUp') { 
                 e.preventDefault(); 
@@ -1991,7 +2201,6 @@
             }
         }
 
-        // Atajos Ctrl+
         if (e.ctrlKey) {
             switch(e.key) {
                 case 'n': e.preventDefault(); document.querySelector('[data-tab="tab-proyectos"]').click(); break;
@@ -2013,6 +2222,7 @@
     console.log('💼 DC Tracker Proyects - Web version loaded!');
     console.log('📌 Atajos: Ctrl+N (Proyectos), Ctrl+T (Timer), Ctrl+A (Adjuntos), Ctrl+B (Buscar), Ctrl+R (Reportes)');
     console.log('📓 Nueva sección: Libreta de Notas');
+    console.log('💱 Monedas: MXN (por defecto) y USD');
 </script>
 
 </body>
