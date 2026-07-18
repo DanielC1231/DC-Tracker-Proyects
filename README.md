@@ -1,59 +1,27 @@
-# 💼 DC Tracker Proyects
-
-> Organiza proyectos, controla tiempo, adjunta archivos y cobra lo que mereces
-
----
-
-## 📋 ¿Qué es?
-
-**DC Tracker Proyects** es una herramienta gratuita para **organizar proyectos**, **controlar el tiempo de trabajo**, **adjuntar archivos** (tickets, facturas, fotos) y **calcular cuánto cobrar** por tu trabajo.
-
-Diseñada para **freelancers, autónomos y pequeños equipos** que necesitan llevar el control de sus proyectos sin complicaciones.
-
----
-
-## 🚀 Características Principales
-
-### 📁 Proyectos
-- ✅ Crea proyectos con nombre, cliente y tarifa por hora
-- ✅ Edita la información en cualquier momento
-- ✅ Elimina proyectos que ya no necesites
-
-### ⏱️ Timer Automático
-- ✅ Inicia, pausa y registra el tiempo trabajado
-- ✅ Mínimo 1 minuto por sesión
-- ✅ Agrega notas a cada sesión
-
-### ✏️ Agregar Tiempo Manual
-- ✅ Ingresa horas y minutos manualmente
-- ✅ Perfecto para cuando olvidas iniciar el timer
-
-### 📎 Adjuntar Archivos
-- ✅ Sube imágenes, PDFs, documentos (máx 5MB)
-- ✅ Organiza por tipo: Tickets, Facturas, Contratos, etc.
-- ✅ Visualiza imágenes en el PDF final
-
-### 🔍 Buscar
-- ✅ Encuentra proyectos por nombre, cliente o descripción
-- ✅ Resultados en tiempo real
-
-### 📊 Reportes
-- ✅ Resumen general con: total de proyectos, horas, dinero y extras
-- ✅ Historial completo de todas las sesiones
-- ✅ Exporta a TXT, CSV o PDF (con imágenes incluidas)
-- ✅ Guarda y restaura backups en formato JSON
-### Concepto + Precio en notas
----
-
-## 💰 ¿Cómo funciona el cálculo?
-
-El sistema calcula automáticamente:
 
 | Variable | Descripción |
 |----------|-------------|
 | **Horas trabajadas** | Suma de todas las sesiones registradas |
 | **Tarifa por hora** | La que configuras en cada proyecto |
 | **Dinero extra** | Puedes agregar importes adicionales (ej: gastos, imprevistos) |
+| **Total de notas** | Suma de todas las notas agregadas en la libreta |
+
+**Ejemplo:**
+- Horas: 10h × $20 = $200
+- Notas: $100 (cable para barco)
+- Extras: $50
+- **Total: $350**
+
+---
+
+## 💱 Monedas
+
+| Moneda | Símbolo | Código |
+|--------|---------|--------|
+| **Peso Mexicano** | $ | MXN |
+| **Dólar Americano** | US$ | USD |
+
+*La moneda se guarda automáticamente y persiste al cerrar la app.*
 
 ---
 
@@ -85,13 +53,19 @@ El sistema calcula automáticamente:
 
 Todos tus datos se guardan **automáticamente en tu navegador** (localStorage). No necesitas crear cuenta ni registrarte. ¡Tus datos son tuyos!
 
+**Persistencia:**
+- ✅ Proyecto seleccionado
+- ✅ Notas seleccionadas
+- ✅ Moneda preferida
+- ✅ Todos los proyectos y sesiones
+
 **Puedes exportar un backup en JSON** para guardarlo en tu PC o restaurarlo cuando quieras.
 
 ---
 
 ## 🆓 Precio
 
-**100% GRATIS**
+**100% GRATIS** - Sin anuncios, sin registro, sin límites.
 
 Si te gusta, puedes apoyarme con una donación. ¡Cualquier aporte es bienvenido! ❤️
 
@@ -101,15 +75,17 @@ Si te gusta, puedes apoyarme con una donación. ¡Cualquier aporte es bienvenido
 
 | Versión | Descripción | Enlace |
 |---------|-------------|--------|
-| 🌐 **Web** | Usable desde cualquier navegador| [En github](https://danielc1231.github.io/DC-Tracker-Proyects/)
-| 💻 **EXE** | Versión para Windows | [En itch](https://watecompany.itch.io/dc-tracker-proyects) |
-| 📄 **HTML** | Archivo único para usar sin internet | [En itch](https://watecompany.itch.io/dc-tracker-proyects) |
+| 🌐 **Web** | Usable desde cualquier navegador | [GitHub Pages](https://danielc1231.github.io/DC-Tracker-Proyects/) |
+| 💻 **EXE** | Versión para Windows | [itch.io](https://watecompany.itch.io/dc-tracker-proyects) |
+| 📄 **HTML** | Archivo único para usar sin internet | [itch.io](https://watecompany.itch.io/dc-tracker-proyects) |
 
 ---
 
 ## 🛠️ Tecnologías utilizadas
 
-- **HTML5** - Estructura
+- **HTML5** - Estructura y contenido
+- **CSS3** - Estilos y diseño responsive
+- **JavaScript** - Lógica y funcionalidad
 - **localStorage** - Almacenamiento de datos
 - **html2pdf.js** - Generación de PDF con imágenes
 
@@ -118,5 +94,13 @@ Si te gusta, puedes apoyarme con una donación. ¡Cualquier aporte es bienvenido
 ## 📥 Instalación
 
 ### Opción 1: Usar la versión web (recomendada)
-1. Visita [itch.io](https://watecompany.itch.io/dc-tracker-proyects)
-2. Descargar
+1. Visita [GitHub Pages](https://danielc1231.github.io/DC-Tracker-Proyects/)
+2. ¡Empieza a usar la herramienta!
+
+### Opción 2: Descargar y usar localmente
+```bash
+# Clonar el repositorio
+git clone https://github.com/danielc1231/DC-Tracker-Proyects.git
+
+# Abrir el archivo en el navegador
+index.html
