@@ -92,13 +92,13 @@
         
         .tab-btn {
             flex: 1;
-            min-width: 45px;
+            min-width: 38px;
             padding: 10px 4px;
             background: transparent;
             border: none;
             border-radius: 6px;
             color: #8b949e;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.25s;
@@ -446,31 +446,6 @@
             font-weight: bold;
         }
         
-        .nav-adjuntos {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            align-items: center;
-            flex-wrap: wrap;
-            margin: 10px 0;
-        }
-        
-        .nav-adjuntos .btn {
-            min-width: 70px;
-            min-height: 44px;
-            font-size: 14px;
-            padding: 10px 16px;
-            border-radius: 10px;
-        }
-        
-        .nav-adjuntos .pos {
-            color: #8b949e;
-            font-size: 16px;
-            font-weight: bold;
-            min-width: 60px;
-            text-align: center;
-        }
-        
         .archivo-seleccionado {
             color: #3fb950;
             font-size: 14px;
@@ -494,6 +469,70 @@
         .preview-container .placeholder {
             color: #8b949e;
             font-size: 13px;
+        }
+        
+        /* ===== NOTAS / LIBRETA ===== */
+        .nota-item {
+            background: #1a2a3a;
+            padding: 12px 14px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 3px solid #f0883e;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .nota-item.selected {
+            background: #1f6feb;
+            border-left: 3px solid #3fb950;
+        }
+        
+        .nota-item .texto {
+            flex: 1;
+            font-size: 14px;
+            color: #c9d1d9;
+        }
+        
+        .nota-item.selected .texto {
+            color: white;
+        }
+        
+        .nota-item .precio {
+            font-weight: bold;
+            color: #3fb950;
+            font-size: 14px;
+            min-width: 80px;
+            text-align: right;
+        }
+        
+        .nota-item.selected .precio {
+            color: #ffd700;
+        }
+        
+        .nota-item .fecha-nota {
+            font-size: 11px;
+            color: #8b949e;
+            width: 100%;
+        }
+        
+        .nota-item .btn-eliminar-nota {
+            background: #da3633;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 12px;
+            font-size: 12px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        
+        .nota-item .btn-eliminar-nota:active {
+            transform: scale(0.95);
         }
         
         /* ===== LABEL FRAME ===== */
@@ -554,6 +593,18 @@
             background: #f0883e;
         }
         
+        /* ===== TOTAL NOTAS ===== */
+        .total-notas {
+            text-align: center;
+            color: #3fb950;
+            font-size: 18px;
+            font-weight: bold;
+            margin-top: 8px;
+            padding: 10px;
+            background: #1a2a3a;
+            border-radius: 8px;
+        }
+        
         /* ===== SCROLLBAR ===== */
         ::-webkit-scrollbar { width: 6px; }
         ::-webkit-scrollbar-track { background: #161b22; border-radius: 3px; }
@@ -562,14 +613,15 @@
         /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
             .header h1 { font-size: 20px; }
-            .tab-btn { font-size: 12px; padding: 8px 4px; min-width: 40px; }
+            .tab-btn { font-size: 11px; padding: 8px 3px; min-width: 32px; }
             .timer-display { font-size: 36px; min-width: 160px; padding: 12px; }
             .btn { font-size: 14px; padding: 12px 16px; min-height: 44px; }
             .stats { grid-template-columns: repeat(2, 1fr); }
             .historial-item { font-size: 11px; }
             .historial-item .nota { max-width: 70px; }
-            .nav-adjuntos .btn { min-width: 60px; font-size: 13px; padding: 10px 14px; }
             body { padding: 4px; }
+            .nota-item .texto { font-size: 13px; }
+            .nota-item .precio { font-size: 13px; min-width: 60px; }
         }
         
         @media (min-width: 768px) {
@@ -602,6 +654,7 @@
         <button class="tab-btn" data-tab="tab-timer">⏱️</button>
         <button class="tab-btn" data-tab="tab-manual">✏️</button>
         <button class="tab-btn" data-tab="tab-adjuntos">📎</button>
+        <button class="tab-btn" data-tab="tab-libreta">📓</button>
         <button class="tab-btn" data-tab="tab-buscar">🔍</button>
         <button class="tab-btn" data-tab="tab-reportes">📊</button>
     </div>
@@ -713,7 +766,7 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- TAB 4: ADJUNTOS (VERSIÓN MÓVIL) -->
+    <!-- TAB 4: ADJUNTOS (SIN BOTONES SUBIR/BAJAR) -->
     <!-- ========================================================== -->
     <div id="tab-adjuntos" class="tab-content">
         <div class="label-frame">
@@ -723,15 +776,8 @@
                 Selecciona un proyecto en <strong>Proyectos</strong> primero
             </div>
 
-            <!-- ===== NAVEGACIÓN ===== -->
-            <div class="nav-adjuntos">
-                <button class="btn btn-success btn-sm" onclick="navegarAdjuntos(-1)">⬆ Subir</button>
-                <span class="pos" id="pos-adjuntos">0/0</span>
-                <button class="btn btn-success btn-sm" onclick="navegarAdjuntos(1)">⬇ Bajar</button>
-            </div>
-
-            <div style="text-align:center; color:#f0883e; font-size:12px; margin-bottom:8px;">
-                💡 Usa ↑ ↓ para navegar
+            <div style="text-align:center; color:#8b949e; font-size:12px; margin-bottom:8px;">
+                Toca un archivo para seleccionarlo
             </div>
 
             <hr class="divider">
@@ -761,8 +807,8 @@
                 <input type="text" id="nombre-adjunto" placeholder="Nombre del archivo">
             </div>
 
-            <!-- ===== BOTÓN ADJUNTAR (GRANDE) ===== -->
-            <button class="btn-adjuntar" onclick="guardarAdjunto()">📎 Adjuntar al Proyecto</button>
+            <!-- ===== BOTÓN ADJUNTAR ===== -->
+            <button class="btn btn-primary btn-block" onclick="guardarAdjunto()">📎 Adjuntar al Proyecto</button>
         </div>
 
         <!-- ===== LISTA DE ADJUNTOS ===== -->
@@ -775,7 +821,48 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- TAB 5: BUSCAR -->
+    <!-- TAB 5: LIBRETA / NOTAS (NUEVO) -->
+    <!-- ========================================================== -->
+    <div id="tab-libreta" class="tab-content">
+        <div class="label-frame">
+            <span class="label-title" style="font-size:18px; text-align:center; display:block; color:#58a6ff;">📓 Libreta de Notas</span>
+            
+            <div style="text-align:center; color:#8b949e; font-size:12px; margin-bottom:8px;">
+                Toca una nota para seleccionarla (no se deselecciona sola)
+            </div>
+
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <div class="form-group" style="flex:2; min-width:150px;">
+                    <label>Concepto</label>
+                    <input type="text" id="nota-concepto" placeholder="Ej: Cable para barco">
+                </div>
+                <div class="form-group" style="flex:1; min-width:80px;">
+                    <label>Precio ($)</label>
+                    <input type="number" id="nota-precio" placeholder="100">
+                </div>
+            </div>
+            
+            <button class="btn btn-primary btn-block" onclick="agregarNota()">➕ Agregar Nota</button>
+        </div>
+
+        <div class="label-frame">
+            <span class="label-title">📝 Mis Notas</span>
+            <div id="lista-notas" class="list-container">
+                <div class="list-empty">No hay notas guardadas</div>
+            </div>
+            <div style="display:flex; gap:6px; margin-top:8px; flex-wrap:wrap;">
+                <button class="btn btn-danger btn-sm" onclick="eliminarNotaSeleccionada()" style="flex:1;">🗑️ Eliminar seleccionada</button>
+                <button class="btn btn-danger btn-sm" onclick="eliminarTodasNotas()" style="flex:1;">🗑️ Eliminar todas</button>
+                <button class="btn btn-success btn-sm" onclick="calcularTotalNotas()" style="flex:1;">💰 Calcular total</button>
+            </div>
+            <div class="total-notas" id="total-notas">
+                Total: $0.00
+            </div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- TAB 6: BUSCAR -->
     <!-- ========================================================== -->
     <div id="tab-buscar" class="tab-content">
         <div class="label-frame">
@@ -786,7 +873,7 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- TAB 6: REPORTES -->
+    <!-- TAB 7: REPORTES -->
     <!-- ========================================================== -->
     <div id="tab-reportes" class="tab-content">
         <div class="label-frame">
@@ -847,6 +934,7 @@
     let proyectoActual = null;
     let adjuntoSeleccionado = -1;
     let archivoTemp = null;
+    let notaSeleccionada = -1;
 
     // Timer
     let tiempoInicio = null;
@@ -872,20 +960,33 @@
         actualizarListaProyectos();
         actualizarReportes();
         actualizarTimerDisplay();
+        actualizarListaNotas();
     });
 
     // ============================================================
-    // ===== LOCAL STORAGE =====
+    // ===== LOCAL STORAGE (CON PERSISTENCIA) =====
     // ============================================================
     function cargarDatos() {
         const data = localStorage.getItem('dc_tracker_data');
         if (data) {
-            try { proyectos = JSON.parse(data); } catch(e) { proyectos = []; }
+            try { 
+                const parsed = JSON.parse(data);
+                proyectos = parsed.proyectos || [];
+                // ✅ Cargar proyecto seleccionado
+                proyectoActual = parsed.proyectoActual !== undefined ? parsed.proyectoActual : null;
+            } catch(e) { 
+                proyectos = [];
+                proyectoActual = null;
+            }
         }
     }
 
     function guardarDatos() {
-        localStorage.setItem('dc_tracker_data', JSON.stringify(proyectos));
+        const data = {
+            proyectos: proyectos,
+            proyectoActual: proyectoActual  // ✅ Guarda el proyecto seleccionado
+        };
+        localStorage.setItem('dc_tracker_data', JSON.stringify(data));
     }
 
     // ============================================================
@@ -923,10 +1024,12 @@
             tiempo_total: 0,
             dinero_extra: 0,
             sesiones: [],
-            adjuntos: []
+            adjuntos: [],
+            notas: []
         };
 
         proyectos.push(proyecto);
+        proyectoActual = proyectos.length - 1;  // ✅ Seleccionar automáticamente
         guardarDatos();
         actualizarListaProyectos();
         actualizarReportes();
@@ -951,12 +1054,14 @@
             const horas = p.tiempo_total / 3600;
             const ingreso = (horas * p.tarifa) + p.dinero_extra;
             const numAdj = (p.adjuntos || []).length;
+            const numNotas = (p.notas || []).length;
 
             const div = document.createElement('div');
+            // ✅ Mostrar selección con clase 'selected'
             div.className = 'list-item' + (proyectoActual === index ? ' selected' : '');
             div.innerHTML = `
                 <div class="title">${p.nombre}</div>
-                <div class="subtitle">👤 ${p.cliente || 'N/A'} | 💰 $${ingreso.toFixed(0)} | ⏱️ ${horas.toFixed(1)}h${numAdj > 0 ? ` | 📎 ${numAdj}` : ''}</div>
+                <div class="subtitle">👤 ${p.cliente || 'N/A'} | 💰 $${ingreso.toFixed(0)} | ⏱️ ${horas.toFixed(1)}h${numAdj > 0 ? ` | 📎${numAdj}` : ''}${numNotas > 0 ? ` | 📓${numNotas}` : ''}</div>
                 <div class="actions">
                     <button class="btn btn-success btn-sm" onclick="seleccionarProyecto(${index})">Seleccionar</button>
                     <button class="btn btn-danger btn-sm" onclick="eliminarProyecto(${index})">🗑️</button>
@@ -964,13 +1069,23 @@
             `;
             container.appendChild(div);
         });
+
+        // ✅ Mostrar proyecto seleccionado en info-adjunto
+        if (proyectoActual !== null && proyectos[proyectoActual]) {
+            const p = proyectos[proyectoActual];
+            document.getElementById('info-adjunto').innerHTML = `Proyecto seleccionado: <span class="proyecto-nombre">${p.nombre}</span>`;
+        } else {
+            document.getElementById('info-adjunto').innerHTML = 'Selecciona un proyecto en <strong>Proyectos</strong> primero';
+        }
     }
 
     function seleccionarProyecto(index) {
         proyectoActual = index;
         adjuntoSeleccionado = -1;
+        notaSeleccionada = -1;
+        guardarDatos();  // ✅ Guardar inmediatamente
+        
         const p = proyectos[index];
-
         document.getElementById('info-adjunto').innerHTML = `Proyecto seleccionado: <span class="proyecto-nombre">${p.nombre}</span>`;
 
         document.getElementById('proy-nombre').value = p.nombre;
@@ -980,6 +1095,7 @@
 
         actualizarListaProyectos();
         actualizarListaAdjuntos();
+        actualizarListaNotas();
         actualizarReportes();
         showToast(`📁 Proyecto: ${p.nombre}`);
     }
@@ -987,18 +1103,26 @@
     function eliminarProyecto(index) {
         if (confirm('¿Eliminar este proyecto?')) {
             proyectos.splice(index, 1);
-            if (proyectoActual === index) proyectoActual = null;
-            else if (proyectoActual > index) proyectoActual--;
+            if (proyectoActual === index) {
+                proyectoActual = null;
+            } else if (proyectoActual > index) {
+                proyectoActual--;
+            }
             guardarDatos();
             actualizarListaProyectos();
             actualizarReportes();
+            actualizarListaAdjuntos();
+            actualizarListaNotas();
             showToast('🗑️ Proyecto eliminado');
         }
     }
 
     function eliminarProyectoSeleccionado() {
-        if (proyectoActual !== null) eliminarProyecto(proyectoActual);
-        else showToast('Selecciona un proyecto primero', 'error');
+        if (proyectoActual !== null) {
+            eliminarProyecto(proyectoActual);
+        } else {
+            showToast('Selecciona un proyecto primero', 'error');
+        }
     }
 
     function guardarCambiosProyecto() {
@@ -1061,7 +1185,7 @@
         if (total < 60) { showToast('Mínimo 1 minuto', 'error'); return; }
 
         const extra = parseFloat(document.getElementById('timer-extra').value) || 0;
-        const nota = document.getElementById('timer-nota').value.trim();
+        const nota = document.getElementById('timer-nota').value.trim() || "Timer";
 
         registrarSesion(total, nota, extra);
 
@@ -1085,7 +1209,7 @@
         const h = parseInt(document.getElementById('manual-h').value) || 0;
         const m = parseInt(document.getElementById('manual-m').value) || 0;
         const extra = parseFloat(document.getElementById('manual-extra').value) || 0;
-        const nota = document.getElementById('manual-nota').value.trim();
+        const nota = document.getElementById('manual-nota').value.trim() || "Manual";
 
         if (h < 0 || m < 0 || m >= 60) { showToast('Valores inválidos', 'error'); return; }
 
@@ -1232,11 +1356,8 @@
 
         if (adjuntos.length === 0) {
             container.innerHTML = '<div class="list-empty">No hay archivos adjuntos</div>';
-            document.getElementById('pos-adjuntos').textContent = '0/0';
             return;
         }
-
-        document.getElementById('pos-adjuntos').textContent = `${adjuntoSeleccionado + 1}/${adjuntos.length}`;
 
         adjuntos.forEach((adj, idx) => {
             const esSeleccionado = idx === adjuntoSeleccionado;
@@ -1258,21 +1379,13 @@
                     <button class="btn btn-danger btn-sm" onclick="eliminarAdjunto(${idx})">🗑️</button>
                 </div>
             `;
+            div.onclick = function() {
+                adjuntoSeleccionado = idx;
+                actualizarListaAdjuntos();
+                showToast(`📎 ${adj.nombre}`);
+            };
             container.appendChild(div);
         });
-    }
-
-    function navegarAdjuntos(direccion) {
-        if (proyectoActual === null) return;
-        const p = proyectos[proyectoActual];
-        const adjuntos = p.adjuntos || [];
-        if (adjuntos.length === 0) return;
-
-        adjuntoSeleccionado += direccion;
-        if (adjuntoSeleccionado < 0) adjuntoSeleccionado = 0;
-        if (adjuntoSeleccionado >= adjuntos.length) adjuntoSeleccionado = adjuntos.length - 1;
-
-        actualizarListaAdjuntos();
     }
 
     function verAdjunto(idx) {
@@ -1331,6 +1444,126 @@
         actualizarListaAdjuntos();
         actualizarListaProyectos();
         showToast('🗑️ Adjunto eliminado');
+    }
+
+    // ============================================================
+    // ===== NOTAS / LIBRETA =====
+    // ============================================================
+    function agregarNota() {
+        if (proyectoActual === null) { showToast('Selecciona un proyecto', 'error'); return; }
+
+        const concepto = document.getElementById('nota-concepto').value.trim();
+        const precio = parseFloat(document.getElementById('nota-precio').value);
+
+        if (!concepto) { showToast('Escribe un concepto', 'error'); return; }
+        if (isNaN(precio) || precio <= 0) { showToast('Ingresa un precio válido', 'error'); return; }
+
+        const p = proyectos[proyectoActual];
+        if (!p.notas) p.notas = [];
+
+        p.notas.push({
+            id: Date.now(),
+            concepto: concepto,
+            precio: precio,
+            fecha: new Date().toLocaleString()
+        });
+
+        guardarDatos();
+        actualizarListaNotas();
+        actualizarReportes();
+
+        document.getElementById('nota-concepto').value = '';
+        document.getElementById('nota-precio').value = '';
+        showToast(`✅ Nota: ${concepto} - $${precio.toFixed(2)}`);
+    }
+
+    function actualizarListaNotas() {
+        const container = document.getElementById('lista-notas');
+        container.innerHTML = '';
+
+        if (proyectoActual === null || !proyectos[proyectoActual]) {
+            container.innerHTML = '<div class="list-empty">Selecciona un proyecto primero</div>';
+            document.getElementById('total-notas').textContent = 'Total: $0.00';
+            return;
+        }
+
+        const p = proyectos[proyectoActual];
+        const notas = p.notas || [];
+
+        if (notas.length === 0) {
+            container.innerHTML = '<div class="list-empty">No hay notas guardadas</div>';
+            document.getElementById('total-notas').textContent = 'Total: $0.00';
+            return;
+        }
+
+        let total = 0;
+        notas.forEach(n => total += n.precio);
+        document.getElementById('total-notas').textContent = `Total: $${total.toFixed(2)}`;
+
+        notas.forEach((n, idx) => {
+            const esSeleccionada = (idx === notaSeleccionada);
+            const div = document.createElement('div');
+            div.className = 'nota-item' + (esSeleccionada ? ' selected' : '');
+            div.innerHTML = `
+                <span class="texto">${n.concepto}</span>
+                <span class="precio">$${n.precio.toFixed(2)}</span>
+                <span class="fecha-nota">${n.fecha}</span>
+                <button class="btn-eliminar-nota" onclick="event.stopPropagation(); eliminarNota(${idx})">✕</button>
+            `;
+            div.onclick = function() {
+                // ✅ La nota seleccionada NO se deselecciona sola
+                notaSeleccionada = idx;
+                actualizarListaNotas();
+                showToast(`📝 Nota: ${n.concepto}`);
+            };
+            container.appendChild(div);
+        });
+    }
+
+    function eliminarNota(idx) {
+        if (!confirm('¿Eliminar esta nota?')) return;
+        if (proyectoActual === null) return;
+
+        const p = proyectos[proyectoActual];
+        p.notas.splice(idx, 1);
+
+        if (notaSeleccionada >= p.notas.length) {
+            notaSeleccionada = p.notas.length - 1;
+        }
+
+        guardarDatos();
+        actualizarListaNotas();
+        showToast('🗑️ Nota eliminada');
+    }
+
+    function eliminarNotaSeleccionada() {
+        if (notaSeleccionada >= 0) {
+            eliminarNota(notaSeleccionada);
+            notaSeleccionada = -1;
+        } else {
+            showToast('Selecciona una nota primero', 'error');
+        }
+    }
+
+    function eliminarTodasNotas() {
+        if (proyectoActual === null) return;
+        if (!confirm('¿Eliminar TODAS las notas de este proyecto?')) return;
+
+        const p = proyectos[proyectoActual];
+        p.notas = [];
+        notaSeleccionada = -1;
+        guardarDatos();
+        actualizarListaNotas();
+        showToast('🗑️ Todas las notas eliminadas');
+    }
+
+    function calcularTotalNotas() {
+        if (proyectoActual === null) { showToast('Selecciona un proyecto', 'error'); return; }
+        const p = proyectos[proyectoActual];
+        const notas = p.notas || [];
+        let total = 0;
+        notas.forEach(n => total += n.precio);
+        showToast(`💰 Total de notas: $${total.toFixed(2)}`, 'success');
     }
 
     // ============================================================
@@ -1429,6 +1662,7 @@
             const horas = p.tiempo_total / 3600;
             const ingreso = (horas * p.tarifa) + p.dinero_extra;
             const numAdj = (p.adjuntos || []).length;
+            const notas = p.notas || [];
 
             texto += `📁 ${p.nombre}\n`;
             texto += `   Cliente: ${p.cliente || 'N/A'}\n`;
@@ -1436,17 +1670,15 @@
             texto += `   Tiempo: ${horas.toFixed(2)}h\n`;
             texto += `   Extras: $${p.dinero_extra}\n`;
             texto += `   Adjuntos: ${numAdj}\n`;
-            texto += `   TOTAL: $${ingreso.toFixed(2)}\n\n`;
+            texto += `   TOTAL: $${ingreso.toFixed(2)}\n`;
 
-            if (p.sesiones && p.sesiones.length > 0) {
-                texto += '   Sesiones:\n';
-                p.sesiones.forEach(s => {
-                    texto += `      • ${s.fecha} - ${s.duracion} - ${s.nota}`;
-                    if (s.extra) texto += ` (+$${s.extra})`;
-                    texto += '\n';
+            if (notas.length > 0) {
+                texto += '   Notas:\n';
+                notas.forEach(n => {
+                    texto += `      📓 ${n.concepto} - $${n.precio.toFixed(2)}\n`;
                 });
-                texto += '\n';
             }
+            texto += '\n';
         });
 
         const total = proyectos.reduce((sum, p) => sum + ((p.tiempo_total / 3600) * p.tarifa) + p.dinero_extra, 0);
@@ -1463,12 +1695,13 @@
     function exportarCSV() {
         if (proyectos.length === 0) { showToast('No hay proyectos', 'error'); return; }
 
-        let csv = 'Proyecto,Cliente,Tarifa,Horas,Extras,Adjuntos,Total\n';
+        let csv = 'Proyecto,Cliente,Tarifa,Horas,Extras,Adjuntos,Notas,Total\n';
         proyectos.forEach(p => {
             const horas = p.tiempo_total / 3600;
             const total = (horas * p.tarifa) + p.dinero_extra;
             const numAdj = (p.adjuntos || []).length;
-            csv += `"${p.nombre}","${p.cliente || ''}",${p.tarifa},${horas.toFixed(2)},${p.dinero_extra},${numAdj},${total.toFixed(2)}\n`;
+            const numNotas = (p.notas || []).length;
+            csv += `"${p.nombre}","${p.cliente || ''}",${p.tarifa},${horas.toFixed(2)},${p.dinero_extra},${numAdj},${numNotas},${total.toFixed(2)}\n`;
         });
 
         descargarArchivo(csv, 'DC_Tracker_Report.csv', 'text/csv');
@@ -1506,10 +1739,12 @@
                     const datos = JSON.parse(event.target.result);
                     if (datos.proyectos) {
                         proyectos = datos.proyectos;
+                        proyectoActual = datos.proyectoActual !== undefined ? datos.proyectoActual : null;
                         guardarDatos();
                         actualizarListaProyectos();
                         actualizarReportes();
                         actualizarListaAdjuntos();
+                        actualizarListaNotas();
                         showToast('📂 Datos cargados correctamente');
                     } else {
                         showToast('Archivo inválido', 'error');
@@ -1524,7 +1759,7 @@
     }
 
     // ============================================================
-    // ===== EXPORTAR PDF (CON IMÁGENES) =====
+    // ===== EXPORTAR PDF =====
     // ============================================================
     function exportarPDF() {
         if (proyectos.length === 0) { 
@@ -1535,7 +1770,6 @@
         showToast('📕 Generando PDF...', 'success');
         actualizarProgreso(20, 'Preparando contenido...');
 
-        // ===== CONSTRUIR HTML PARA EL PDF =====
         let html = `
         <!DOCTYPE html>
         <html>
@@ -1564,7 +1798,6 @@
                     background: #fafafa;
                     page-break-inside: avoid;
                 }
-                .proyecto h3 { color: #58a6ff; }
                 table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
                 th { background: #238636; color: white; padding: 6px; text-align: left; }
                 td { padding: 6px; border: 1px solid #ddd; }
@@ -1578,21 +1811,14 @@
                     border-radius: 8px;
                     margin-top: 20px;
                 }
-                .imagen-pdf {
-                    max-width: 300px;
-                    max-height: 200px;
-                    margin: 8px 0;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                }
-                .adjunto-item {
-                    margin: 4px 0;
-                    padding: 4px 8px;
-                    background: #f0f0f0;
-                    border-radius: 4px;
+                .nota-pdf {
                     display: inline-block;
+                    padding: 2px 10px;
+                    background: #f0e6c8;
+                    border-radius: 4px;
+                    margin: 2px;
+                    font-size: 11px;
                 }
-                .fecha-info { color: #888; font-size: 12px; }
             </style>
         </head>
         <body>
@@ -1627,7 +1853,6 @@
                 <p style="font-size:16px; color:#e94560;"><strong>TOTAL:</strong> $${ingreso.toFixed(2)}</p>
             `;
 
-            // ===== SESIONES =====
             if (p.sesiones && p.sesiones.length > 0) {
                 html += `<h4>Sesiones:</h4><table><tr><th>Fecha</th><th>Duración</th><th>Nota</th><th>Extra</th></tr>`;
                 p.sesiones.forEach(s => {
@@ -1636,12 +1861,20 @@
                 html += `</table>`;
             }
 
-            // ===== ADJUNTOS CON IMÁGENES (CORREGIDO) =====
+            // Notas en PDF
+            const notas = p.notas || [];
+            if (notas.length > 0) {
+                html += `<h4>📓 Notas:</h4>`;
+                notas.forEach(n => {
+                    html += `<span class="nota-pdf">📓 ${n.concepto} - $${n.precio.toFixed(2)}</span> `;
+                });
+            }
+
+            // Adjuntos
             if (p.adjuntos && p.adjuntos.length > 0) {
                 html += `<h4>📎 Archivos adjuntos:</h4>`;
                 p.adjuntos.forEach(a => {
                     if (a.tipo_mime === 'imagen') {
-                        // ✅ IMAGEN: se muestra en el PDF
                         html += `
                             <div style="margin:8px 0; padding:8px; background:#f8f8f8; border-radius:6px; border:1px solid #eee;">
                                 <p><strong>${a.nombre}</strong> (${a.tipo_display || a.tipo}) - ${(a.tamaño/1024).toFixed(1)} KB</p>
@@ -1671,19 +1904,12 @@
 
         actualizarProgreso(80, 'Generando PDF...');
 
-        // ===== CREAR PDF CON html2pdf =====
         const ventanaPDF = window.open('', '_blank', 'width=800,height=600');
         ventanaPDF.document.write(html);
         ventanaPDF.document.close();
 
-        // Esperar a que cargue todo
         setTimeout(() => {
             ventanaPDF.focus();
-            
-            // Verificar si html2pdf está disponible
-            if (typeof ventanaPDF.html2pdf === 'undefined' && typeof html2pdf !== 'undefined') {
-                ventanaPDF.html2pdf = html2pdf;
-            }
             
             const opt = {
                 margin:        [10, 10, 10, 10],
@@ -1693,21 +1919,18 @@
                 jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
             
-            // Intentar con html2pdf
             try {
-                if (typeof ventanaPDF.html2pdf !== 'undefined') {
-                    ventanaPDF.html2pdf().set(opt).from(ventanaPDF.document.body).save().then(() => {
+                if (typeof html2pdf !== 'undefined') {
+                    html2pdf().set(opt).from(ventanaPDF.document.body).save().then(() => {
                         actualizarProgreso(100, '¡PDF generado!');
                         setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
                         showToast('📕 PDF generado correctamente', 'success');
                     }).catch((err) => {
-                        console.error('Error PDF:', err);
                         ventanaPDF.print();
                         showToast('📕 PDF generado (usa guardar como PDF)', 'success');
                         actualizarProgreso(0, 'Listo');
                     });
                 } else {
-                    // Fallback: imprimir
                     ventanaPDF.print();
                     showToast('📕 PDF generado (usa guardar como PDF)', 'success');
                     actualizarProgreso(0, 'Listo');
@@ -1740,13 +1963,35 @@
     // ===== NAVEGACIÓN CON TECLADO =====
     // ============================================================
     document.addEventListener('keydown', function(e) {
+        // Adjuntos: flechas y teclas
         if (document.getElementById('tab-adjuntos').classList.contains('active')) {
-            if (e.key === 'ArrowUp') { e.preventDefault(); navegarAdjuntos(-1); }
-            if (e.key === 'ArrowDown') { e.preventDefault(); navegarAdjuntos(1); }
-            if (e.key === 'Enter' && adjuntoSeleccionado >= 0) { verAdjunto(adjuntoSeleccionado); }
-            if (e.key === 'Delete' && adjuntoSeleccionado >= 0) { eliminarAdjunto(adjuntoSeleccionado); }
+            if (e.key === 'ArrowUp') { 
+                e.preventDefault(); 
+                const p = proyectos[proyectoActual];
+                const adjuntos = p ? p.adjuntos || [] : [];
+                if (adjuntos.length > 0) {
+                    adjuntoSeleccionado = Math.max(0, adjuntoSeleccionado - 1);
+                    actualizarListaAdjuntos();
+                }
+            }
+            if (e.key === 'ArrowDown') { 
+                e.preventDefault(); 
+                const p = proyectos[proyectoActual];
+                const adjuntos = p ? p.adjuntos || [] : [];
+                if (adjuntos.length > 0) {
+                    adjuntoSeleccionado = Math.min(adjuntos.length - 1, adjuntoSeleccionado + 1);
+                    actualizarListaAdjuntos();
+                }
+            }
+            if (e.key === 'Enter' && adjuntoSeleccionado >= 0) { 
+                verAdjunto(adjuntoSeleccionado); 
+            }
+            if (e.key === 'Delete' && adjuntoSeleccionado >= 0) { 
+                eliminarAdjunto(adjuntoSeleccionado); 
+            }
         }
 
+        // Atajos Ctrl+
         if (e.ctrlKey) {
             switch(e.key) {
                 case 'n': e.preventDefault(); document.querySelector('[data-tab="tab-proyectos"]').click(); break;
@@ -1767,6 +2012,7 @@
 
     console.log('💼 DC Tracker Proyects - Web version loaded!');
     console.log('📌 Atajos: Ctrl+N (Proyectos), Ctrl+T (Timer), Ctrl+A (Adjuntos), Ctrl+B (Buscar), Ctrl+R (Reportes)');
+    console.log('📓 Nueva sección: Libreta de Notas');
 </script>
 
 </body>
