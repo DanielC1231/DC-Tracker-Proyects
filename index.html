@@ -859,7 +859,7 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- TAB 5: LIBRETA / NOTAS (NUEVO) -->
+    <!-- TAB 5: LIBRETA / NOTAS -->
     <!-- ========================================================== -->
     <div id="tab-libreta" class="tab-content">
         <div class="label-frame">
@@ -953,7 +953,7 @@
                     <span style="color: #58a6ff; font-weight: bold;" id="desglose-horas">$0.00</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #21262d;">
-                    <span style="color: #8b949e;">📓 Notas del proyecto:</span>
+                    <span style="color: #8b949e;">📓 Notas (materiales):</span>
                     <span style="color: #f0883e; font-weight: bold;" id="desglose-notas">$0.00</span>
                 </div>
                 <div style="display: flex; justify-content: space-between; padding: 6px 0; font-size: 16px;">
@@ -974,7 +974,8 @@
             <span class="label-title">📤 Exportar</span>
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
                 <button class="btn btn-purple btn-sm" onclick="exportarTXT()">📄 TXT</button>
-                <button class="btn btn-danger btn-sm" onclick="exportarPDF()">📕 PDF</button>
+                <button class="btn btn-danger btn-sm" onclick="exportarPDF()">📕 PDF (Todos)</button>
+                <button class="btn btn-danger btn-sm" onclick="exportarPDFProyecto()">📕 PDF (Este)</button>
                 <button class="btn btn-success btn-sm" onclick="exportarCSV()">📊 CSV</button>
                 <button class="btn btn-primary btn-sm" onclick="exportarJSON()">💾 Backup</button>
                 <button class="btn btn-warning btn-sm" onclick="importarJSON()">📂 Cargar</button>
@@ -1927,7 +1928,7 @@
     }
 
     // ============================================================
-    // ===== EXPORTAR PDF =====
+    // ===== EXPORTAR PDF (TODOS) =====
     // ============================================================
     function exportarPDF() {
         if (proyectos.length === 0) { 
@@ -1984,11 +1985,16 @@
                 }
                 .nota-pdf {
                     display: inline-block;
-                    padding: 2px 10px;
+                    padding: 3px 12px;
                     background: #f0e6c8;
                     border-radius: 4px;
-                    margin: 2px;
+                    margin: 3px;
                     font-size: 11px;
+                    border: 1px solid #d4c5a0;
+                }
+                .nota-pdf .precio {
+                    font-weight: bold;
+                    color: #1a4a2a;
                 }
                 .moneda-info {
                     color: #888;
@@ -2000,33 +2006,55 @@
                     padding: 10px;
                     background: #f0f0f0;
                     border-radius: 6px;
+                    border: 1px solid #ddd;
                 }
                 .desglose-linea {
                     display: flex;
                     justify-content: space-between;
-                    padding: 3px 0;
+                    padding: 4px 0;
                 }
                 .desglose-total {
                     font-size: 18px;
                     font-weight: bold;
                     color: #1a4a2a;
                     border-top: 2px solid #1a4a2a;
-                    padding-top: 5px;
-                    margin-top: 5px;
+                    padding-top: 6px;
+                    margin-top: 4px;
                 }
-            </style>
-        </head>
-        <body>
-            <div class="header">
-                <h1>💼 DC Tracker Proyects</h1>
-                <p>Reporte generado: ${new Date().toLocaleString()}</p>
-                <p class="moneda-info">Moneda: ${moneda} (${simbolo})</p>
-            </div>
+                .img-adjunto {
+                    max-width: 300px;
+                    max-height: 200px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    margin: 4px 0;
+                }
+                .seccion-notas {
+                    background: #faf6ed;
+                    padding: 10px;
+                    border-radius: 6px;
+                    border: 1px solid #e8dcc8;
+                    margin: 8px 0;
+                }
+                .seccion-notas .titulo {
+                    font-weight: bold;
+                    color: #8b6b3d;
+                    margin-bottom: 6px;
+                    font-size: 13px;
+                }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>💼 DC Tracker Proyects</h1>
+            <p>Reporte generado: ${new Date().toLocaleString()}</p>
+            <p class="moneda-info">Moneda: ${moneda} (${simbolo})</p>
+        </div>
         `;
 
         actualizarProgreso(40, 'Procesando proyectos...');
 
         let totalGeneral = 0;
+        let totalNotasGenerales = 0;
         let contador = 0;
         const totalProyectos = proyectos.length;
 
@@ -2035,8 +2063,10 @@
             const horasDinero = horas * p.tarifa;
             const notas = p.notas || [];
             const totalNotas = notas.reduce((sum, n) => sum + n.precio, 0);
-            const ingreso = horasDinero + p.dinero_extra + totalNotas;
+            const extras = p.dinero_extra || 0;
+            const ingreso = horasDinero + totalNotas + extras;
             totalGeneral += ingreso;
+            totalNotasGenerales += totalNotas;
             contador++;
             
             actualizarProgreso(40 + (contador / totalProyectos) * 40, `Procesando: ${p.nombre}`);
@@ -2046,49 +2076,73 @@
                 <h3>📁 ${p.nombre}</h3>
                 <p><strong>Cliente:</strong> ${p.cliente || 'N/A'}</p>
                 <p><strong>Tarifa:</strong> ${simbolo}${p.tarifa}/hora</p>
+                
                 <div class="desglose">
                     <div class="desglose-linea">
                         <span>⏱️ Horas trabajadas:</span>
                         <span>${horas.toFixed(2)}h = ${simbolo}${horasDinero.toFixed(2)}</span>
                     </div>
                     <div class="desglose-linea">
-                        <span>📓 Notas del proyecto:</span>
+                        <span>📓 Notas (materiales):</span>
                         <span>${simbolo}${totalNotas.toFixed(2)}</span>
                     </div>
                     <div class="desglose-linea">
                         <span>💸 Extras:</span>
-                        <span>${simbolo}${p.dinero_extra.toFixed(2)}</span>
+                        <span>${simbolo}${extras.toFixed(2)}</span>
                     </div>
                     <div class="desglose-linea desglose-total">
-                        <span>💰 TOTAL:</span>
+                        <span>💰 TOTAL A COBRAR:</span>
                         <span>${simbolo}${ingreso.toFixed(2)}</span>
                     </div>
                 </div>
             `;
 
+            // ===== NOTAS (MATERIALES) =====
+            if (notas.length > 0) {
+                html += `
+                    <div class="seccion-notas">
+                        <div class="titulo">📓 Materiales y gastos</div>
+                `;
+                notas.forEach(n => {
+                    html += `
+                        <span class="nota-pdf">
+                            ${n.concepto} - <span class="precio">${simbolo}${n.precio.toFixed(2)}</span>
+                            <span style="font-size:9px; color:#888;"> (${n.fecha})</span>
+                        </span>
+                    `;
+                });
+                html += `
+                        <div style="margin-top:6px; font-weight:bold; color:#1a4a2a; border-top:1px solid #ddd; padding-top:4px;">
+                            Total notas: ${simbolo}${totalNotas.toFixed(2)}
+                        </div>
+                    </div>
+                `;
+            } else {
+                html += `
+                    <div class="seccion-notas" style="background:#f5f5f5; border-color:#ddd;">
+                        <div class="titulo" style="color:#888;">📓 Sin notas registradas</div>
+                    </div>
+                `;
+            }
+
+            // ===== SESIONES =====
             if (p.sesiones && p.sesiones.length > 0) {
-                html += `<h4>Sesiones:</h4><table><tr><th>Fecha</th><th>Duración</th><th>Nota</th><th>Extra</th></tr>`;
+                html += `<h4>📜 Sesiones:</h4><table><tr><th>Fecha</th><th>Duración</th><th>Nota</th><th>Extra</th></tr>`;
                 p.sesiones.forEach(s => {
                     html += `<tr><td>${s.fecha}</td><td>${s.duracion}</td><td>${s.nota}</td><td>${s.extra ? simbolo + s.extra : '-'}</td></tr>`;
                 });
                 html += `</table>`;
             }
 
-            if (notas.length > 0) {
-                html += `<h4>📓 Notas:</h4>`;
-                notas.forEach(n => {
-                    html += `<span class="nota-pdf">${n.concepto} - ${simbolo}${n.precio.toFixed(2)}</span> `;
-                });
-            }
-
+            // ===== ADJUNTOS =====
             if (p.adjuntos && p.adjuntos.length > 0) {
-                html += `<h4>📎 Archivos adjuntos:</h4>`;
+                html += `<h4>📎 Adjuntos:</h4>`;
                 p.adjuntos.forEach(a => {
                     if (a.tipo_mime === 'imagen') {
                         html += `
                             <div style="margin:8px 0; padding:8px; background:#f8f8f8; border-radius:6px; border:1px solid #eee;">
                                 <p><strong>${a.nombre}</strong> (${a.tipo_display || a.tipo}) - ${(a.tamaño/1024).toFixed(1)} KB</p>
-                                <img src="data:image/jpeg;base64,${a.datos}" style="max-width:300px; max-height:200px; border:1px solid #ddd; border-radius:4px; margin:4px 0;">
+                                <img src="data:image/jpeg;base64,${a.datos}" class="img-adjunto">
                             </div>
                         `;
                     } else {
@@ -2107,7 +2161,13 @@
         html += `
             <div class="total">
                 <h2>💰 TOTAL GENERAL: ${simbolo}${totalGeneral.toFixed(2)}</h2>
-                <p style="font-size:14px; margin-top:5px;">(Horas + Notas + Extras)</p>
+                <p style="font-size:14px; margin-top:5px;">
+                    📓 Total en notas: ${simbolo}${totalNotasGenerales.toFixed(2)} | 
+                    ⏱️ Horas: ${simbolo}${(totalGeneral - totalNotasGenerales).toFixed(2)}
+                </p>
+                <p style="font-size:12px; color:#ccc; margin-top:5px;">
+                    (Horas + Notas + Extras)
+                </p>
             </div>
         </body>
         </html>
@@ -2123,11 +2183,11 @@
             ventanaPDF.focus();
             
             const opt = {
-                margin:        [10, 10, 10, 10],
-                filename:     'DC_Tracker_Report.pdf',
-                image:        { type: 'jpeg', quality: 0.98 },
-                html2canvas:  { scale: 2, useCORS: true, logging: false },
-                jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                margin: [10, 10, 10, 10],
+                filename: 'DC_Tracker_Report.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, logging: false },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
             };
             
             try {
@@ -2151,8 +2211,273 @@
                 showToast('📕 PDF generado (usa guardar como PDF)', 'success');
                 actualizarProgreso(0, 'Listo');
             }
-            
         }, 2000);
+    }
+
+    // ============================================================
+    // ===== EXPORTAR PDF (PROYECTO SELECCIONADO) =====
+    // ============================================================
+    function exportarPDFProyecto() {
+        if (proyectoActual === null || !proyectos[proyectoActual]) {
+            showToast('Selecciona un proyecto primero', 'error');
+            return;
+        }
+
+        const p = proyectos[proyectoActual];
+        const moneda = getMoneda();
+        const simbolo = getSimbolo();
+
+        showToast(`📕 Generando PDF para "${p.nombre}"...`, 'success');
+        actualizarProgreso(20, `Preparando: ${p.nombre}`);
+
+        const horas = p.tiempo_total / 3600;
+        const horasDinero = horas * p.tarifa;
+        const notas = p.notas || [];
+        const totalNotas = notas.reduce((sum, n) => sum + n.precio, 0);
+        const extras = p.dinero_extra || 0;
+        const ingreso = horasDinero + totalNotas + extras;
+
+        let html = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>${p.nombre} - Reporte</title>
+            <style>
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                body { 
+                    font-family: Arial, sans-serif; 
+                    max-width: 800px; 
+                    margin: 0 auto; 
+                    padding: 20px; 
+                    background: white;
+                    color: #333;
+                }
+                h1 { color: #e94560; font-size: 24px; }
+                h2 { color: #58a6ff; font-size: 18px; margin-top: 15px; }
+                .header { text-align: center; padding-bottom: 15px; border-bottom: 2px solid #e94560; }
+                .proyecto { 
+                    margin: 15px 0; 
+                    padding: 15px; 
+                    border: 1px solid #ddd; 
+                    border-radius: 8px;
+                    background: #fafafa;
+                }
+                table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
+                th { background: #238636; color: white; padding: 6px; text-align: left; }
+                td { padding: 6px; border: 1px solid #ddd; }
+                tr:nth-child(even) { background: #f5f5f5; }
+                .total { 
+                    background: #1a4a2a; 
+                    color: white; 
+                    padding: 15px; 
+                    text-align: center; 
+                    font-size: 20px; 
+                    border-radius: 8px;
+                    margin-top: 20px;
+                }
+                .nota-pdf {
+                    display: inline-block;
+                    padding: 3px 12px;
+                    background: #f0e6c8;
+                    border-radius: 4px;
+                    margin: 3px;
+                    font-size: 11px;
+                    border: 1px solid #d4c5a0;
+                }
+                .nota-pdf .precio {
+                    font-weight: bold;
+                    color: #1a4a2a;
+                }
+                .moneda-info {
+                    color: #888;
+                    font-size: 12px;
+                    text-align: right;
+                }
+                .desglose {
+                    margin: 10px 0;
+                    padding: 10px;
+                    background: #f0f0f0;
+                    border-radius: 6px;
+                    border: 1px solid #ddd;
+                }
+                .desglose-linea {
+                    display: flex;
+                    justify-content: space-between;
+                    padding: 4px 0;
+                }
+                .desglose-total {
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: #1a4a2a;
+                    border-top: 2px solid #1a4a2a;
+                    padding-top: 6px;
+                    margin-top: 4px;
+                }
+                .img-adjunto {
+                    max-width: 300px;
+                    max-height: 200px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    margin: 4px 0;
+                }
+                .seccion-notas {
+                    background: #faf6ed;
+                    padding: 10px;
+                    border-radius: 6px;
+                    border: 1px solid #e8dcc8;
+                    margin: 8px 0;
+                }
+                .seccion-notas .titulo {
+                    font-weight: bold;
+                    color: #8b6b3d;
+                    margin-bottom: 6px;
+                    font-size: 13px;
+                }
+        </style>
+    </head>
+    <body>
+        <div class="header">
+            <h1>💼 ${p.nombre}</h1>
+            <p>Reporte generado: ${new Date().toLocaleString()}</p>
+            <p class="moneda-info">Moneda: ${moneda} (${simbolo})</p>
+        </div>
+
+        <div class="proyecto">
+            <p><strong>Cliente:</strong> ${p.cliente || 'N/A'}</p>
+            <p><strong>Tarifa:</strong> ${simbolo}${p.tarifa}/hora</p>
+            
+            <div class="desglose">
+                <div class="desglose-linea">
+                    <span>⏱️ Horas trabajadas:</span>
+                    <span>${horas.toFixed(2)}h = ${simbolo}${horasDinero.toFixed(2)}</span>
+                </div>
+                <div class="desglose-linea">
+                    <span>📓 Notas (materiales):</span>
+                    <span>${simbolo}${totalNotas.toFixed(2)}</span>
+                </div>
+                <div class="desglose-linea">
+                    <span>💸 Extras:</span>
+                    <span>${simbolo}${extras.toFixed(2)}</span>
+                </div>
+                <div class="desglose-linea desglose-total">
+                    <span>💰 TOTAL A COBRAR:</span>
+                    <span>${simbolo}${ingreso.toFixed(2)}</span>
+                </div>
+            </div>
+        `;
+
+        // ===== NOTAS (MATERIALES) =====
+        if (notas.length > 0) {
+            html += `
+                <div class="seccion-notas">
+                    <div class="titulo">📓 Materiales y gastos</div>
+            `;
+            notas.forEach(n => {
+                html += `
+                    <span class="nota-pdf">
+                        ${n.concepto} - <span class="precio">${simbolo}${n.precio.toFixed(2)}</span>
+                        <span style="font-size:9px; color:#888;"> (${n.fecha})</span>
+                    </span>
+                `;
+            });
+            html += `
+                    <div style="margin-top:6px; font-weight:bold; color:#1a4a2a; border-top:1px solid #ddd; padding-top:4px;">
+                        Total notas: ${simbolo}${totalNotas.toFixed(2)}
+                    </div>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="seccion-notas" style="background:#f5f5f5; border-color:#ddd;">
+                    <div class="titulo" style="color:#888;">📓 Sin notas registradas</div>
+                </div>
+            `;
+        }
+
+        // ===== SESIONES =====
+        if (p.sesiones && p.sesiones.length > 0) {
+            html += `<h2>📜 Sesiones</h2><table><tr><th>Fecha</th><th>Duración</th><th>Nota</th><th>Extra</th></tr>`;
+            p.sesiones.forEach(s => {
+                html += `<tr><td>${s.fecha}</td><td>${s.duracion}</td><td>${s.nota}</td><td>${s.extra ? simbolo + s.extra : '-'}</td></tr>`;
+            });
+            html += `</table>`;
+        }
+
+        // ===== ADJUNTOS =====
+        if (p.adjuntos && p.adjuntos.length > 0) {
+            html += `<h2>📎 Adjuntos</h2>`;
+            p.adjuntos.forEach(a => {
+                if (a.tipo_mime === 'imagen') {
+                    html += `
+                        <div style="margin:8px 0; padding:8px; background:#f8f8f8; border-radius:6px; border:1px solid #eee;">
+                            <p><strong>${a.nombre}</strong> (${a.tipo_display || a.tipo}) - ${(a.tamaño/1024).toFixed(1)} KB</p>
+                            <img src="data:image/jpeg;base64,${a.datos}" class="img-adjunto">
+                        </div>
+                    `;
+                } else {
+                    html += `
+                        <span style="margin:4px 0; padding:4px 10px; background:#f0f0f0; border-radius:4px; display:inline-block; margin-right:4px;">
+                            📎 ${a.nombre} (${a.tipo_display || a.tipo})
+                        </span>
+                    `;
+                }
+            });
+        }
+
+        html += `
+        </div>
+        <div class="total">
+            <h2>💰 TOTAL: ${simbolo}${ingreso.toFixed(2)}</h2>
+            <p style="font-size:14px; margin-top:5px;">
+                📓 Notas: ${simbolo}${totalNotas.toFixed(2)} | 
+                ⏱️ Horas: ${simbolo}${horasDinero.toFixed(2)} | 
+                💸 Extras: ${simbolo}${extras.toFixed(2)}
+            </p>
+        </div>
+        </body>
+        </html>
+        `;
+
+        actualizarProgreso(80, 'Generando PDF...');
+
+        const ventanaPDF = window.open('', '_blank', 'width=800,height=600');
+        ventanaPDF.document.write(html);
+        ventanaPDF.document.close();
+
+        setTimeout(() => {
+            ventanaPDF.focus();
+            
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: `${p.nombre.replace(/\s/g, '_')}_Report.pdf`,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, logging: false },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            };
+            
+            try {
+                if (typeof html2pdf !== 'undefined') {
+                    html2pdf().set(opt).from(ventanaPDF.document.body).save().then(() => {
+                        actualizarProgreso(100, '¡PDF generado!');
+                        setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
+                        showToast(`📕 PDF de "${p.nombre}" generado`, 'success');
+                    }).catch(() => {
+                        ventanaPDF.print();
+                        showToast('📕 PDF generado (usa guardar como PDF)', 'success');
+                        actualizarProgreso(0, 'Listo');
+                    });
+                } else {
+                    ventanaPDF.print();
+                    showToast('📕 PDF generado (usa guardar como PDF)', 'success');
+                    actualizarProgreso(0, 'Listo');
+                }
+            } catch(e) {
+                ventanaPDF.print();
+                showToast('📕 PDF generado (usa guardar como PDF)', 'success');
+                actualizarProgreso(0, 'Listo');
+            }
+        }, 1500);
     }
 
     // ============================================================
