@@ -1,3 +1,33 @@
+# 📱 Guía de Instalación de PWA (iOS & Android)
+
+Esta es una Aplicación Web Progresiva (PWA). Puedes instalarla directamente en la pantalla de inicio de tu dispositivo móvil sin necesidad de pasar por las tiendas de aplicaciones (App Store o Google Play).
+
+Sigue estos sencillos pasos según el sistema operativo de tu teléfono:
+
+---
+
+## 🍏 Cómo instalar en iPhone (iOS)
+
+> ⚠️ **Nota:** Apple solo permite la instalación de PWAs utilizando su navegador nativo, **Safari**. No funcionará si lo intentas desde Chrome u otros navegadores en iOS.
+
+1. Abre **Safari** en tu iPhone.
+2. Entra a la URL de este proyecto: `https://danielc1231.github.io/DC-Tracker-Proyects/`
+3. Toca el botón **Compartir** (el icono de un cuadrado con una flecha hacia arriba situado en la barra inferior de la pantalla).
+4. Desplázate hacia abajo en el menú de opciones y selecciona **Agregar al inicio** (+).
+5. (Opcional) Edita el nombre con el que quieres que aparezca el icono en tu pantalla.
+6. Toca **Agregar** en la esquina superior derecha.
+---
+## 🤖 Cómo instalar en Android
+
+> 💡 **Nota:** Para una mejor experiencia, te recomendamos utilizar **Google Chrome**, aunque también funciona con otros navegadores modernos basados en Chromium (Edge, Brave, etc.).
+
+1. Abre **Google Chrome** en tu dispositivo Android.
+2. Entra a la URL de este proyecto: `https://danielc1231.github.io/DC-Tracker-Proyects/`
+3. Verás un mensaje emergente en la parte inferior que dice **Agregar a la pantalla principal** o **Instalar aplicación**. Toca sobre él.
+4. Si el mensaje no aparece de forma automática:
+   * Toca el menú de los **tres puntos verticales** en la esquina superior derecha de Chrome.
+   * Selecciona la opción **Instalar app** o **Agregar a la pantalla principal**.
+5. Confirma la acción tocando el botón **Instalar** en la ventana flotante.
 
 | Variable | Descripción |
 |----------|-------------|
@@ -101,36 +131,5 @@ Si te gusta, puedes apoyarme con una donación. ¡Cualquier aporte es bienvenido
 ```bash
 # Clonar el repositorio
 git clone https://github.com/danielc1231/DC-Tracker-Proyects.git
-
-# 📱 Guía de Instalación de PWA (iOS & Android)
-
-Esta es una Aplicación Web Progresiva (PWA). Puedes instalarla directamente en la pantalla de inicio de tu dispositivo móvil sin necesidad de pasar por las tiendas de aplicaciones (App Store o Google Play).
-
-Sigue estos sencillos pasos según el sistema operativo de tu teléfono:
-
----
-
-## 🍏 Cómo instalar en iPhone (iOS)
-
-> ⚠️ **Nota:** Apple solo permite la instalación de PWAs utilizando su navegador nativo, **Safari**. No funcionará si lo intentas desde Chrome u otros navegadores en iOS.
-
-1. Abre **Safari** en tu iPhone.
-2. Entra a la URL de este proyecto: `https://danielc1231.github.io/DC-Tracker-Proyects/`
-3. Toca el botón **Compartir** (el icono de un cuadrado con una flecha hacia arriba situado en la barra inferior de la pantalla).
-4. Desplázate hacia abajo en el menú de opciones y selecciona **Agregar al inicio** (+).
-5. (Opcional) Edita el nombre con el que quieres que aparezca el icono en tu pantalla.
-6. Toca **Agregar** en la esquina superior derecha.
----
-## 🤖 Cómo instalar en Android
-
-> 💡 **Nota:** Para una mejor experiencia, te recomendamos utilizar **Google Chrome**, aunque también funciona con otros navegadores modernos basados en Chromium (Edge, Brave, etc.).
-
-1. Abre **Google Chrome** en tu dispositivo Android.
-2. Entra a la URL de este proyecto: `https://danielc1231.github.io/DC-Tracker-Proyects/`
-3. Verás un mensaje emergente en la parte inferior que dice **Agregar a la pantalla principal** o **Instalar aplicación**. Toca sobre él.
-4. Si el mensaje no aparece de forma automática:
-   * Toca el menú de los **tres puntos verticales** en la esquina superior derecha de Chrome.
-   * Selecciona la opción **Instalar app** o **Agregar a la pantalla principal**.
-5. Confirma la acción tocando el botón **Instalar** en la ventana flotante.
 # Abrir el archivo en el navegador
 index.html
