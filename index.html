@@ -2090,28 +2090,9 @@
                 <div class="descripcion">
                     <strong>📝 Descripción:</strong> ${p.descripcion || 'Sin descripción'}
                 </div>
-                
-                <div class="desglose">
-                    <div class="desglose-linea">
-                        <span>📓 Notas (materiales):</span>
-                        <span>${simbolo}${totalNotas.toFixed(2)}</span>
-                    </div>
-                    <div class="desglose-linea">
-                        <span>⏱️ Horas trabajadas:</span>
-                        <span>${horas.toFixed(2)}h = ${simbolo}${horasDinero.toFixed(2)}</span>
-                    </div>
-                    <div class="desglose-linea">
-                        <span>💸 Extras:</span>
-                        <span>${simbolo}${extras.toFixed(2)}</span>
-                    </div>
-                    <div class="desglose-linea desglose-total">
-                        <span>💰 TOTAL A COBRAR:</span>
-                        <span>${simbolo}${ingreso.toFixed(2)}</span>
-                    </div>
-                </div>
             `;
 
-            // ===== NOTAS (MATERIALES) =====
+            // ===== NOTAS (MATERIALES) - ARRIBA =====
             if (notas.length > 0) {
                 html += `
                     <div class="seccion-notas">
@@ -2138,6 +2119,28 @@
                     </div>
                 `;
             }
+
+            // ===== DESGLOSE FINANCIERO - ABAJO =====
+            html += `
+                <div class="desglose">
+                    <div class="desglose-linea">
+                        <span>⏱️ Horas trabajadas:</span>
+                        <span>${horas.toFixed(2)}h = ${simbolo}${horasDinero.toFixed(2)}</span>
+                    </div>
+                    <div class="desglose-linea">
+                        <span>📓 Notas (materiales):</span>
+                        <span>${simbolo}${totalNotas.toFixed(2)}</span>
+                    </div>
+                    <div class="desglose-linea">
+                        <span>💸 Extras:</span>
+                        <span>${simbolo}${extras.toFixed(2)}</span>
+                    </div>
+                    <div class="desglose-linea desglose-total">
+                        <span>💰 TOTAL A COBRAR:</span>
+                        <span>${simbolo}${ingreso.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
 
             // ===== SESIONES =====
             if (p.sesiones && p.sesiones.length > 0) {
@@ -2374,28 +2377,9 @@
             <div class="descripcion">
                 <strong>📝 Descripción:</strong> ${p.descripcion || 'Sin descripción'}
             </div>
-            
-            <div class="desglose">
-                <div class="desglose-linea">
-                    <span>📓 Notas (materiales):</span>
-                    <span>${simbolo}${totalNotas.toFixed(2)}</span>
-                </div>
-                <div class="desglose-linea">
-                    <span>⏱️ Horas trabajadas:</span>
-                    <span>${horas.toFixed(2)}h = ${simbolo}${horasDinero.toFixed(2)}</span>
-                </div>
-                <div class="desglose-linea">
-                    <span>💸 Extras:</span>
-                    <span>${simbolo}${extras.toFixed(2)}</span>
-                </div>
-                <div class="desglose-linea desglose-total">
-                    <span>💰 TOTAL A COBRAR:</span>
-                    <span>${simbolo}${ingreso.toFixed(2)}</span>
-                </div>
-            </div>
         `;
 
-        // ===== NOTAS (MATERIALES) =====
+        // ===== NOTAS (MATERIALES) - ARRIBA =====
         if (notas.length > 0) {
             html += `
                 <div class="seccion-notas">
@@ -2422,6 +2406,28 @@
                 </div>
             `;
         }
+
+        // ===== DESGLOSE FINANCIERO - ABAJO =====
+        html += `
+            <div class="desglose">
+                <div class="desglose-linea">
+                    <span>⏱️ Horas trabajadas:</span>
+                    <span>${horas.toFixed(2)}h = ${simbolo}${horasDinero.toFixed(2)}</span>
+                </div>
+                <div class="desglose-linea">
+                    <span>📓 Notas (materiales):</span>
+                    <span>${simbolo}${totalNotas.toFixed(2)}</span>
+                </div>
+                <div class="desglose-linea">
+                    <span>💸 Extras:</span>
+                    <span>${simbolo}${extras.toFixed(2)}</span>
+                </div>
+                <div class="desglose-linea desglose-total">
+                    <span>💰 TOTAL A COBRAR:</span>
+                    <span>${simbolo}${ingreso.toFixed(2)}</span>
+                </div>
+            </div>
+        `;
 
         // ===== SESIONES =====
         if (p.sesiones && p.sesiones.length > 0) {
