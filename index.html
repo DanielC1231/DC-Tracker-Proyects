@@ -1970,6 +1970,16 @@
                     background: #fafafa;
                     page-break-inside: avoid;
                 }
+                .descripcion {
+                    background: #f0f4f8;
+                    padding: 10px 12px;
+                    border-radius: 6px;
+                    margin: 8px 0 12px 0;
+                    border-left: 4px solid #58a6ff;
+                    color: #1a2a3a;
+                    font-size: 13px;
+                    line-height: 1.5;
+                }
                 table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
                 th { background: #238636; color: white; padding: 6px; text-align: left; }
                 td { padding: 6px; border: 1px solid #ddd; }
@@ -2076,6 +2086,10 @@
                 <h3>📁 ${p.nombre}</h3>
                 <p><strong>Cliente:</strong> ${p.cliente || 'N/A'}</p>
                 <p><strong>Tarifa:</strong> ${simbolo}${p.tarifa}/hora</p>
+                
+                <div class="descripcion">
+                    <strong>📝 Descripción:</strong> ${p.descripcion || 'Sin descripción'}
+                </div>
                 
                 <div class="desglose">
                     <div class="desglose-linea">
@@ -2263,6 +2277,16 @@
                     border-radius: 8px;
                     background: #fafafa;
                 }
+                .descripcion {
+                    background: #f0f4f8;
+                    padding: 10px 12px;
+                    border-radius: 6px;
+                    margin: 8px 0 12px 0;
+                    border-left: 4px solid #58a6ff;
+                    color: #1a2a3a;
+                    font-size: 13px;
+                    line-height: 1.5;
+                }
                 table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 12px; }
                 th { background: #238636; color: white; padding: 6px; text-align: left; }
                 td { padding: 6px; border: 1px solid #ddd; }
@@ -2346,6 +2370,10 @@
         <div class="proyecto">
             <p><strong>Cliente:</strong> ${p.cliente || 'N/A'}</p>
             <p><strong>Tarifa:</strong> ${simbolo}${p.tarifa}/hora</p>
+            
+            <div class="descripcion">
+                <strong>📝 Descripción:</strong> ${p.descripcion || 'Sin descripción'}
+            </div>
             
             <div class="desglose">
                 <div class="desglose-linea">
