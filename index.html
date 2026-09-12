@@ -1315,11 +1315,6 @@
 </div>
 
 <!-- ========================================================== -->
-<!-- ===== CONTENEDOR OCULTO PARA GENERAR PDF COMPLETO ===== -->
-<!-- ========================================================== -->
-<div id="pdf-hidden-container"></div>
-
-<!-- ========================================================== -->
 <!-- ===== JAVASCRIPT ===== -->
 <!-- ========================================================== -->
 <script>
@@ -2110,7 +2105,7 @@
         });
     }
 
-       // ============================================================
+    // ============================================================
     // ===== CONSTRUIR HTML DEL PDF =====
     // ============================================================
     function construirHTMLPDF(proyecto) {
@@ -2156,7 +2151,6 @@
                 </div>
             `;
 
-            // ===== MATERIALES Y GASTOS - ARRIBA =====
             if (notas.length > 0) {
                 html += `
                     <div class="seccion-notas">
@@ -2184,7 +2178,6 @@
                 `;
             }
 
-            // ===== DESGLOSE FINANCIERO: Notas → Horas → Extras =====
             html += `
                 <div class="desglose-financiero">
                     <div class="desglose-linea">
@@ -2202,7 +2195,6 @@
                 </div>
             `;
 
-            // ===== SESIONES =====
             if (p.sesiones && p.sesiones.length > 0) {
                 html += `<h4>📜 Sesiones:</h4><table><tr><th>Fecha</th><th>Duración</th><th>Nota</th><th>Total por horas</th><th>Extra</th></tr>`;
                 p.sesiones.forEach(s => {
@@ -2219,7 +2211,6 @@
                 html += `</table>`;
             }
 
-            // ===== ADJUNTOS =====
             if (p.adjuntos && p.adjuntos.length > 0) {
                 html += `<h4>📎 Adjuntos:</h4>`;
                 p.adjuntos.forEach(a => {
@@ -2240,10 +2231,9 @@
                 });
             }
 
-            html += `</div>`; // cierra .proyecto
+            html += `</div>`;
         });
 
-        // ===== GRAN TOTAL AL FINAL DE TODO (con el orden que pediste) =====
         html += `
             <div class="gran-total">
                 <div class="desglose-total">
@@ -2257,7 +2247,7 @@
                 <h2>💰 GRAN TOTAL: ${simbolo}${totalGeneral.toFixed(2)}</h2>
             </div>
         </div> 
-        `; // cierra .pdf-preview
+        `;
 
         return html;
     }
@@ -2272,12 +2262,8 @@
         pdfHTMLActual = html;
         pdfNombreActual = 'DC_Tracker_Report.pdf';
 
-        // Preview visible
         document.getElementById('preview-content').innerHTML = html;
         document.getElementById('preview-overlay').classList.add('active');
-
-        // Contenedor oculto para generar PDF completo sin cortes
-        document.getElementById('pdf-hidden-container').innerHTML = html;
     }
 
     // ============================================================
@@ -2296,7 +2282,6 @@
 
         document.getElementById('preview-content').innerHTML = html;
         document.getElementById('preview-overlay').classList.add('active');
-        document.getElementById('pdf-hidden-container').innerHTML = html;
     }
 
     // ============================================================
@@ -2305,10 +2290,9 @@
     function cerrarPreview() {
         document.getElementById('preview-overlay').classList.remove('active');
         document.getElementById('preview-content').innerHTML = '';
-        document.getElementById('pdf-hidden-container').innerHTML = '';
     }
-       // ============================================================
-        // ============================================================
+
+    // ============================================================
     // ===== DESCARGAR PDF DESDE PREVIEW =====
     // ============================================================
     function descargarPDFDesdePreview() {
@@ -2321,62 +2305,57 @@
         showToast('📕 Generando PDF...', 'success');
         actualizarProgreso(20, 'Preparando...');
 
-        // Crear contenedor temporal que SÍ ve html2canvas
-        // (posición absolute, dentro del documento, no fuera de pantalla)
+        // Crear contenedor temporal INVISIBLE pero RENDERIZADO
+        // (opacity: 0.01 es invisible al ojo pero html2canvas SÍ lo captura)
         const contenedor = document.createElement('div');
-        contenedor.id = 'pdf-render-temp';
-        contenedor.style.position = 'absolute';
+        contenedor.style.position = 'fixed';
         contenedor.style.top = '0';
         contenedor.style.left = '0';
         contenedor.style.width = '800px';
         contenedor.style.background = '#ffffff';
         contenedor.style.padding = '30px';
-        contenedor.style.zIndex = '-9999';   // detrás de todo (el usuario no lo ve)
+        contenedor.style.zIndex = '1';
+        contenedor.style.opacity = '0.01';
         contenedor.style.pointerEvents = 'none';
-        contenedor.style.overflow = 'visible';
 
-        // Envolver el contenido con la clase .pdf-preview para que herede los estilos
         contenedor.innerHTML = '<div class="pdf-preview">' + previewContent.innerHTML + '</div>';
         document.body.appendChild(contenedor);
 
-        // Forzar un reflow y esperar 2 frames para que el navegador pinte el contenedor
-        void contenedor.offsetHeight;
+        // Esperar 2 frames + un pequeño delay para garantizar el render
+        setTimeout(() => {
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: pdfNombreActual,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    windowWidth: 800,
+                    scrollX: 0,
+                    scrollY: 0,
+                    backgroundColor: '#ffffff'
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
 
-        requestAnimationFrame(() => {
-            requestAnimationFrame(() => {
-                const opt = {
-                    margin: [10, 10, 10, 10],
-                    filename: pdfNombreActual,
-                    image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: {
-                        scale: 2,
-                        useCORS: true,
-                        logging: false,
-                        windowWidth: 800,
-                        scrollX: 0,
-                        scrollY: 0,
-                        backgroundColor: '#ffffff'
-                    },
-                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-                };
+            actualizarProgreso(50, 'Generando...');
 
-                actualizarProgreso(50, 'Generando...');
-
-                html2pdf().set(opt).from(contenedor).save().then(() => {
-                    document.body.removeChild(contenedor);
-                    actualizarProgreso(100, '¡PDF descargado!');
-                    setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
-                    showToast('📕 PDF descargado correctamente', 'success');
-                }).catch((err) => {
-                    if (document.body.contains(contenedor)) document.body.removeChild(contenedor);
-                    console.error(err);
-                    showToast('Error al generar PDF. Intenta de nuevo.', 'error');
-                    actualizarProgreso(0, 'Listo');
-                });
+            html2pdf().set(opt).from(contenedor).save().then(() => {
+                if (document.body.contains(contenedor)) document.body.removeChild(contenedor);
+                actualizarProgreso(100, '¡PDF descargado!');
+                setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
+                showToast('📕 PDF descargado correctamente', 'success');
+            }).catch((err) => {
+                if (document.body.contains(contenedor)) document.body.removeChild(contenedor);
+                console.error(err);
+                showToast('Error al generar PDF. Intenta de nuevo.', 'error');
+                actualizarProgreso(0, 'Listo');
             });
-        });
+        }, 150);
     }
+
     // ============================================================
     // ===== EXPORTAR CSV =====
     // ============================================================
