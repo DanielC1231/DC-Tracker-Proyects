@@ -731,11 +731,14 @@
         
         /* ===== PDF OCULTO (para generar sin cortes) ===== */
         #pdf-hidden-container {
-            position: absolute;
-            left: -9999px;
+            position: fixed;
             top: 0;
+            left: 0;
             width: 800px;
             background: white;
+            opacity: 0;
+            pointer-events: none;
+            z-index: -9999;
         }
         
         /* ===== ESTILOS DEL PDF ===== */
@@ -2311,28 +2314,14 @@
     // ===== DESCARGAR PDF DESDE PREVIEW =====
     // ============================================================
     function descargarPDFDesdePreview() {
-        const previewContent = document.getElementById('preview-content');
-        if (!previewContent || !previewContent.innerHTML.trim()) {
+        const elemento = document.getElementById('pdf-hidden-container');
+        if (!elemento || !elemento.innerHTML.trim()) {
             showToast('No hay PDF para descargar', 'error');
             return;
         }
 
         showToast('📕 Generando PDF...', 'success');
         actualizarProgreso(30, 'Preparando...');
-
-        // Clonar el contenido de la preview para generar el PDF
-        // sin el max-height ni el overflow que la recortan
-        const clon = document.createElement('div');
-        clon.style.position = 'absolute';
-        clon.style.left = '-9999px';
-        clon.style.top = '0';
-        clon.style.width = '800px';
-        clon.style.background = 'white';
-        clon.style.padding = '30px';
-        clon.style.fontFamily = 'Arial, sans-serif';
-        clon.style.color = '#333';
-        clon.innerHTML = previewContent.innerHTML;
-        document.body.appendChild(clon);
 
         const opt = {
             margin: [10, 10, 10, 10],
@@ -2351,13 +2340,11 @@
 
         actualizarProgreso(60, 'Generando...');
 
-        html2pdf().set(opt).from(clon).save().then(() => {
-            document.body.removeChild(clon);
+        html2pdf().set(opt).from(elemento).save().then(() => {
             actualizarProgreso(100, '¡PDF descargado!');
             setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
             showToast('📕 PDF descargado correctamente', 'success');
         }).catch((err) => {
-            if (document.body.contains(clon)) document.body.removeChild(clon);
             console.error(err);
             showToast('Error al generar PDF. Intenta de nuevo.', 'error');
             actualizarProgreso(0, 'Listo');
