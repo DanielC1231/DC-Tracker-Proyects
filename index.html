@@ -1961,6 +1961,7 @@
                 h1 { color: #e94560; font-size: 24px; }
                 h2 { color: #58a6ff; font-size: 18px; margin-top: 15px; }
                 h3 { color: #58a6ff; font-size: 16px; margin-top: 12px; }
+                h4 { color: #58a6ff; font-size: 14px; margin-top: 10px; }
                 .header { text-align: center; padding-bottom: 15px; border-bottom: 2px solid #e94560; }
                 .proyecto { 
                     margin: 15px 0; 
@@ -2011,26 +2012,6 @@
                     font-size: 12px;
                     text-align: right;
                 }
-                .desglose {
-                    margin: 10px 0;
-                    padding: 10px;
-                    background: #f0f0f0;
-                    border-radius: 6px;
-                    border: 1px solid #ddd;
-                }
-                .desglose-linea {
-                    display: flex;
-                    justify-content: space-between;
-                    padding: 4px 0;
-                }
-                .desglose-total {
-                    font-size: 18px;
-                    font-weight: bold;
-                    color: #1a4a2a;
-                    border-top: 2px solid #1a4a2a;
-                    padding-top: 6px;
-                    margin-top: 4px;
-                }
                 .img-adjunto {
                     max-width: 300px;
                     max-height: 200px;
@@ -2051,14 +2032,14 @@
                     margin-bottom: 6px;
                     font-size: 13px;
                 }
-        </style>
-    </head>
-    <body>
-        <div class="header">
-            <h1>💼 DC Tracker Proyects</h1>
-            <p>Reporte generado: ${new Date().toLocaleString()}</p>
-            <p class="moneda-info">Moneda: ${moneda} (${simbolo})</p>
-        </div>
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>💼 DC Tracker Proyects</h1>
+                <p>Reporte generado: ${new Date().toLocaleString()}</p>
+                <p class="moneda-info">Moneda: ${moneda} (${simbolo})</p>
+            </div>
         `;
 
         actualizarProgreso(40, 'Procesando proyectos...');
@@ -2120,33 +2101,19 @@
                 `;
             }
 
-            // ===== DESGLOSE FINANCIERO - ABAJO =====
-            html += `
-                <div class="desglose">
-                    <div class="desglose-linea">
-                        <span>⏱️ Horas trabajadas:</span>
-                        <span>${horas.toFixed(2)}h = ${simbolo}${horasDinero.toFixed(2)}</span>
-                    </div>
-                    <div class="desglose-linea">
-                        <span>📓 Notas (materiales):</span>
-                        <span>${simbolo}${totalNotas.toFixed(2)}</span>
-                    </div>
-                    <div class="desglose-linea">
-                        <span>💸 Extras:</span>
-                        <span>${simbolo}${extras.toFixed(2)}</span>
-                    </div>
-                    <div class="desglose-linea desglose-total">
-                        <span>💰 TOTAL A COBRAR:</span>
-                        <span>${simbolo}${ingreso.toFixed(2)}</span>
-                    </div>
-                </div>
-            `;
-
             // ===== SESIONES =====
             if (p.sesiones && p.sesiones.length > 0) {
-                html += `<h4>📜 Sesiones:</h4><table><tr><th>Fecha</th><th>Duración</th><th>Nota</th><th>Extra</th></tr>`;
+                html += `<h4>📜 Sesiones:</h4><table><tr><th>Fecha</th><th>Duración</th><th>Nota</th><th>Total por horas</th><th>Extra</th></tr>`;
                 p.sesiones.forEach(s => {
-                    html += `<tr><td>${s.fecha}</td><td>${s.duracion}</td><td>${s.nota}</td><td>${s.extra ? simbolo + s.extra : '-'}</td></tr>`;
+                    const horasSesion = s.segundos / 3600;
+                    const totalPorHoras = horasSesion * p.tarifa;
+                    html += `<tr>
+                        <td>${s.fecha}</td>
+                        <td>${s.duracion}</td>
+                        <td>${s.nota}</td>
+                        <td><strong>${simbolo}${totalPorHoras.toFixed(2)}</strong></td>
+                        <td>${s.extra ? simbolo + s.extra.toFixed(2) : '-'}</td>
+                    </tr>`;
                 });
                 html += `</table>`;
             }
@@ -2177,7 +2144,7 @@
 
         html += `
             <div class="total">
-                <h2>💰 TOTAL GENERAL: ${simbolo}${totalGeneral.toFixed(2)}</h2>
+                <h2>💰 GRAN TOTAL: ${simbolo}${totalGeneral.toFixed(2)}</h2>
                 <p style="font-size:14px; margin-top:5px;">
                     📓 Total en notas: ${simbolo}${totalNotasGenerales.toFixed(2)} | 
                     ⏱️ Horas: ${simbolo}${(totalGeneral - totalNotasGenerales).toFixed(2)}
@@ -2272,6 +2239,7 @@
                 }
                 h1 { color: #e94560; font-size: 24px; }
                 h2 { color: #58a6ff; font-size: 18px; margin-top: 15px; }
+                h4 { color: #58a6ff; font-size: 14px; margin-top: 10px; }
                 .header { text-align: center; padding-bottom: 15px; border-bottom: 2px solid #e94560; }
                 .proyecto { 
                     margin: 15px 0; 
@@ -2321,26 +2289,6 @@
                     font-size: 12px;
                     text-align: right;
                 }
-                .desglose {
-                    margin: 10px 0;
-                    padding: 10px;
-                    background: #f0f0f0;
-                    border-radius: 6px;
-                    border: 1px solid #ddd;
-                }
-                .desglose-linea {
-                    display: flex;
-                    justify-content: space-between;
-                    padding: 4px 0;
-                }
-                .desglose-total {
-                    font-size: 18px;
-                    font-weight: bold;
-                    color: #1a4a2a;
-                    border-top: 2px solid #1a4a2a;
-                    padding-top: 6px;
-                    margin-top: 4px;
-                }
                 .img-adjunto {
                     max-width: 300px;
                     max-height: 200px;
@@ -2361,22 +2309,22 @@
                     margin-bottom: 6px;
                     font-size: 13px;
                 }
-        </style>
-    </head>
-    <body>
-        <div class="header">
-            <h1>💼 ${p.nombre}</h1>
-            <p>Reporte generado: ${new Date().toLocaleString()}</p>
-            <p class="moneda-info">Moneda: ${moneda} (${simbolo})</p>
-        </div>
-
-        <div class="proyecto">
-            <p><strong>Cliente:</strong> ${p.cliente || 'N/A'}</p>
-            <p><strong>Tarifa:</strong> ${simbolo}${p.tarifa}/hora</p>
-            
-            <div class="descripcion">
-                <strong>📝 Descripción:</strong> ${p.descripcion || 'Sin descripción'}
+            </style>
+        </head>
+        <body>
+            <div class="header">
+                <h1>💼 ${p.nombre}</h1>
+                <p>Reporte generado: ${new Date().toLocaleString()}</p>
+                <p class="moneda-info">Moneda: ${moneda} (${simbolo})</p>
             </div>
+
+            <div class="proyecto">
+                <p><strong>Cliente:</strong> ${p.cliente || 'N/A'}</p>
+                <p><strong>Tarifa:</strong> ${simbolo}${p.tarifa}/hora</p>
+                
+                <div class="descripcion">
+                    <strong>📝 Descripción:</strong> ${p.descripcion || 'Sin descripción'}
+                </div>
         `;
 
         // ===== NOTAS (MATERIALES) - ARRIBA =====
@@ -2407,33 +2355,19 @@
             `;
         }
 
-        // ===== DESGLOSE FINANCIERO - ABAJO =====
-        html += `
-            <div class="desglose">
-                <div class="desglose-linea">
-                    <span>⏱️ Horas trabajadas:</span>
-                    <span>${horas.toFixed(2)}h = ${simbolo}${horasDinero.toFixed(2)}</span>
-                </div>
-                <div class="desglose-linea">
-                    <span>📓 Notas (materiales):</span>
-                    <span>${simbolo}${totalNotas.toFixed(2)}</span>
-                </div>
-                <div class="desglose-linea">
-                    <span>💸 Extras:</span>
-                    <span>${simbolo}${extras.toFixed(2)}</span>
-                </div>
-                <div class="desglose-linea desglose-total">
-                    <span>💰 TOTAL A COBRAR:</span>
-                    <span>${simbolo}${ingreso.toFixed(2)}</span>
-                </div>
-            </div>
-        `;
-
         // ===== SESIONES =====
         if (p.sesiones && p.sesiones.length > 0) {
-            html += `<h2>📜 Sesiones</h2><table><tr><th>Fecha</th><th>Duración</th><th>Nota</th><th>Extra</th></tr>`;
+            html += `<h2>📜 Sesiones</h2><table><tr><th>Fecha</th><th>Duración</th><th>Nota</th><th>Total por horas</th><th>Extra</th></tr>`;
             p.sesiones.forEach(s => {
-                html += `<tr><td>${s.fecha}</td><td>${s.duracion}</td><td>${s.nota}</td><td>${s.extra ? simbolo + s.extra : '-'}</td></tr>`;
+                const horasSesion = s.segundos / 3600;
+                const totalPorHoras = horasSesion * p.tarifa;
+                html += `<tr>
+                    <td>${s.fecha}</td>
+                    <td>${s.duracion}</td>
+                    <td>${s.nota}</td>
+                    <td><strong>${simbolo}${totalPorHoras.toFixed(2)}</strong></td>
+                    <td>${s.extra ? simbolo + s.extra.toFixed(2) : '-'}</td>
+                </tr>`;
             });
             html += `</table>`;
         }
@@ -2462,7 +2396,7 @@
         html += `
         </div>
         <div class="total">
-            <h2>💰 TOTAL: ${simbolo}${ingreso.toFixed(2)}</h2>
+            <h2>💰 GRAN TOTAL: ${simbolo}${ingreso.toFixed(2)}</h2>
             <p style="font-size:14px; margin-top:5px;">
                 📓 Notas: ${simbolo}${totalNotas.toFixed(2)} | 
                 ⏱️ Horas: ${simbolo}${horasDinero.toFixed(2)} | 
