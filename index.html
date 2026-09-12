@@ -2307,8 +2307,6 @@
         document.getElementById('preview-content').innerHTML = '';
         document.getElementById('pdf-hidden-container').innerHTML = '';
     }
-
-        // ============================================================
     // ===== DESCARGAR PDF DESDE PREVIEW =====
     // ============================================================
     function descargarPDFDesdePreview() {
@@ -2319,45 +2317,52 @@
         }
 
         showToast('📕 Generando PDF...', 'success');
-        actualizarProgreso(30, 'Preparando...');
+        actualizarProgreso(20, 'Preparando...');
 
-        // Hacer visible el contenedor temporalmente para que html2canvas lo capture
+        // 1) Traer el contenedor al viewport (detrás de todo) para que html2canvas lo capture
         elemento.style.left = '0';
+        elemento.style.top = '0';
         elemento.style.zIndex = '-1';
+        elemento.style.opacity = '1';
 
-        const opt = {
-            margin: [10, 10, 10, 10],
-            filename: pdfNombreActual,
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: {
-                scale: 2,
-                useCORS: true,
-                logging: false,
-                windowWidth: 800,
-                scrollY: 0,
-                backgroundColor: '#ffffff'
-            },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-        };
+        // 2) Esperar un tick para que el navegador aplique el cambio de estilo
+        //    antes de que html2canvas haga la captura
+        setTimeout(() => {
+            const opt = {
+                margin: [10, 10, 10, 10],
+                filename: pdfNombreActual,
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: {
+                    scale: 2,
+                    useCORS: true,
+                    logging: false,
+                    windowWidth: 800,
+                    scrollX: 0,
+                    scrollY: 0,
+                    backgroundColor: '#ffffff'
+                },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+            };
 
-        actualizarProgreso(60, 'Generando...');
+            actualizarProgreso(50, 'Generando...');
 
-        html2pdf().set(opt).from(elemento).save().then(() => {
-            // Volver a ocultarlo después de capturar
-            elemento.style.left = '-10000px';
-            elemento.style.zIndex = '-9999';
+            html2pdf().set(opt).from(elemento).save().then(() => {
+                // 3) Devolver el contenedor a su posición oculta
+                elemento.style.left = '-10000px';
+                elemento.style.zIndex = '-9999';
 
-            actualizarProgreso(100, '¡PDF descargado!');
-            setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
-            showToast('📕 PDF descargado correctamente', 'success');
-        }).catch((err) => {
-            elemento.style.left = '-10000px';
-            elemento.style.zIndex = '-9999';
-            console.error(err);
-            showToast('Error al generar PDF. Intenta de nuevo.', 'error');
-            actualizarProgreso(0, 'Listo');
-        });
+                actualizarProgreso(100, '¡PDF descargado!');
+                setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
+                showToast('📕 PDF descargado correctamente', 'success');
+            }).catch((err) => {
+                elemento.style.left = '-10000px';
+                elemento.style.zIndex = '-9999';
+                console.error(err);
+                showToast('Error al generar PDF. Intenta de nuevo.', 'error');
+                actualizarProgreso(0, 'Listo');
+            });
+        }, 100); // 100ms es suficiente para que el navegador aplique el estilo
     }
 
     // ============================================================
