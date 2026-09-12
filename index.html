@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
     <title>💼 DC Tracker Proyects</title>
     
+    <!-- LIBRERÍA PARA CAPTURAR COMO IMAGEN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    
     <style>
         /* ===== ESTILOS BASE ===== */
         * {
@@ -14,7 +17,6 @@
         }
         
         html {
-            /* Evita zoom raro en iOS pero permite zoom manual */
             -webkit-text-size-adjust: 100%;
             text-size-adjust: 100%;
         }
@@ -157,7 +159,6 @@
             border: 1px solid #30363d;
             border-radius: 8px;
             color: white;
-            /* 16px evita el zoom automático en iOS al enfocar */
             font-size: 16px;
             transition: border 0.3s;
             -webkit-appearance: none;
@@ -717,6 +718,16 @@
             color: white;
         }
         
+        .btn-imagen {
+            background: #3fb950;
+            color: white;
+            box-shadow: 0 4px 12px rgba(63, 185, 80, 0.4);
+        }
+        
+        .btn-imagen:hover {
+            background: #2ea043;
+        }
+        
         .preview-content {
             padding: 30px;
             background: white;
@@ -954,7 +965,6 @@
                 font-size: 12px; 
                 padding: 12px 2px; 
                 min-width: 30px;
-                /* iOS táctil: mínimo 44px de alto */
                 min-height: 44px;
             }
             .timer-display { font-size: 36px; min-width: 160px; padding: 12px; }
@@ -967,7 +977,6 @@
             .nota-item .precio { font-size: 14px; min-width: 60px; }
             .moneda-selector { justify-content: center; }
             
-            /* Modal de preview mejorado para móvil */
             .preview-overlay { padding: 8px; }
             .preview-modal { border-radius: 10px; }
             .preview-header { 
@@ -991,7 +1000,6 @@
                 max-height: 75vh;
             }
             
-            /* Estilos del PDF reducidos en móvil */
             .pdf-preview .pdf-header h1 { font-size: 20px; }
             .pdf-preview .pdf-header p { font-size: 11px; }
             .pdf-preview .proyecto { padding: 12px; margin: 12px 0; }
@@ -1328,6 +1336,7 @@
         <div class="preview-header">
             <h3>📄 Vista previa del reporte</h3>
             <div class="preview-header-btns">
+                <button class="btn-imagen" onclick="exportarComoImagen()">📥 Exportar como Imagen</button>
                 <button class="btn-cerrar" onclick="cerrarPreview()">✕ Cerrar</button>
             </div>
         </div>
@@ -1349,7 +1358,7 @@
     let adjuntoSeleccionado = -1;
     let archivoTemp = null;
     let notaSeleccionada = -1;
-    let pdfNombreActual = 'DC_Tracker_Report.png';
+    let imagenNombreActual = 'DC_Tracker_Report.png';
 
     // Timer
     let tiempoInicio = null;
@@ -2278,7 +2287,7 @@
         if (proyectos.length === 0) { showToast('No hay proyectos', 'error'); return; }
 
         const html = construirHTMLPDF(null);
-        pdfNombreActual = 'DC_Tracker_Report.png';
+        imagenNombreActual = 'DC_Tracker_Report.png';
 
         document.getElementById('preview-content').innerHTML = html;
         document.getElementById('preview-overlay').classList.add('active');
@@ -2295,7 +2304,7 @@
 
         const p = proyectos[proyectoActual];
         const html = construirHTMLPDF(p);
-        pdfNombreActual = `${p.nombre.replace(/\s/g, '_')}_Report.png`;
+        imagenNombreActual = `${p.nombre.replace(/\s/g, '_')}_Report.png`;
 
         document.getElementById('preview-content').innerHTML = html;
         document.getElementById('preview-overlay').classList.add('active');
@@ -2307,6 +2316,70 @@
     function cerrarPreview() {
         document.getElementById('preview-overlay').classList.remove('active');
         document.getElementById('preview-content').innerHTML = '';
+    }
+
+    // ============================================================
+    // ===== EXPORTAR COMO IMAGEN =====
+    // ============================================================
+    function exportarComoImagen() {
+        const previewContent = document.getElementById('preview-content');
+        if (!previewContent || !previewContent.innerHTML.trim()) {
+            showToast('No hay reporte para exportar', 'error');
+            return;
+        }
+
+        showToast('🖼️ Generando imagen...', 'success');
+        actualizarProgreso(20, 'Preparando...');
+
+        // 1) Crear contenedor temporal blanco con el contenido a exportar
+        const contenedor = document.createElement('div');
+        contenedor.style.position = 'fixed';
+        contenedor.style.top = '0';
+        contenedor.style.left = '0';
+        contenedor.style.width = '800px';
+        contenedor.style.background = '#ffffff';
+        contenedor.style.padding = '30px';
+        contenedor.style.zIndex = '99999';
+        contenedor.style.opacity = '0.01';   // invisible al ojo pero capturable
+        contenedor.style.pointerEvents = 'none';
+        contenedor.style.boxSizing = 'border-box';
+        contenedor.style.fontFamily = 'Arial, sans-serif';
+
+        contenedor.innerHTML = '<div class="pdf-preview">' + previewContent.innerHTML + '</div>';
+        document.body.appendChild(contenedor);
+
+        actualizarProgreso(50, 'Capturando...');
+
+        // 2) Esperar un momento para que se pinte y capturar con html2canvas
+        setTimeout(() => {
+            html2canvas(contenedor, {
+                scale: 2,                   // buena resolución
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff',
+                windowWidth: 800,
+                scrollX: 0,
+                scrollY: 0
+            }).then(canvas => {
+                // 3) Convertir a PNG y descargar
+                const enlace = document.createElement('a');
+                enlace.download = imagenNombreActual || 'DC_Tracker_Report.png';
+                enlace.href = canvas.toDataURL('image/png');
+                document.body.appendChild(enlace);
+                enlace.click();
+                document.body.removeChild(enlace);
+
+                document.body.removeChild(contenedor);
+                actualizarProgreso(100, '¡Imagen descargada!');
+                setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
+                showToast('🖼️ Imagen descargada correctamente', 'success');
+            }).catch(err => {
+                if (document.body.contains(contenedor)) document.body.removeChild(contenedor);
+                console.error(err);
+                showToast('Error al generar la imagen', 'error');
+                actualizarProgreso(0, 'Listo');
+            });
+        }, 200);
     }
 
     // ============================================================
