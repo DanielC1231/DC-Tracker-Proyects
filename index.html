@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>💼 DC Tracker Proyects</title>
     
-    <!-- LIBRERÍA PARA PDF CON IMÁGENES -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- LIBRERÍA PARA CAPTURAR COMO IMAGEN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
         /* ===== ESTILOS BASE ===== */
@@ -729,22 +729,13 @@
             overflow-y: auto;
         }
         
-        /* ===== PDF OCULTO (para generar sin cortes) ===== */
-        #pdf-hidden-container {
-            position: fixed;
-            top: 0;
-            left: -10000px;
-            width: 800px;
-            background: white;
-            z-index: -9999;
-        }
-        
         /* ===== ESTILOS DEL PDF ===== */
         .pdf-preview {
             font-family: Arial, sans-serif;
             color: #333;
             line-height: 1.5;
             width: 100%;
+            background: #ffffff;
         }
         
         .pdf-preview .pdf-header {
@@ -899,7 +890,7 @@
             font-size: 12px;
         }
         
-        /* ===== DESGLOSE FINANCIERO (Notas, Horas, Extras) ===== */
+        /* ===== DESGLOSE FINANCIERO ===== */
         .pdf-preview .desglose-financiero {
             margin: 15px 0;
             padding: 15px;
@@ -924,7 +915,7 @@
             color: #1a4a2a;
         }
         
-        /* ===== GRAN TOTAL (al final de todo) ===== */
+        /* ===== GRAN TOTAL ===== */
         .pdf-preview .gran-total {
             background: linear-gradient(135deg, #1a4a2a, #238636);
             color: white;
@@ -987,13 +978,11 @@
 
 <div class="app-container">
 
-    <!-- ===== HEADER ===== -->
     <div class="header">
         <h1>💼 DC Tracker Proyects</h1>
         <p>Organiza proyectos, controla tiempo y cobra lo que mereces</p>
     </div>
 
-    <!-- ===== PROGRESS BAR ===== -->
     <div class="progress-container">
         <div class="label" id="progress-label">Listo</div>
         <div class="progress-bar">
@@ -1001,7 +990,6 @@
         </div>
     </div>
 
-    <!-- ===== TABS ===== -->
     <div class="tabs">
         <button class="tab-btn active" data-tab="tab-proyectos">📁</button>
         <button class="tab-btn" data-tab="tab-timer">⏱️</button>
@@ -1291,7 +1279,6 @@
         </div>
     </div>
 
-    <!-- ===== TOAST ===== -->
     <div id="toast" class="toast"></div>
 
 </div>
@@ -1302,10 +1289,10 @@
 <div class="preview-overlay" id="preview-overlay">
     <div class="preview-modal">
         <div class="preview-header">
-            <h3>📄 Vista previa del PDF</h3>
+            <h3>📄 Vista previa del reporte</h3>
             <div class="preview-header-btns">
                 <button class="btn-cerrar" onclick="cerrarPreview()">✕ Cerrar</button>
-                <button class="btn-descargar" onclick="descargarPDFDesdePreview()">📥 Descargar PDF</button>
+                <button class="btn-descargar" onclick="descargarPDFDesdePreview()">📥 Descargar Imagen</button>
             </div>
         </div>
         <div class="preview-content" id="preview-content">
@@ -1326,8 +1313,7 @@
     let adjuntoSeleccionado = -1;
     let archivoTemp = null;
     let notaSeleccionada = -1;
-    let pdfNombreActual = 'DC_Tracker_Report.pdf';
-    let pdfHTMLActual = '';
+    let pdfNombreActual = 'DC_Tracker_Report.png';
 
     // Timer
     let tiempoInicio = null;
@@ -1656,9 +1642,6 @@
         document.getElementById('manual-nota').value = '';
     }
 
-    // ============================================================
-    // ===== REGISTRAR SESIÓN =====
-    // ============================================================
     function registrarSesion(segundos, nota, extra) {
         const p = proyectos[proyectoActual];
         p.tiempo_total += segundos;
@@ -2106,7 +2089,7 @@
     }
 
     // ============================================================
-    // ===== CONSTRUIR HTML DEL PDF =====
+    // ===== CONSTRUIR HTML DEL REPORTE =====
     // ============================================================
     function construirHTMLPDF(proyecto) {
         const moneda = getMoneda();
@@ -2253,21 +2236,20 @@
     }
 
     // ============================================================
-    // ===== PREVISUALIZAR PDF (TODOS) =====
+    // ===== PREVISUALIZAR (TODOS) =====
     // ============================================================
     function previsualizarPDF() {
         if (proyectos.length === 0) { showToast('No hay proyectos', 'error'); return; }
 
         const html = construirHTMLPDF(null);
-        pdfHTMLActual = html;
-        pdfNombreActual = 'DC_Tracker_Report.pdf';
+        pdfNombreActual = 'DC_Tracker_Report.png';
 
         document.getElementById('preview-content').innerHTML = html;
         document.getElementById('preview-overlay').classList.add('active');
     }
 
     // ============================================================
-    // ===== PREVISUALIZAR PDF (PROYECTO SELECCIONADO) =====
+    // ===== PREVISUALIZAR (PROYECTO SELECCIONADO) =====
     // ============================================================
     function previsualizarPDFProyecto() {
         if (proyectoActual === null || !proyectos[proyectoActual]) {
@@ -2277,8 +2259,7 @@
 
         const p = proyectos[proyectoActual];
         const html = construirHTMLPDF(p);
-        pdfHTMLActual = html;
-        pdfNombreActual = `${p.nombre.replace(/\s/g, '_')}_Report.pdf`;
+        pdfNombreActual = `${p.nombre.replace(/\s/g, '_')}_Report.png`;
 
         document.getElementById('preview-content').innerHTML = html;
         document.getElementById('preview-overlay').classList.add('active');
@@ -2293,20 +2274,19 @@
     }
 
     // ============================================================
-    // ===== DESCARGAR PDF DESDE PREVIEW =====
+    // ===== DESCARGAR COMO IMAGEN (html2canvas puro) =====
     // ============================================================
     function descargarPDFDesdePreview() {
         const previewContent = document.getElementById('preview-content');
         if (!previewContent || !previewContent.innerHTML.trim()) {
-            showToast('No hay PDF para descargar', 'error');
+            showToast('No hay reporte para descargar', 'error');
             return;
         }
 
-        showToast('📕 Generando PDF...', 'success');
-        actualizarProgreso(20, 'Preparando...');
+        showToast('🖼️ Generando imagen...', 'success');
+        actualizarProgreso(30, 'Preparando...');
 
-        // Crear contenedor temporal INVISIBLE pero RENDERIZADO
-        // (opacity: 0.01 es invisible al ojo pero html2canvas SÍ lo captura)
+        // Crear contenedor limpio, blanco, del ancho deseado
         const contenedor = document.createElement('div');
         contenedor.style.position = 'fixed';
         contenedor.style.top = '0';
@@ -2314,46 +2294,46 @@
         contenedor.style.width = '800px';
         contenedor.style.background = '#ffffff';
         contenedor.style.padding = '30px';
-        contenedor.style.zIndex = '1';
-        contenedor.style.opacity = '0.01';
+        contenedor.style.zIndex = '99999';
+        contenedor.style.opacity = '0.01';       // casi invisible (para el ojo), pero capturable
         contenedor.style.pointerEvents = 'none';
+        contenedor.style.boxSizing = 'border-box';
 
         contenedor.innerHTML = '<div class="pdf-preview">' + previewContent.innerHTML + '</div>';
         document.body.appendChild(contenedor);
 
-        // Esperar 2 frames + un pequeño delay para garantizar el render
+        actualizarProgreso(60, 'Capturando...');
+
+        // Esperar un tick y capturar como PNG
         setTimeout(() => {
-            const opt = {
-                margin: [10, 10, 10, 10],
-                filename: pdfNombreActual,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    logging: false,
-                    windowWidth: 800,
-                    scrollX: 0,
-                    scrollY: 0,
-                    backgroundColor: '#ffffff'
-                },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-            };
+            html2canvas(contenedor, {
+                scale: 2,                     // calidad 2x (buena resolución)
+                useCORS: true,
+                logging: false,
+                backgroundColor: '#ffffff',
+                windowWidth: 800,
+                scrollX: 0,
+                scrollY: 0
+            }).then(canvas => {
+                // Convertir a PNG y descargar
+                const enlace = document.createElement('a');
+                enlace.download = pdfNombreActual || 'DC_Tracker_Report.png';
+                enlace.href = canvas.toDataURL('image/png');
+                document.body.appendChild(enlace);
+                enlace.click();
+                document.body.removeChild(enlace);
 
-            actualizarProgreso(50, 'Generando...');
-
-            html2pdf().set(opt).from(contenedor).save().then(() => {
-                if (document.body.contains(contenedor)) document.body.removeChild(contenedor);
-                actualizarProgreso(100, '¡PDF descargado!');
+                document.body.removeChild(contenedor);
+                actualizarProgreso(100, '¡Imagen descargada!');
                 setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
-                showToast('📕 PDF descargado correctamente', 'success');
-            }).catch((err) => {
+                showToast('🖼️ Imagen descargada correctamente', 'success');
+            }).catch(err => {
                 if (document.body.contains(contenedor)) document.body.removeChild(contenedor);
                 console.error(err);
-                showToast('Error al generar PDF. Intenta de nuevo.', 'error');
+                showToast('Error al generar la imagen', 'error');
                 actualizarProgreso(0, 'Listo');
             });
-        }, 150);
+        }, 200);
     }
 
     // ============================================================
