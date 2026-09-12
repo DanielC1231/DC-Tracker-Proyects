@@ -2307,11 +2307,12 @@
         document.getElementById('preview-content').innerHTML = '';
         document.getElementById('pdf-hidden-container').innerHTML = '';
     }
+       // ============================================================
     // ===== DESCARGAR PDF DESDE PREVIEW =====
     // ============================================================
     function descargarPDFDesdePreview() {
-        const elemento = document.getElementById('pdf-hidden-container');
-        if (!elemento || !elemento.innerHTML.trim()) {
+        const previewContent = document.getElementById('preview-content');
+        if (!previewContent || !previewContent.innerHTML.trim()) {
             showToast('No hay PDF para descargar', 'error');
             return;
         }
@@ -2319,52 +2320,57 @@
         showToast('📕 Generando PDF...', 'success');
         actualizarProgreso(20, 'Preparando...');
 
-        // 1) Traer el contenedor al viewport (detrás de todo) para que html2canvas lo capture
-        elemento.style.left = '0';
-        elemento.style.top = '0';
-        elemento.style.zIndex = '-1';
-        elemento.style.opacity = '1';
+        // Crear un clon VISIBLE en el body (fuera de la vista del usuario)
+        // con el mismo contenido de la preview. Se elimina al terminar.
+        const clon = document.createElement('div');
+        clon.id = 'pdf-clon-temporal';
+        clon.style.position = 'fixed';
+        clon.style.top = '0';
+        clon.style.left = '0';
+        clon.style.width = '794px';          // Ancho A4 aproximado en px a 96dpi
+        clon.style.background = '#ffffff';
+        clon.style.padding = '20px';
+        clon.style.zIndex = '-1';            // Detrás de todo, pero visible para html2canvas
+        clon.style.boxSizing = 'border-box';
+        clon.innerHTML = previewContent.innerHTML;
+        document.body.appendChild(clon);
 
-        // 2) Esperar un tick para que el navegador aplique el cambio de estilo
-        //    antes de que html2canvas haga la captura
-        setTimeout(() => {
-            const opt = {
-                margin: [10, 10, 10, 10],
-                filename: pdfNombreActual,
-                image: { type: 'jpeg', quality: 0.98 },
-                html2canvas: {
-                    scale: 2,
-                    useCORS: true,
-                    logging: false,
-                    windowWidth: 800,
-                    scrollX: 0,
-                    scrollY: 0,
-                    backgroundColor: '#ffffff'
-                },
-                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
-                pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
-            };
+        // Esperar 2 frames para asegurar que el navegador repinte el clon
+        requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+                const opt = {
+                    margin: [10, 10, 10, 10],
+                    filename: pdfNombreActual,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: {
+                        scale: 2,
+                        useCORS: true,
+                        logging: false,
+                        windowWidth: 794,
+                        scrollX: 0,
+                        scrollY: 0,
+                        backgroundColor: '#ffffff'
+                    },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+                    pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
+                };
 
-            actualizarProgreso(50, 'Generando...');
+                actualizarProgreso(50, 'Generando...');
 
-            html2pdf().set(opt).from(elemento).save().then(() => {
-                // 3) Devolver el contenedor a su posición oculta
-                elemento.style.left = '-10000px';
-                elemento.style.zIndex = '-9999';
-
-                actualizarProgreso(100, '¡PDF descargado!');
-                setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
-                showToast('📕 PDF descargado correctamente', 'success');
-            }).catch((err) => {
-                elemento.style.left = '-10000px';
-                elemento.style.zIndex = '-9999';
-                console.error(err);
-                showToast('Error al generar PDF. Intenta de nuevo.', 'error');
-                actualizarProgreso(0, 'Listo');
+                html2pdf().set(opt).from(clon).save().then(() => {
+                    document.body.removeChild(clon);
+                    actualizarProgreso(100, '¡PDF descargado!');
+                    setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
+                    showToast('📕 PDF descargado correctamente', 'success');
+                }).catch((err) => {
+                    if (document.body.contains(clon)) document.body.removeChild(clon);
+                    console.error(err);
+                    showToast('Error al generar PDF. Intenta de nuevo.', 'error');
+                    actualizarProgreso(0, 'Listo');
+                });
             });
-        }, 100); // 100ms es suficiente para que el navegador aplique el estilo
+        });
     }
-
     // ============================================================
     // ===== EXPORTAR CSV =====
     // ============================================================
