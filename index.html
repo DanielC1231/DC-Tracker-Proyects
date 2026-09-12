@@ -2109,7 +2109,7 @@
         });
     }
 
-    // ============================================================
+       // ============================================================
     // ===== CONSTRUIR HTML DEL PDF =====
     // ============================================================
     function construirHTMLPDF(proyecto) {
@@ -2239,13 +2239,12 @@
                 });
             }
 
-            html += `</div>`;
+            html += `</div>`; // cierra .proyecto
         });
 
-        // ===== GRAN TOTAL AL FINAL DE TODO =====
+        // ===== GRAN TOTAL AL FINAL DE TODO (con el orden que pediste) =====
         html += `
             <div class="gran-total">
-                <h2>💰 GRAN TOTAL: ${simbolo}${totalGeneral.toFixed(2)}</h2>
                 <div class="desglose-total">
                     <span>📓 Notas: ${simbolo}${totalNotasGenerales.toFixed(2)}</span> |
                     <span>⏱️ Horas: ${simbolo}${totalHorasGenerales.toFixed(2)}</span> |
@@ -2254,9 +2253,10 @@
                 <div class="nota-final">
                     (Notas + Horas + Extras)
                 </div>
+                <h2>💰 GRAN TOTAL: ${simbolo}${totalGeneral.toFixed(2)}</h2>
             </div>
-        </div>
-        `;
+        </div> 
+        `; // cierra .pdf-preview
 
         return html;
     }
