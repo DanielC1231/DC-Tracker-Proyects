@@ -725,66 +725,87 @@
         }
         
         /* ===== PRESUPUESTO ===== */
-        .presupuesto-card {
-            background: linear-gradient(135deg, #1a2a3a, #0f3460);
-            border: 1px solid #1f6feb;
-            border-radius: 10px;
-            padding: 16px;
-            margin: 12px 0;
-        }
-        
-        .presupuesto-card h3 {
-            color: #58a6ff;
-            font-size: 16px;
-            margin-bottom: 12px;
-            padding-bottom: 8px;
-            border-bottom: 1px solid #21262d;
-        }
-        
-        .presupuesto-linea {
+        .presu-item {
+            background: #1a2a3a;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 6px;
             display: flex;
             justify-content: space-between;
-            padding: 8px 0;
+            align-items: center;
+            gap: 8px;
+            border-left: 3px solid #58a6ff;
+        }
+        
+        .presu-item.material {
+            border-left-color: #f0883e;
+        }
+        
+        .presu-item.mano {
+            border-left-color: #3fb950;
+        }
+        
+        .presu-item .presu-desc {
+            flex: 1;
             font-size: 14px;
-            border-bottom: 1px dashed #21262d;
-        }
-        
-        .presupuesto-linea:last-child {
-            border-bottom: none;
-        }
-        
-        .presupuesto-linea .label {
             color: #c9d1d9;
+            word-break: break-word;
         }
         
-        .presupuesto-linea .valor {
+        .presu-item .presu-precio {
             font-weight: bold;
             color: #58a6ff;
+            font-size: 14px;
+            white-space: nowrap;
         }
         
-        .presupuesto-total {
+        .presu-item.material .presu-precio {
+            color: #f0883e;
+        }
+        
+        .presu-item.mano .presu-precio {
+            color: #3fb950;
+        }
+        
+        .presu-item .btn-eliminar-presu {
+            background: #da3633;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 6px 10px;
+            font-size: 12px;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+        
+        .presu-item .btn-eliminar-presu:active {
+            transform: scale(0.95);
+        }
+        
+        .presu-total {
             display: flex;
             justify-content: space-between;
-            padding: 14px 0 6px 0;
+            padding: 14px 16px;
+            margin-top: 10px;
+            background: linear-gradient(135deg, #1a4a2a, #238636);
+            border-radius: 8px;
             font-size: 18px;
             font-weight: bold;
-            color: #3fb950;
-            border-top: 2px solid #238636;
-            margin-top: 8px;
+            color: white;
         }
         
-        .presupuesto-nota {
+        .presu-respuesta {
             background: #1a4a2a;
-            padding: 10px 12px;
+            padding: 12px 14px;
             border-radius: 8px;
             border-left: 4px solid #3fb950;
             color: #c9d1d9;
             font-size: 13px;
-            line-height: 1.5;
+            line-height: 1.6;
             margin-top: 12px;
         }
         
-        .presupuesto-nota strong {
+        .presu-respuesta strong {
             color: #3fb950;
         }
         
@@ -1312,29 +1333,66 @@
             <span class="label-title" style="font-size:18px; text-align:center; display:block; color:#58a6ff;">💵 Presupuesto Rápido</span>
 
             <div style="text-align:center; color:#8b949e; font-size:12px; margin-bottom:10px;">
-                Herramienta para calcular un aproximado al cliente. No se incluye en el reporte.
+                Arma un presupuesto aproximado para el cliente. No se incluye en el reporte.
             </div>
 
-            <div class="form-group">
-                <label>Proyecto</label>
-                <select id="presu-proyecto" onchange="calcularPresupuesto()">
-                    <option value="">— Selecciona un proyecto —</option>
-                </select>
-            </div>
-
-            <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                <div class="form-group" style="flex:1; min-width:100px;">
-                    <label>% Mano de obra</label>
-                    <input type="number" id="presu-mano-obra" value="50" min="0" max="500" oninput="calcularPresupuesto()">
+            <!-- ===== DATOS DEL CLIENTE (OPCIONAL) ===== -->
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <div class="form-group" style="flex:1; min-width:130px;">
+                    <label>Cliente</label>
+                    <input type="text" id="presu-cliente" placeholder="Nombre del cliente">
                 </div>
-                <div class="form-group" style="flex:1; min-width:100px;">
-                    <label>% Ganancia</label>
-                    <input type="number" id="presu-ganancia" value="30" min="0" max="500" oninput="calcularPresupuesto()">
+                <div class="form-group" style="flex:1; min-width:130px;">
+                    <label>Trabajo / Descripción</label>
+                    <input type="text" id="presu-trabajo" placeholder="Ej: Reparación de barco">
                 </div>
             </div>
 
-            <div id="presupuesto-resultado"></div>
+            <button class="btn btn-outline btn-block" onclick="cargarDesdeProyecto()" style="margin-bottom:10px;">
+                📁 Cargar materiales desde un proyecto
+            </button>
         </div>
+
+        <!-- ===== MATERIALES ===== -->
+        <div class="label-frame">
+            <span class="label-title" style="color:#f0883e;">🛠️ Materiales</span>
+            
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <div class="form-group" style="flex:2; min-width:150px;">
+                    <label>Descripción</label>
+                    <input type="text" id="mat-desc" placeholder="Ej: Cable de acero 3m">
+                </div>
+                <div class="form-group" style="flex:1; min-width:80px;">
+                    <label>Precio ($)</label>
+                    <input type="number" id="mat-precio" placeholder="100">
+                </div>
+            </div>
+            <button class="btn btn-warning btn-block" onclick="agregarMaterial()">➕ Agregar Material</button>
+
+            <div id="lista-materiales" style="margin-top:10px;"></div>
+        </div>
+
+        <!-- ===== MANO DE OBRA ===== -->
+        <div class="label-frame">
+            <span class="label-title" style="color:#3fb950;">🔧 Mano de obra / Servicios</span>
+            
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <div class="form-group" style="flex:2; min-width:150px;">
+                    <label>Descripción</label>
+                    <input type="text" id="mano-desc" placeholder="Ej: Instalación y soldadura">
+                </div>
+                <div class="form-group" style="flex:1; min-width:80px;">
+                    <label>Precio ($)</label>
+                    <input type="number" id="mano-precio" placeholder="200">
+                </div>
+            </div>
+            <button class="btn btn-primary btn-block" onclick="agregarMano()">➕ Agregar Mano de Obra</button>
+
+            <div id="lista-mano" style="margin-top:10px;"></div>
+        </div>
+
+        <!-- ===== TOTALES Y RESPUESTA ===== -->
+        <div id="presupuesto-resultado"></div>
     </div>
 
     <!-- ========================================================== -->
@@ -1441,6 +1499,10 @@
     let archivoTemp = null;
     let notaSeleccionada = -1;
 
+    // Presupuesto temporal (no se guarda)
+    let presuMateriales = [];
+    let presuMano = [];
+
     // Timer
     let tiempoInicio = null;
     let timerActivo = false;
@@ -1481,9 +1543,8 @@
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                 document.getElementById(this.dataset.tab).classList.add('active');
 
-                // Al abrir la pestaña de presupuesto, refrescar el select
                 if (this.dataset.tab === 'tab-presupuesto') {
-                    actualizarSelectPresupuesto();
+                    renderPresupuesto();
                 }
             });
         });
@@ -1498,7 +1559,7 @@
         actualizarTimerDisplay();
         actualizarListaNotas();
         actualizarSimbolo();
-        actualizarSelectPresupuesto();
+        renderPresupuesto();
     });
 
     // ============================================================
@@ -1538,8 +1599,7 @@
         actualizarListaAdjuntos();
         actualizarListaNotas();
         actualizarReportes();
-        actualizarSelectPresupuesto();
-        calcularPresupuesto();
+        renderPresupuesto();
     }
 
     // ============================================================
@@ -1586,7 +1646,6 @@
         guardarDatos();
         actualizarListaProyectos();
         actualizarReportes();
-        actualizarSelectPresupuesto();
 
         document.getElementById('proy-nombre').value = '';
         document.getElementById('proy-cliente').value = '';
@@ -1666,7 +1725,6 @@
             actualizarReportes();
             actualizarListaAdjuntos();
             actualizarListaNotas();
-            actualizarSelectPresupuesto();
             showToast('🗑️ Proyecto eliminado');
         }
     }
@@ -1688,7 +1746,6 @@
         p.descripcion = document.getElementById('proy-desc').value;
         guardarDatos();
         actualizarListaProyectos();
-        actualizarSelectPresupuesto();
         showToast('💾 Cambios guardados');
     }
 
@@ -2157,88 +2214,152 @@
     // ============================================================
     // ===== PRESUPUESTO =====
     // ============================================================
-    function actualizarSelectPresupuesto() {
-        const select = document.getElementById('presu-proyecto');
-        const valorActual = select.value;
-        select.innerHTML = '<option value="">— Selecciona un proyecto —</option>';
-        
-        proyectos.forEach((p, i) => {
-            const opt = document.createElement('option');
-            opt.value = i;
-            opt.textContent = p.nombre + (p.cliente ? ' — ' + p.cliente : '');
-            select.appendChild(opt);
-        });
+    function agregarMaterial() {
+        const desc = document.getElementById('mat-desc').value.trim();
+        const precio = parseFloat(document.getElementById('mat-precio').value);
 
-        // Restaurar selección si existe
-        if (valorActual !== '' && proyectos[valorActual]) {
-            select.value = valorActual;
-        }
+        if (!desc) { showToast('Escribe una descripción del material', 'error'); return; }
+        if (isNaN(precio) || precio < 0) { showToast('Ingresa un precio válido', 'error'); return; }
 
-        calcularPresupuesto();
+        presuMateriales.push({ desc, precio });
+        document.getElementById('mat-desc').value = '';
+        document.getElementById('mat-precio').value = '';
+        renderPresupuesto();
+        showToast('🛠️ Material agregado');
     }
 
-    function calcularPresupuesto() {
-        const select = document.getElementById('presu-proyecto');
-        const resultado = document.getElementById('presupuesto-resultado');
-        const idx = select.value;
+    function agregarMano() {
+        const desc = document.getElementById('mano-desc').value.trim();
+        const precio = parseFloat(document.getElementById('mano-precio').value);
 
-        if (idx === '' || !proyectos[idx]) {
-            resultado.innerHTML = '<div class="list-empty" style="padding:20px 0;">Selecciona un proyecto para ver el presupuesto</div>';
-            return;
+        if (!desc) { showToast('Escribe una descripción del servicio', 'error'); return; }
+        if (isNaN(precio) || precio < 0) { showToast('Ingresa un precio válido', 'error'); return; }
+
+        presuMano.push({ desc, precio });
+        document.getElementById('mano-desc').value = '';
+        document.getElementById('mano-precio').value = '';
+        renderPresupuesto();
+        showToast('🔧 Mano de obra agregada');
+    }
+
+    function eliminarMaterial(idx) {
+        presuMateriales.splice(idx, 1);
+        renderPresupuesto();
+    }
+
+    function eliminarMano(idx) {
+        presuMano.splice(idx, 1);
+        renderPresupuesto();
+    }
+
+    function cargarDesdeProyecto() {
+        if (proyectos.length === 0) { showToast('No hay proyectos creados', 'error'); return; }
+
+        // Crear un selector temporal
+        const opciones = proyectos.map((p, i) => `${i}: ${p.nombre} (${p.notas ? p.notas.length : 0} materiales)`).join('\n');
+        const idx = prompt('Escribe el número del proyecto del que quieres cargar los materiales:\n\n' + opciones);
+
+        if (idx === null) return;
+        const num = parseInt(idx);
+        if (isNaN(num) || !proyectos[num]) { showToast('Proyecto no válido', 'error'); return; }
+
+        const p = proyectos[num];
+        const notas = p.notas || [];
+
+        if (notas.length === 0) { showToast('Ese proyecto no tiene materiales', 'error'); return; }
+
+        // Agregar materiales del proyecto
+        notas.forEach(n => {
+            presuMateriales.push({ desc: n.concepto, precio: n.precio });
+        });
+
+        // Rellenar cliente y descripción si están vacíos
+        if (!document.getElementById('presu-cliente').value) {
+            document.getElementById('presu-cliente').value = p.cliente || '';
+        }
+        if (!document.getElementById('presu-trabajo').value) {
+            document.getElementById('presu-trabajo').value = p.nombre || '';
         }
 
-        const p = proyectos[idx];
-        const porcentajeMano = parseFloat(document.getElementById('presu-mano-obra').value) || 0;
-        const porcentajeGanancia = parseFloat(document.getElementById('presu-ganancia').value) || 0;
+        renderPresupuesto();
+        showToast(`📁 ${notas.length} materiales cargados de "${p.nombre}"`);
+    }
 
-        // Materiales = suma de notas
-        const materiales = (p.notas || []).reduce((sum, n) => sum + n.precio, 0);
+    function renderPresupuesto() {
+        const listaMat = document.getElementById('lista-materiales');
+        const listaMano = document.getElementById('lista-mano');
+        const resultado = document.getElementById('presupuesto-resultado');
 
-        // Mano de obra = materiales * (% / 100) — cálculo aproximado
-        const manoObra = materiales * (porcentajeMano / 100);
+        // ===== Lista de materiales =====
+        listaMat.innerHTML = '';
+        if (presuMateriales.length === 0) {
+            listaMat.innerHTML = '<div class="list-empty" style="padding:12px 0; font-size:13px;">Sin materiales aún</div>';
+        } else {
+            presuMateriales.forEach((m, i) => {
+                const div = document.createElement('div');
+                div.className = 'presu-item material';
+                div.innerHTML = `
+                    <span class="presu-desc">${m.desc}</span>
+                    <span class="presu-precio">${formatearMoneda(m.precio)}</span>
+                    <button class="btn-eliminar-presu" onclick="eliminarMaterial(${i})">✕</button>
+                `;
+                listaMat.appendChild(div);
+            });
+        }
 
-        // Subtotal antes de ganancia
-        const subtotal = materiales + manoObra;
+        // ===== Lista de mano de obra =====
+        listaMano.innerHTML = '';
+        if (presuMano.length === 0) {
+            listaMano.innerHTML = '<div class="list-empty" style="padding:12px 0; font-size:13px;">Sin mano de obra aún</div>';
+        } else {
+            presuMano.forEach((m, i) => {
+                const div = document.createElement('div');
+                div.className = 'presu-item mano';
+                div.innerHTML = `
+                    <span class="presu-desc">${m.desc}</span>
+                    <span class="presu-precio">${formatearMoneda(m.precio)}</span>
+                    <button class="btn-eliminar-presu" onclick="eliminarMano(${i})">✕</button>
+                `;
+                listaMano.appendChild(div);
+            });
+        }
 
-        // Ganancia = subtotal * (% / 100)
-        const ganancia = subtotal * (porcentajeGanancia / 100);
+        // ===== Totales =====
+        const totalMat = presuMateriales.reduce((s, m) => s + m.precio, 0);
+        const totalMano = presuMano.reduce((s, m) => s + m.precio, 0);
+        const total = totalMat + totalMano;
 
-        // Total presupuesto
-        const total = subtotal + ganancia;
+        const cliente = document.getElementById('presu-cliente').value.trim() || 'Cliente';
+        const trabajo = document.getElementById('presu-trabajo').value.trim() || 'el trabajo';
 
+        // ===== Resultado final =====
         resultado.innerHTML = `
-            <div class="presupuesto-card">
-                <h3>📋 ${p.nombre}${p.cliente ? ' — ' + p.cliente : ''}</h3>
-                
-                <div class="presupuesto-linea">
-                    <span class="label">📓 Materiales (${(p.notas || []).length} conceptos)</span>
-                    <span class="valor">${formatearMoneda(materiales)}</span>
+            <div class="label-frame" style="margin-top:12px;">
+                <span class="label-title" style="color:#58a6ff;">💵 Resumen del Presupuesto</span>
+
+                <div class="presu-item material" style="border-left-color:#f0883e;">
+                    <span class="presu-desc">🛠️ Total Materiales (${presuMateriales.length})</span>
+                    <span class="presu-precio">${formatearMoneda(totalMat)}</span>
                 </div>
-                <div class="presupuesto-linea">
-                    <span class="label">🔧 Mano de obra (+${porcentajeMano}%)</span>
-                    <span class="valor">${formatearMoneda(manoObra)}</span>
+
+                <div class="presu-item mano" style="border-left-color:#3fb950;">
+                    <span class="presu-desc">🔧 Total Mano de Obra (${presuMano.length})</span>
+                    <span class="presu-precio">${formatearMoneda(totalMano)}</span>
                 </div>
-                <div class="presupuesto-linea">
-                    <span class="label">💼 Subtotal</span>
-                    <span class="valor">${formatearMoneda(subtotal)}</span>
-                </div>
-                <div class="presupuesto-linea">
-                    <span class="label">💰 Ganancia (+${porcentajeGanancia}%)</span>
-                    <span class="valor">${formatearMoneda(ganancia)}</span>
-                </div>
-                
-                <div class="presupuesto-total">
-                    <span>💵 PRESUPUESTO APROX:</span>
+
+                <div class="presu-total">
+                    <span>💰 TOTAL PRESUPUESTO:</span>
                     <span>${formatearMoneda(total)}</span>
                 </div>
-            </div>
-            
-            <div class="presupuesto-nota">
-                <strong>💡 Respuesta rápida al cliente:</strong><br>
-                "El presupuesto aproximado es de <strong>${formatearMoneda(total)}</strong>. 
-                Incluye aproximadamente <strong>${formatearMoneda(materiales)}</strong> en materiales 
-                y <strong>${formatearMoneda(manoObra + ganancia)}</strong> en mano de obra y servicios. 
-                Es un estimado, puede variar según detalles finales."
+
+                <div class="presu-respuesta">
+                    <strong>💡 Respuesta rápida al cliente:</strong><br><br>
+                    "Hola${cliente !== 'Cliente' ? ' ' + cliente : ''}, te paso el presupuesto aproximado para <strong>${trabajo}</strong>:<br><br>
+                    🛠️ Materiales: <strong>${formatearMoneda(totalMat)}</strong><br>
+                    🔧 Mano de obra: <strong>${formatearMoneda(totalMano)}</strong><br><br>
+                    <strong>Total aproximado: ${formatearMoneda(total)}</strong><br><br>
+                    Es un estimado, puede variar según detalles finales. Cualquier cosa me avisas."
+                </div>
             </div>
         `;
     }
@@ -2576,7 +2697,6 @@
                         actualizarListaAdjuntos();
                         actualizarListaNotas();
                         actualizarSimbolo();
-                        actualizarSelectPresupuesto();
                         showToast('📂 Datos cargados correctamente');
                     } else {
                         showToast('Archivo inválido', 'error');
