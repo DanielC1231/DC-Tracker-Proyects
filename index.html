@@ -804,7 +804,7 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- TAB 4: ADJUNTOS (SIN BOTONES SUBIR/BAJAR) -->
+    <!-- TAB 4: ADJUNTOS -->
     <!-- ========================================================== -->
     <div id="tab-adjuntos" class="tab-content">
         <div class="label-frame">
@@ -820,14 +820,12 @@
 
             <hr class="divider">
 
-            <!-- ===== SELECCIONAR ARCHIVO ===== -->
             <button class="btn-seleccionar" onclick="seleccionarArchivo()">📁 Seleccionar archivo</button>
             
             <div id="archivo-seleccionado" class="archivo-seleccionado">Ningún archivo seleccionado</div>
             
             <div class="preview-container" id="preview-container"></div>
 
-            <!-- ===== TIPO Y NOMBRE ===== -->
             <div class="form-group" style="margin-top:10px;">
                 <label>Tipo</label>
                 <select id="tipo-adjunto">
@@ -845,11 +843,9 @@
                 <input type="text" id="nombre-adjunto" placeholder="Nombre del archivo">
             </div>
 
-            <!-- ===== BOTÓN ADJUNTAR ===== -->
             <button class="btn btn-primary btn-block" onclick="guardarAdjunto()">📎 Adjuntar al Proyecto</button>
         </div>
 
-        <!-- ===== LISTA DE ADJUNTOS ===== -->
         <div class="label-frame">
             <span class="label-title">📁 Archivos Adjuntos</span>
             <div id="lista-adjuntos" class="list-container">
@@ -917,7 +913,6 @@
         <div class="label-frame">
             <span class="label-title" style="font-size:18px; text-align:center; display:block; color:#58a6ff;">📊 Resumen General</span>
 
-            <!-- ===== SELECTOR DE MONEDA ===== -->
             <div class="moneda-selector">
                 <label>💱 Moneda:</label>
                 <select id="selector-moneda" onchange="actualizarTodo()">
@@ -946,7 +941,6 @@
                 </div>
             </div>
 
-            <!-- ===== DESGLOSE DETALLADO ===== -->
             <div style="background: #1a2a3a; padding: 12px; border-radius: 8px; margin-top: 10px; border: 1px solid #21262d;">
                 <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px solid #21262d;">
                     <span style="color: #8b949e;">💰 Horas trabajadas:</span>
@@ -1043,7 +1037,6 @@
             });
         });
 
-        // Cargar moneda guardada
         const monedaGuardada = localStorage.getItem('dc_moneda');
         if (monedaGuardada) {
             document.getElementById('selector-moneda').value = monedaGuardada;
@@ -1057,7 +1050,7 @@
     });
 
     // ============================================================
-    // ===== LOCAL STORAGE (CON PERSISTENCIA) =====
+    // ===== LOCAL STORAGE =====
     // ============================================================
     function cargarDatos() {
         const data = localStorage.getItem('dc_tracker_data');
@@ -1079,7 +1072,6 @@
             proyectoActual: proyectoActual
         };
         localStorage.setItem('dc_tracker_data', JSON.stringify(data));
-        // Guardar moneda
         localStorage.setItem('dc_moneda', getMoneda());
     }
 
@@ -1716,17 +1708,14 @@
         const totalSeg = proyectos.reduce((sum, p) => sum + p.tiempo_total, 0);
         const totalHoras = totalSeg / 3600;
         
-        // Total de horas en dinero
         const totalHorasDinero = proyectos.reduce((sum, p) => sum + ((p.tiempo_total / 3600) * p.tarifa), 0);
         const totalExtra = proyectos.reduce((sum, p) => sum + p.dinero_extra, 0);
         
-        // Total de notas de todos los proyectos
         const totalNotas = proyectos.reduce((sum, p) => {
             const notas = p.notas || [];
             return sum + notas.reduce((s, n) => s + n.precio, 0);
         }, 0);
         
-        // Total general = horas + extras + notas
         const totalGeneral = totalHorasDinero + totalExtra + totalNotas;
 
         document.getElementById('stat-proyectos').textContent = totalProy;
@@ -1734,7 +1723,6 @@
         document.getElementById('stat-total').textContent = formatearMoneda(totalGeneral);
         document.getElementById('stat-extras').textContent = formatearMoneda(totalExtra);
 
-        // Desglose detallado del proyecto seleccionado
         if (proyectoActual !== null && proyectos[proyectoActual]) {
             const p = proyectos[proyectoActual];
             const horasP = p.tiempo_total / 3600;
@@ -1752,7 +1740,6 @@
             document.getElementById('desglose-total').textContent = formatearMoneda(0);
         }
 
-        // Historial
         const container = document.getElementById('historial-sesiones');
         container.innerHTML = '';
 
@@ -1804,6 +1791,14 @@
             csv += `"${p.nombre}","${p.cliente || ''}",${p.tarifa},${horas.toFixed(2)},${horasDinero.toFixed(2)},${p.dinero_extra},${totalNotas},${numAdj},${total.toFixed(2)}\n`;
         });
 
+        // GRAN TOTAL al final del CSV
+        const totalGeneral = proyectos.reduce((sum, p) => {
+            const horas = p.tiempo_total / 3600;
+            const notas = p.notas || [];
+            return sum + (horas * p.tarifa) + p.dinero_extra + notas.reduce((s, n) => s + n.precio, 0);
+        }, 0);
+        csv += `\nGRAN TOTAL,,,,,,,,${totalGeneral.toFixed(2)}\n`;
+
         descargarArchivo(csv, 'DC_Tracker_Report.csv', 'text/csv');
         showToast('📊 CSV generado');
     }
@@ -1812,11 +1807,18 @@
     // ===== EXPORTAR JSON =====
     // ============================================================
     function exportarJSON() {
+        const totalGeneral = proyectos.reduce((sum, p) => {
+            const horas = p.tiempo_total / 3600;
+            const notas = p.notas || [];
+            return sum + (horas * p.tarifa) + p.dinero_extra + notas.reduce((s, n) => s + n.precio, 0);
+        }, 0);
+
         const datos = {
             app: 'DC Tracker Proyects',
             version: '1.0',
             fecha: new Date().toISOString(),
             moneda: getMoneda(),
+            granTotal: totalGeneral,
             proyectos: proyectos
         };
         descargarArchivo(JSON.stringify(datos, null, 2), 'DC_Tracker_Backup.json', 'application/json');
@@ -1924,11 +1926,13 @@
                 .total { 
                     background: #1a4a2a; 
                     color: white; 
-                    padding: 15px; 
+                    padding: 20px; 
                     text-align: center; 
-                    font-size: 20px; 
+                    font-size: 22px; 
                     border-radius: 8px;
-                    margin-top: 20px;
+                    margin-top: 30px;
+                    page-break-before: always;
+                    page-break-inside: avoid;
                 }
                 .nota-pdf {
                     display: inline-block;
@@ -2078,6 +2082,7 @@
             html += `</div>`;
         });
 
+        // ===== GRAN TOTAL AL FINAL DE TODO =====
         html += `
             <div class="total">
                 <h2>💰 GRAN TOTAL: ${simbolo}${totalGeneral.toFixed(2)}</h2>
@@ -2201,11 +2206,13 @@
                 .total { 
                     background: #1a4a2a; 
                     color: white; 
-                    padding: 15px; 
+                    padding: 20px; 
                     text-align: center; 
-                    font-size: 20px; 
+                    font-size: 22px; 
                     border-radius: 8px;
-                    margin-top: 20px;
+                    margin-top: 30px;
+                    page-break-before: always;
+                    page-break-inside: avoid;
                 }
                 .nota-pdf {
                     display: inline-block;
@@ -2329,6 +2336,7 @@
             });
         }
 
+        // ===== GRAN TOTAL AL FINAL DE TODO =====
         html += `
         </div>
         <div class="total">
