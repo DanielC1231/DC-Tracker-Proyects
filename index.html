@@ -973,7 +973,6 @@
         <div class="label-frame">
             <span class="label-title">📤 Exportar</span>
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <button class="btn btn-purple btn-sm" onclick="exportarTXT()">📄 TXT</button>
                 <button class="btn btn-danger btn-sm" onclick="exportarPDF()">📕 PDF (Todos)</button>
                 <button class="btn btn-danger btn-sm" onclick="exportarPDFProyecto()">📕 PDF (Este)</button>
                 <button class="btn btn-success btn-sm" onclick="exportarCSV()">📊 CSV</button>
@@ -1783,69 +1782,6 @@
             `;
             container.appendChild(div);
         });
-    }
-
-    // ============================================================
-    // ===== EXPORTAR TXT =====
-    // ============================================================
-    function exportarTXT() {
-        if (proyectos.length === 0) { showToast('No hay proyectos', 'error'); return; }
-
-        const moneda = getMoneda();
-        const simbolo = getSimbolo();
-
-        let texto = 'DC TRACKER PROYECTS - REPORTE\n';
-        texto += '='.repeat(50) + '\n\n';
-        texto += `Generado: ${new Date().toLocaleString()}\n`;
-        texto += `Moneda: ${moneda}\n\n`;
-
-        proyectos.forEach(p => {
-            const horas = p.tiempo_total / 3600;
-            const horasDinero = horas * p.tarifa;
-            const notas = p.notas || [];
-            const totalNotas = notas.reduce((sum, n) => sum + n.precio, 0);
-            const ingreso = horasDinero + p.dinero_extra + totalNotas;
-            const numAdj = (p.adjuntos || []).length;
-
-            texto += `📁 ${p.nombre}\n`;
-            texto += `   Cliente: ${p.cliente || 'N/A'}\n`;
-            texto += `   Tarifa: ${simbolo}${p.tarifa}/h\n`;
-            texto += `   Horas: ${horas.toFixed(2)}h = ${formatearMoneda(horasDinero)}\n`;
-            texto += `   Extras: ${formatearMoneda(p.dinero_extra)}\n`;
-            texto += `   Notas: ${formatearMoneda(totalNotas)}\n`;
-            texto += `   Adjuntos: ${numAdj}\n`;
-            texto += `   TOTAL: ${formatearMoneda(ingreso)}\n\n`;
-
-            if (notas.length > 0) {
-                texto += '   Notas:\n';
-                notas.forEach(n => {
-                    texto += `      📓 ${n.concepto} - ${formatearMoneda(n.precio)}\n`;
-                });
-                texto += '\n';
-            }
-
-            if (p.sesiones && p.sesiones.length > 0) {
-                texto += '   Sesiones:\n';
-                p.sesiones.forEach(s => {
-                    texto += `      • ${s.fecha} - ${s.duracion} - ${s.nota}`;
-                    if (s.extra) texto += ` (+${formatearMoneda(s.extra)})`;
-                    texto += '\n';
-                });
-                texto += '\n';
-            }
-        });
-
-        const totalGeneral = proyectos.reduce((sum, p) => {
-            const horas = p.tiempo_total / 3600;
-            const notas = p.notas || [];
-            return sum + (horas * p.tarifa) + p.dinero_extra + notas.reduce((s, n) => s + n.precio, 0);
-        }, 0);
-        
-        texto += '='.repeat(50) + '\n';
-        texto += `💰 TOTAL GENERAL: ${formatearMoneda(totalGeneral)}\n`;
-
-        descargarArchivo(texto, 'DC_Tracker_Report.txt', 'text/plain');
-        showToast('📄 TXT generado');
     }
 
     // ============================================================
