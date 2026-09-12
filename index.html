@@ -2308,6 +2308,7 @@
         document.getElementById('pdf-hidden-container').innerHTML = '';
     }
        // ============================================================
+        // ============================================================
     // ===== DESCARGAR PDF DESDE PREVIEW =====
     // ============================================================
     function descargarPDFDesdePreview() {
@@ -2320,22 +2321,27 @@
         showToast('📕 Generando PDF...', 'success');
         actualizarProgreso(20, 'Preparando...');
 
-        // Crear un clon VISIBLE en el body (fuera de la vista del usuario)
-        // con el mismo contenido de la preview. Se elimina al terminar.
-        const clon = document.createElement('div');
-        clon.id = 'pdf-clon-temporal';
-        clon.style.position = 'fixed';
-        clon.style.top = '0';
-        clon.style.left = '0';
-        clon.style.width = '794px';          // Ancho A4 aproximado en px a 96dpi
-        clon.style.background = '#ffffff';
-        clon.style.padding = '20px';
-        clon.style.zIndex = '-1';            // Detrás de todo, pero visible para html2canvas
-        clon.style.boxSizing = 'border-box';
-        clon.innerHTML = previewContent.innerHTML;
-        document.body.appendChild(clon);
+        // Crear contenedor temporal que SÍ ve html2canvas
+        // (posición absolute, dentro del documento, no fuera de pantalla)
+        const contenedor = document.createElement('div');
+        contenedor.id = 'pdf-render-temp';
+        contenedor.style.position = 'absolute';
+        contenedor.style.top = '0';
+        contenedor.style.left = '0';
+        contenedor.style.width = '800px';
+        contenedor.style.background = '#ffffff';
+        contenedor.style.padding = '30px';
+        contenedor.style.zIndex = '-9999';   // detrás de todo (el usuario no lo ve)
+        contenedor.style.pointerEvents = 'none';
+        contenedor.style.overflow = 'visible';
 
-        // Esperar 2 frames para asegurar que el navegador repinte el clon
+        // Envolver el contenido con la clase .pdf-preview para que herede los estilos
+        contenedor.innerHTML = '<div class="pdf-preview">' + previewContent.innerHTML + '</div>';
+        document.body.appendChild(contenedor);
+
+        // Forzar un reflow y esperar 2 frames para que el navegador pinte el contenedor
+        void contenedor.offsetHeight;
+
         requestAnimationFrame(() => {
             requestAnimationFrame(() => {
                 const opt = {
@@ -2346,7 +2352,7 @@
                         scale: 2,
                         useCORS: true,
                         logging: false,
-                        windowWidth: 794,
+                        windowWidth: 800,
                         scrollX: 0,
                         scrollY: 0,
                         backgroundColor: '#ffffff'
@@ -2357,13 +2363,13 @@
 
                 actualizarProgreso(50, 'Generando...');
 
-                html2pdf().set(opt).from(clon).save().then(() => {
-                    document.body.removeChild(clon);
+                html2pdf().set(opt).from(contenedor).save().then(() => {
+                    document.body.removeChild(contenedor);
                     actualizarProgreso(100, '¡PDF descargado!');
                     setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
                     showToast('📕 PDF descargado correctamente', 'success');
                 }).catch((err) => {
-                    if (document.body.contains(clon)) document.body.removeChild(clon);
+                    if (document.body.contains(contenedor)) document.body.removeChild(contenedor);
                     console.error(err);
                     showToast('Error al generar PDF. Intenta de nuevo.', 'error');
                     actualizarProgreso(0, 'Listo');
