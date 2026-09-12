@@ -729,11 +729,21 @@
             overflow-y: auto;
         }
         
-        /* ===== ESTILOS DEL PDF (dentro del preview) ===== */
+        /* ===== PDF OCULTO (para generar sin cortes) ===== */
+        #pdf-hidden-container {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+            width: 800px;
+            background: white;
+        }
+        
+        /* ===== ESTILOS DEL PDF ===== */
         .pdf-preview {
             font-family: Arial, sans-serif;
             color: #333;
             line-height: 1.5;
+            width: 100%;
         }
         
         .pdf-preview .pdf-header {
@@ -888,6 +898,32 @@
             font-size: 12px;
         }
         
+        /* ===== DESGLOSE FINANCIERO (Notas, Horas, Extras) ===== */
+        .pdf-preview .desglose-financiero {
+            margin: 15px 0;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+        
+        .pdf-preview .desglose-linea {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 14px;
+        }
+        
+        .pdf-preview .desglose-linea .label {
+            color: #555;
+        }
+        
+        .pdf-preview .desglose-linea .valor {
+            font-weight: bold;
+            color: #1a4a2a;
+        }
+        
+        /* ===== GRAN TOTAL (al final de todo) ===== */
         .pdf-preview .gran-total {
             background: linear-gradient(135deg, #1a4a2a, #238636);
             color: white;
@@ -895,12 +931,10 @@
             text-align: center;
             border-radius: 10px;
             margin-top: 40px;
-            page-break-before: always;
-            page-break-inside: avoid;
         }
         
         .pdf-preview .gran-total h2 {
-            color: #58a6ff;
+            color: #ffffff;
             font-size: 26px;
             margin-bottom: 10px;
         }
@@ -1274,10 +1308,15 @@
             </div>
         </div>
         <div class="preview-content" id="preview-content">
-            <!-- Aquí se inyecta el HTML del reporte -->
+            <!-- Aquí se inyecta el HTML del reporte para previsualizar -->
         </div>
     </div>
 </div>
+
+<!-- ========================================================== -->
+<!-- ===== CONTENEDOR OCULTO PARA GENERAR PDF COMPLETO ===== -->
+<!-- ========================================================== -->
+<div id="pdf-hidden-container"></div>
 
 <!-- ========================================================== -->
 <!-- ===== JAVASCRIPT ===== -->
@@ -1292,7 +1331,7 @@
     let archivoTemp = null;
     let notaSeleccionada = -1;
     let pdfNombreActual = 'DC_Tracker_Report.pdf';
-    let pdfElementoActual = null;
+    let pdfHTMLActual = '';
 
     // Timer
     let tiempoInicio = null;
@@ -2089,6 +2128,8 @@
 
         let totalGeneral = 0;
         let totalNotasGenerales = 0;
+        let totalHorasGenerales = 0;
+        let totalExtrasGenerales = 0;
         const lista = esIndividual ? [proyecto] : proyectos;
 
         lista.forEach(p => {
@@ -2100,6 +2141,8 @@
             const ingreso = horasDinero + totalNotas + extras;
             totalGeneral += ingreso;
             totalNotasGenerales += totalNotas;
+            totalHorasGenerales += horasDinero;
+            totalExtrasGenerales += extras;
 
             html += `
             <div class="proyecto">
@@ -2139,6 +2182,24 @@
                     </div>
                 `;
             }
+
+            // ===== DESGLOSE FINANCIERO: Notas → Horas → Extras =====
+            html += `
+                <div class="desglose-financiero">
+                    <div class="desglose-linea">
+                        <span class="label">📓 Notas (materiales):</span>
+                        <span class="valor">${simbolo}${totalNotas.toFixed(2)}</span>
+                    </div>
+                    <div class="desglose-linea">
+                        <span class="label">⏱️ Horas trabajadas (${horas.toFixed(2)}h × ${simbolo}${p.tarifa}):</span>
+                        <span class="valor">${simbolo}${horasDinero.toFixed(2)}</span>
+                    </div>
+                    <div class="desglose-linea">
+                        <span class="label">💸 Extras:</span>
+                        <span class="valor">${simbolo}${extras.toFixed(2)}</span>
+                    </div>
+                </div>
+            `;
 
             // ===== SESIONES =====
             if (p.sesiones && p.sesiones.length > 0) {
@@ -2187,10 +2248,11 @@
                 <h2>💰 GRAN TOTAL: ${simbolo}${totalGeneral.toFixed(2)}</h2>
                 <div class="desglose-total">
                     <span>📓 Notas: ${simbolo}${totalNotasGenerales.toFixed(2)}</span> |
-                    <span>⏱️ Horas: ${simbolo}${(totalGeneral - totalNotasGenerales).toFixed(2)}</span>
+                    <span>⏱️ Horas: ${simbolo}${totalHorasGenerales.toFixed(2)}</span> |
+                    <span>💸 Extras: ${simbolo}${totalExtrasGenerales.toFixed(2)}</span>
                 </div>
                 <div class="nota-final">
-                    (Horas + Notas + Extras)
+                    (Notas + Horas + Extras)
                 </div>
             </div>
         </div>
@@ -2206,10 +2268,15 @@
         if (proyectos.length === 0) { showToast('No hay proyectos', 'error'); return; }
 
         const html = construirHTMLPDF(null);
+        pdfHTMLActual = html;
+        pdfNombreActual = 'DC_Tracker_Report.pdf';
+
+        // Preview visible
         document.getElementById('preview-content').innerHTML = html;
         document.getElementById('preview-overlay').classList.add('active');
-        pdfNombreActual = 'DC_Tracker_Report.pdf';
-        pdfElementoActual = document.getElementById('preview-content');
+
+        // Contenedor oculto para generar PDF completo sin cortes
+        document.getElementById('pdf-hidden-container').innerHTML = html;
     }
 
     // ============================================================
@@ -2223,10 +2290,12 @@
 
         const p = proyectos[proyectoActual];
         const html = construirHTMLPDF(p);
+        pdfHTMLActual = html;
+        pdfNombreActual = `${p.nombre.replace(/\s/g, '_')}_Report.pdf`;
+
         document.getElementById('preview-content').innerHTML = html;
         document.getElementById('preview-overlay').classList.add('active');
-        pdfNombreActual = `${p.nombre.replace(/\s/g, '_')}_Report.pdf`;
-        pdfElementoActual = document.getElementById('preview-content');
+        document.getElementById('pdf-hidden-container').innerHTML = html;
     }
 
     // ============================================================
@@ -2235,14 +2304,18 @@
     function cerrarPreview() {
         document.getElementById('preview-overlay').classList.remove('active');
         document.getElementById('preview-content').innerHTML = '';
-        pdfElementoActual = null;
+        document.getElementById('pdf-hidden-container').innerHTML = '';
     }
 
     // ============================================================
     // ===== DESCARGAR PDF DESDE PREVIEW =====
     // ============================================================
     function descargarPDFDesdePreview() {
-        if (!pdfElementoActual) return;
+        const elemento = document.getElementById('pdf-hidden-container');
+        if (!elemento || !elemento.innerHTML.trim()) {
+            showToast('No hay PDF para descargar', 'error');
+            return;
+        }
 
         showToast('📕 Generando PDF...', 'success');
         actualizarProgreso(30, 'Preparando...');
@@ -2251,13 +2324,20 @@
             margin: [10, 10, 10, 10],
             filename: pdfNombreActual,
             image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2, useCORS: true, logging: false },
-            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+            html2canvas: { 
+                scale: 2, 
+                useCORS: true, 
+                logging: false,
+                windowWidth: 800,
+                scrollY: 0
+            },
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
         };
 
         actualizarProgreso(60, 'Generando...');
 
-        html2pdf().set(opt).from(pdfElementoActual).save().then(() => {
+        html2pdf().set(opt).from(elemento).save().then(() => {
             actualizarProgreso(100, '¡PDF descargado!');
             setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
             showToast('📕 PDF descargado correctamente', 'success');
