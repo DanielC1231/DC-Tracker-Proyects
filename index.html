@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
     <title>💼 DC Tracker Proyects</title>
     
-    <!-- LIBRERÍA PARA CAPTURAR COMO IMAGEN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-    
     <style>
         /* ===== ESTILOS BASE ===== */
         * {
@@ -718,16 +715,6 @@
             color: white;
         }
         
-        .btn-imagen {
-            background: #3fb950;
-            color: white;
-            box-shadow: 0 4px 12px rgba(63, 185, 80, 0.4);
-        }
-        
-        .btn-imagen:hover {
-            background: #2ea043;
-        }
-        
         .preview-content {
             padding: 30px;
             background: white;
@@ -735,6 +722,70 @@
             max-height: 80vh;
             overflow-y: auto;
             -webkit-overflow-scrolling: touch;
+        }
+        
+        /* ===== PRESUPUESTO ===== */
+        .presupuesto-card {
+            background: linear-gradient(135deg, #1a2a3a, #0f3460);
+            border: 1px solid #1f6feb;
+            border-radius: 10px;
+            padding: 16px;
+            margin: 12px 0;
+        }
+        
+        .presupuesto-card h3 {
+            color: #58a6ff;
+            font-size: 16px;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #21262d;
+        }
+        
+        .presupuesto-linea {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            font-size: 14px;
+            border-bottom: 1px dashed #21262d;
+        }
+        
+        .presupuesto-linea:last-child {
+            border-bottom: none;
+        }
+        
+        .presupuesto-linea .label {
+            color: #c9d1d9;
+        }
+        
+        .presupuesto-linea .valor {
+            font-weight: bold;
+            color: #58a6ff;
+        }
+        
+        .presupuesto-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 14px 0 6px 0;
+            font-size: 18px;
+            font-weight: bold;
+            color: #3fb950;
+            border-top: 2px solid #238636;
+            margin-top: 8px;
+        }
+        
+        .presupuesto-nota {
+            background: #1a4a2a;
+            padding: 10px 12px;
+            border-radius: 8px;
+            border-left: 4px solid #3fb950;
+            color: #c9d1d9;
+            font-size: 13px;
+            line-height: 1.5;
+            margin-top: 12px;
+        }
+        
+        .presupuesto-nota strong {
+            color: #3fb950;
         }
         
         /* ===== ESTILOS DEL PDF ===== */
@@ -898,7 +949,6 @@
             font-size: 12px;
         }
         
-        /* ===== DESGLOSE FINANCIERO ===== */
         .pdf-preview .desglose-financiero {
             margin: 15px 0;
             padding: 15px;
@@ -923,7 +973,6 @@
             color: #1a4a2a;
         }
         
-        /* ===== GRAN TOTAL ===== */
         .pdf-preview .gran-total {
             background: linear-gradient(135deg, #1a4a2a, #238636);
             color: white;
@@ -962,8 +1011,8 @@
             .header h1 { font-size: 20px; }
             .header p { font-size: 11px; }
             .tab-btn { 
-                font-size: 12px; 
-                padding: 12px 2px; 
+                font-size: 11px; 
+                padding: 10px 2px; 
                 min-width: 30px;
                 min-height: 44px;
             }
@@ -1042,6 +1091,7 @@
         <button class="tab-btn" data-tab="tab-adjuntos">📎</button>
         <button class="tab-btn" data-tab="tab-libreta">📓</button>
         <button class="tab-btn" data-tab="tab-buscar">🔍</button>
+        <button class="tab-btn" data-tab="tab-presupuesto">💵</button>
         <button class="tab-btn" data-tab="tab-reportes">📊</button>
     </div>
 
@@ -1255,7 +1305,40 @@
     </div>
 
     <!-- ========================================================== -->
-    <!-- TAB 7: REPORTES -->
+    <!-- TAB 7: PRESUPUESTO -->
+    <!-- ========================================================== -->
+    <div id="tab-presupuesto" class="tab-content">
+        <div class="label-frame">
+            <span class="label-title" style="font-size:18px; text-align:center; display:block; color:#58a6ff;">💵 Presupuesto Rápido</span>
+
+            <div style="text-align:center; color:#8b949e; font-size:12px; margin-bottom:10px;">
+                Herramienta para calcular un aproximado al cliente. No se incluye en el reporte.
+            </div>
+
+            <div class="form-group">
+                <label>Proyecto</label>
+                <select id="presu-proyecto" onchange="calcularPresupuesto()">
+                    <option value="">— Selecciona un proyecto —</option>
+                </select>
+            </div>
+
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+                <div class="form-group" style="flex:1; min-width:100px;">
+                    <label>% Mano de obra</label>
+                    <input type="number" id="presu-mano-obra" value="50" min="0" max="500" oninput="calcularPresupuesto()">
+                </div>
+                <div class="form-group" style="flex:1; min-width:100px;">
+                    <label>% Ganancia</label>
+                    <input type="number" id="presu-ganancia" value="30" min="0" max="500" oninput="calcularPresupuesto()">
+                </div>
+            </div>
+
+            <div id="presupuesto-resultado"></div>
+        </div>
+    </div>
+
+    <!-- ========================================================== -->
+    <!-- TAB 8: REPORTES -->
     <!-- ========================================================== -->
     <div id="tab-reportes" class="tab-content">
         <div class="label-frame">
@@ -1336,7 +1419,6 @@
         <div class="preview-header">
             <h3>📄 Vista previa del reporte</h3>
             <div class="preview-header-btns">
-                <button class="btn-imagen" onclick="exportarComoImagen()">📥 Exportar como Imagen</button>
                 <button class="btn-cerrar" onclick="cerrarPreview()">✕ Cerrar</button>
             </div>
         </div>
@@ -1358,7 +1440,6 @@
     let adjuntoSeleccionado = -1;
     let archivoTemp = null;
     let notaSeleccionada = -1;
-    let imagenNombreActual = 'DC_Tracker_Report.png';
 
     // Timer
     let tiempoInicio = null;
@@ -1399,6 +1480,11 @@
                 this.classList.add('active');
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                 document.getElementById(this.dataset.tab).classList.add('active');
+
+                // Al abrir la pestaña de presupuesto, refrescar el select
+                if (this.dataset.tab === 'tab-presupuesto') {
+                    actualizarSelectPresupuesto();
+                }
             });
         });
 
@@ -1412,6 +1498,7 @@
         actualizarTimerDisplay();
         actualizarListaNotas();
         actualizarSimbolo();
+        actualizarSelectPresupuesto();
     });
 
     // ============================================================
@@ -1451,6 +1538,8 @@
         actualizarListaAdjuntos();
         actualizarListaNotas();
         actualizarReportes();
+        actualizarSelectPresupuesto();
+        calcularPresupuesto();
     }
 
     // ============================================================
@@ -1497,6 +1586,7 @@
         guardarDatos();
         actualizarListaProyectos();
         actualizarReportes();
+        actualizarSelectPresupuesto();
 
         document.getElementById('proy-nombre').value = '';
         document.getElementById('proy-cliente').value = '';
@@ -1576,6 +1666,7 @@
             actualizarReportes();
             actualizarListaAdjuntos();
             actualizarListaNotas();
+            actualizarSelectPresupuesto();
             showToast('🗑️ Proyecto eliminado');
         }
     }
@@ -1597,6 +1688,7 @@
         p.descripcion = document.getElementById('proy-desc').value;
         guardarDatos();
         actualizarListaProyectos();
+        actualizarSelectPresupuesto();
         showToast('💾 Cambios guardados');
     }
 
@@ -2063,6 +2155,95 @@
     }
 
     // ============================================================
+    // ===== PRESUPUESTO =====
+    // ============================================================
+    function actualizarSelectPresupuesto() {
+        const select = document.getElementById('presu-proyecto');
+        const valorActual = select.value;
+        select.innerHTML = '<option value="">— Selecciona un proyecto —</option>';
+        
+        proyectos.forEach((p, i) => {
+            const opt = document.createElement('option');
+            opt.value = i;
+            opt.textContent = p.nombre + (p.cliente ? ' — ' + p.cliente : '');
+            select.appendChild(opt);
+        });
+
+        // Restaurar selección si existe
+        if (valorActual !== '' && proyectos[valorActual]) {
+            select.value = valorActual;
+        }
+
+        calcularPresupuesto();
+    }
+
+    function calcularPresupuesto() {
+        const select = document.getElementById('presu-proyecto');
+        const resultado = document.getElementById('presupuesto-resultado');
+        const idx = select.value;
+
+        if (idx === '' || !proyectos[idx]) {
+            resultado.innerHTML = '<div class="list-empty" style="padding:20px 0;">Selecciona un proyecto para ver el presupuesto</div>';
+            return;
+        }
+
+        const p = proyectos[idx];
+        const porcentajeMano = parseFloat(document.getElementById('presu-mano-obra').value) || 0;
+        const porcentajeGanancia = parseFloat(document.getElementById('presu-ganancia').value) || 0;
+
+        // Materiales = suma de notas
+        const materiales = (p.notas || []).reduce((sum, n) => sum + n.precio, 0);
+
+        // Mano de obra = materiales * (% / 100) — cálculo aproximado
+        const manoObra = materiales * (porcentajeMano / 100);
+
+        // Subtotal antes de ganancia
+        const subtotal = materiales + manoObra;
+
+        // Ganancia = subtotal * (% / 100)
+        const ganancia = subtotal * (porcentajeGanancia / 100);
+
+        // Total presupuesto
+        const total = subtotal + ganancia;
+
+        resultado.innerHTML = `
+            <div class="presupuesto-card">
+                <h3>📋 ${p.nombre}${p.cliente ? ' — ' + p.cliente : ''}</h3>
+                
+                <div class="presupuesto-linea">
+                    <span class="label">📓 Materiales (${(p.notas || []).length} conceptos)</span>
+                    <span class="valor">${formatearMoneda(materiales)}</span>
+                </div>
+                <div class="presupuesto-linea">
+                    <span class="label">🔧 Mano de obra (+${porcentajeMano}%)</span>
+                    <span class="valor">${formatearMoneda(manoObra)}</span>
+                </div>
+                <div class="presupuesto-linea">
+                    <span class="label">💼 Subtotal</span>
+                    <span class="valor">${formatearMoneda(subtotal)}</span>
+                </div>
+                <div class="presupuesto-linea">
+                    <span class="label">💰 Ganancia (+${porcentajeGanancia}%)</span>
+                    <span class="valor">${formatearMoneda(ganancia)}</span>
+                </div>
+                
+                <div class="presupuesto-total">
+                    <span>💵 PRESUPUESTO APROX:</span>
+                    <span>${formatearMoneda(total)}</span>
+                </div>
+            </div>
+            
+            <div class="presupuesto-nota">
+                <strong>💡 Respuesta rápida al cliente:</strong><br>
+                "El presupuesto aproximado es de <strong>${formatearMoneda(total)}</strong>. 
+                Incluye aproximadamente <strong>${formatearMoneda(materiales)}</strong> en materiales 
+                y <strong>${formatearMoneda(manoObra + ganancia)}</strong> en mano de obra y servicios. 
+                Es un estimado, puede variar según detalles finales."
+            </div>
+        `;
+    }
+
+    // ============================================================
     // ===== REPORTES =====
     // ============================================================
     function actualizarReportes() {
@@ -2287,8 +2468,6 @@
         if (proyectos.length === 0) { showToast('No hay proyectos', 'error'); return; }
 
         const html = construirHTMLPDF(null);
-        imagenNombreActual = 'DC_Tracker_Report.png';
-
         document.getElementById('preview-content').innerHTML = html;
         document.getElementById('preview-overlay').classList.add('active');
     }
@@ -2304,7 +2483,6 @@
 
         const p = proyectos[proyectoActual];
         const html = construirHTMLPDF(p);
-        imagenNombreActual = `${p.nombre.replace(/\s/g, '_')}_Report.png`;
 
         document.getElementById('preview-content').innerHTML = html;
         document.getElementById('preview-overlay').classList.add('active');
@@ -2316,70 +2494,6 @@
     function cerrarPreview() {
         document.getElementById('preview-overlay').classList.remove('active');
         document.getElementById('preview-content').innerHTML = '';
-    }
-
-    // ============================================================
-    // ===== EXPORTAR COMO IMAGEN =====
-    // ============================================================
-    function exportarComoImagen() {
-        const previewContent = document.getElementById('preview-content');
-        if (!previewContent || !previewContent.innerHTML.trim()) {
-            showToast('No hay reporte para exportar', 'error');
-            return;
-        }
-
-        showToast('🖼️ Generando imagen...', 'success');
-        actualizarProgreso(20, 'Preparando...');
-
-        // 1) Crear contenedor temporal blanco con el contenido a exportar
-        const contenedor = document.createElement('div');
-        contenedor.style.position = 'fixed';
-        contenedor.style.top = '0';
-        contenedor.style.left = '0';
-        contenedor.style.width = '800px';
-        contenedor.style.background = '#ffffff';
-        contenedor.style.padding = '30px';
-        contenedor.style.zIndex = '99999';
-        contenedor.style.opacity = '0.01';   // invisible al ojo pero capturable
-        contenedor.style.pointerEvents = 'none';
-        contenedor.style.boxSizing = 'border-box';
-        contenedor.style.fontFamily = 'Arial, sans-serif';
-
-        contenedor.innerHTML = '<div class="pdf-preview">' + previewContent.innerHTML + '</div>';
-        document.body.appendChild(contenedor);
-
-        actualizarProgreso(50, 'Capturando...');
-
-        // 2) Esperar un momento para que se pinte y capturar con html2canvas
-        setTimeout(() => {
-            html2canvas(contenedor, {
-                scale: 2,                   // buena resolución
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff',
-                windowWidth: 800,
-                scrollX: 0,
-                scrollY: 0
-            }).then(canvas => {
-                // 3) Convertir a PNG y descargar
-                const enlace = document.createElement('a');
-                enlace.download = imagenNombreActual || 'DC_Tracker_Report.png';
-                enlace.href = canvas.toDataURL('image/png');
-                document.body.appendChild(enlace);
-                enlace.click();
-                document.body.removeChild(enlace);
-
-                document.body.removeChild(contenedor);
-                actualizarProgreso(100, '¡Imagen descargada!');
-                setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
-                showToast('🖼️ Imagen descargada correctamente', 'success');
-            }).catch(err => {
-                if (document.body.contains(contenedor)) document.body.removeChild(contenedor);
-                console.error(err);
-                showToast('Error al generar la imagen', 'error');
-                actualizarProgreso(0, 'Listo');
-            });
-        }, 200);
     }
 
     // ============================================================
@@ -2462,6 +2576,7 @@
                         actualizarListaAdjuntos();
                         actualizarListaNotas();
                         actualizarSimbolo();
+                        actualizarSelectPresupuesto();
                         showToast('📂 Datos cargados correctamente');
                     } else {
                         showToast('Archivo inválido', 'error');
@@ -2545,7 +2660,7 @@
 
     console.log('💼 DC Tracker Proyects - Web version loaded!');
     console.log('📌 Atajos: Ctrl+N (Proyectos), Ctrl+T (Timer), Ctrl+A (Adjuntos), Ctrl+B (Buscar), Ctrl+R (Reportes)');
-    console.log('📓 Nueva sección: Libreta de Notas');
+    console.log('📓 Libreta de Notas, 💵 Presupuesto Rápido');
     console.log('💱 Monedas: MXN (por defecto) y USD');
 </script>
 
