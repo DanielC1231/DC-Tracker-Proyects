@@ -2,11 +2,8 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=3.0, user-scalable=yes">
     <title>💼 DC Tracker Proyects</title>
-    
-    <!-- LIBRERÍA PARA CAPTURAR COMO IMAGEN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     
     <style>
         /* ===== ESTILOS BASE ===== */
@@ -16,13 +13,20 @@
             box-sizing: border-box;
         }
         
+        html {
+            /* Evita zoom raro en iOS pero permite zoom manual */
+            -webkit-text-size-adjust: 100%;
+            text-size-adjust: 100%;
+        }
+        
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Arial, sans-serif;
             background: #0d1117;
             color: #c9d1d9;
             min-height: 100vh;
             padding: 8px;
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
         
         .app-container {
@@ -153,6 +157,7 @@
             border: 1px solid #30363d;
             border-radius: 8px;
             color: white;
+            /* 16px evita el zoom automático en iOS al enfocar */
             font-size: 16px;
             transition: border 0.3s;
             -webkit-appearance: none;
@@ -171,7 +176,7 @@
             resize: vertical;
             min-height: 60px;
             font-family: inherit;
-            font-size: 15px;
+            font-size: 16px;
         }
         
         /* ===== BOTONES ===== */
@@ -626,7 +631,7 @@
             border: 1px solid #30363d;
             border-radius: 6px;
             color: white;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: bold;
             cursor: pointer;
         }
@@ -654,6 +659,7 @@
             z-index: 10000;
             overflow-y: auto;
             padding: 20px;
+            -webkit-overflow-scrolling: touch;
         }
         
         .preview-overlay.active {
@@ -711,22 +717,13 @@
             color: white;
         }
         
-        .btn-descargar {
-            background: #3fb950;
-            color: white;
-            box-shadow: 0 4px 12px rgba(63, 185, 80, 0.4);
-        }
-        
-        .btn-descargar:hover {
-            background: #2ea043;
-        }
-        
         .preview-content {
             padding: 30px;
             background: white;
             color: #333;
             max-height: 80vh;
             overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
         }
         
         /* ===== ESTILOS DEL PDF ===== */
@@ -950,22 +947,62 @@
         
         /* ===== RESPONSIVE ===== */
         @media (max-width: 480px) {
+            body { padding: 4px; }
             .header h1 { font-size: 20px; }
-            .tab-btn { font-size: 10px; padding: 8px 2px; min-width: 30px; }
+            .header p { font-size: 11px; }
+            .tab-btn { 
+                font-size: 12px; 
+                padding: 12px 2px; 
+                min-width: 30px;
+                /* iOS táctil: mínimo 44px de alto */
+                min-height: 44px;
+            }
             .timer-display { font-size: 36px; min-width: 160px; padding: 12px; }
-            .btn { font-size: 14px; padding: 12px 16px; min-height: 44px; }
+            .btn { font-size: 16px; padding: 14px 16px; min-height: 48px; }
+            .btn-sm { font-size: 14px; min-height: 40px; }
             .stats { grid-template-columns: repeat(2, 1fr); }
             .historial-item { font-size: 11px; }
             .historial-item .nota { max-width: 70px; }
-            body { padding: 4px; }
-            .nota-item .texto { font-size: 13px; }
-            .nota-item .precio { font-size: 13px; min-width: 60px; }
+            .nota-item .texto { font-size: 14px; }
+            .nota-item .precio { font-size: 14px; min-width: 60px; }
             .moneda-selector { justify-content: center; }
-            .preview-modal { border-radius: 0; }
-            .preview-header { padding: 12px; flex-direction: column; gap: 10px; }
-            .preview-header-btns { width: 100%; }
-            .preview-header-btns button { flex: 1; }
-            .preview-content { padding: 15px; }
+            
+            /* Modal de preview mejorado para móvil */
+            .preview-overlay { padding: 8px; }
+            .preview-modal { border-radius: 10px; }
+            .preview-header { 
+                padding: 12px 14px; 
+                flex-direction: column; 
+                gap: 8px;
+            }
+            .preview-header h3 { font-size: 15px; }
+            .preview-header-btns { 
+                width: 100%; 
+                gap: 6px;
+            }
+            .preview-header-btns button { 
+                flex: 1; 
+                padding: 12px 12px;
+                font-size: 14px;
+                min-height: 44px;
+            }
+            .preview-content { 
+                padding: 14px; 
+                max-height: 75vh;
+            }
+            
+            /* Estilos del PDF reducidos en móvil */
+            .pdf-preview .pdf-header h1 { font-size: 20px; }
+            .pdf-preview .pdf-header p { font-size: 11px; }
+            .pdf-preview .proyecto { padding: 12px; margin: 12px 0; }
+            .pdf-preview .proyecto h3 { font-size: 15px; }
+            .pdf-preview .descripcion { font-size: 12px; padding: 10px; }
+            .pdf-preview table { font-size: 11px; }
+            .pdf-preview th, .pdf-preview td { padding: 5px 6px; }
+            .pdf-preview .gran-total { padding: 16px; margin-top: 24px; }
+            .pdf-preview .gran-total h2 { font-size: 20px; }
+            .pdf-preview .gran-total .desglose-total { font-size: 12px; }
+            .pdf-preview .desglose-linea { font-size: 12px; }
         }
         
         @media (min-width: 768px) {
@@ -1270,8 +1307,8 @@
         <div class="label-frame">
             <span class="label-title">📤 Exportar</span>
             <div style="display:flex; gap:8px; flex-wrap:wrap;">
-                <button class="btn btn-danger btn-sm" onclick="previsualizarPDF()">📕 PDF (Todos)</button>
-                <button class="btn btn-danger btn-sm" onclick="previsualizarPDFProyecto()">📕 PDF (Este)</button>
+                <button class="btn btn-danger btn-sm" onclick="previsualizarPDF()">📕 Ver Reporte (Todos)</button>
+                <button class="btn btn-danger btn-sm" onclick="previsualizarPDFProyecto()">📕 Ver Reporte (Este)</button>
                 <button class="btn btn-success btn-sm" onclick="exportarCSV()">📊 CSV</button>
                 <button class="btn btn-primary btn-sm" onclick="exportarJSON()">💾 Backup</button>
                 <button class="btn btn-warning btn-sm" onclick="importarJSON()">📂 Cargar</button>
@@ -1292,7 +1329,6 @@
             <h3>📄 Vista previa del reporte</h3>
             <div class="preview-header-btns">
                 <button class="btn-cerrar" onclick="cerrarPreview()">✕ Cerrar</button>
-                <button class="btn-descargar" onclick="descargarPDFDesdePreview()">📥 Descargar Imagen</button>
             </div>
         </div>
         <div class="preview-content" id="preview-content">
@@ -2271,69 +2307,6 @@
     function cerrarPreview() {
         document.getElementById('preview-overlay').classList.remove('active');
         document.getElementById('preview-content').innerHTML = '';
-    }
-
-    // ============================================================
-    // ===== DESCARGAR COMO IMAGEN (html2canvas puro) =====
-    // ============================================================
-    function descargarPDFDesdePreview() {
-        const previewContent = document.getElementById('preview-content');
-        if (!previewContent || !previewContent.innerHTML.trim()) {
-            showToast('No hay reporte para descargar', 'error');
-            return;
-        }
-
-        showToast('🖼️ Generando imagen...', 'success');
-        actualizarProgreso(30, 'Preparando...');
-
-        // Crear contenedor limpio, blanco, del ancho deseado
-        const contenedor = document.createElement('div');
-        contenedor.style.position = 'fixed';
-        contenedor.style.top = '0';
-        contenedor.style.left = '0';
-        contenedor.style.width = '800px';
-        contenedor.style.background = '#ffffff';
-        contenedor.style.padding = '30px';
-        contenedor.style.zIndex = '99999';
-        contenedor.style.opacity = '0.01';       // casi invisible (para el ojo), pero capturable
-        contenedor.style.pointerEvents = 'none';
-        contenedor.style.boxSizing = 'border-box';
-
-        contenedor.innerHTML = '<div class="pdf-preview">' + previewContent.innerHTML + '</div>';
-        document.body.appendChild(contenedor);
-
-        actualizarProgreso(60, 'Capturando...');
-
-        // Esperar un tick y capturar como PNG
-        setTimeout(() => {
-            html2canvas(contenedor, {
-                scale: 2,                     // calidad 2x (buena resolución)
-                useCORS: true,
-                logging: false,
-                backgroundColor: '#ffffff',
-                windowWidth: 800,
-                scrollX: 0,
-                scrollY: 0
-            }).then(canvas => {
-                // Convertir a PNG y descargar
-                const enlace = document.createElement('a');
-                enlace.download = pdfNombreActual || 'DC_Tracker_Report.png';
-                enlace.href = canvas.toDataURL('image/png');
-                document.body.appendChild(enlace);
-                enlace.click();
-                document.body.removeChild(enlace);
-
-                document.body.removeChild(contenedor);
-                actualizarProgreso(100, '¡Imagen descargada!');
-                setTimeout(() => actualizarProgreso(0, 'Listo'), 2000);
-                showToast('🖼️ Imagen descargada correctamente', 'success');
-            }).catch(err => {
-                if (document.body.contains(contenedor)) document.body.removeChild(contenedor);
-                console.error(err);
-                showToast('Error al generar la imagen', 'error');
-                actualizarProgreso(0, 'Listo');
-            });
-        }, 200);
     }
 
     // ============================================================
